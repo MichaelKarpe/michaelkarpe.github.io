@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>0 | Michaël Karpe</title>
+    <link>https://michaelkarpe.github.io/publication-type/0/</link>
+      <atom:link href="https://michaelkarpe.github.io/publication-type/0/index.xml" rel="self" type="application/rss+xml" />
+    <description>0</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 10 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://michaelkarpe.github.io/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_512x512_fill_lanczos_center_3.png</url>
+      <title>0</title>
+      <link>https://michaelkarpe.github.io/publication-type/0/</link>
+    </image>
+    
+    <item>
+      <title>Multi-Agent Reinforcement Learning in a Realistic Limit Order Book Market Simulation</title>
+      <link>https://michaelkarpe.github.io/publication/karpe2020multiagent/</link>
+      <pubDate>Wed, 10 Jun 2020 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/publication/karpe2020multiagent/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>An overall view of key problems in algorithmic trading and recent progress</title>
+      <link>https://michaelkarpe.github.io/publication/karpe2020overall/</link>
+      <pubDate>Tue, 09 Jun 2020 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/publication/karpe2020overall/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

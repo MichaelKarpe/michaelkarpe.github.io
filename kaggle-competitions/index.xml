@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects | Michaël Karpe</title>
+    <link>https://michaelkarpe.github.io/kaggle-competitions/</link>
+      <atom:link href="https://michaelkarpe.github.io/kaggle-competitions/index.xml" rel="self" type="application/rss+xml" />
+    <description>Projects</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 10 May 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://michaelkarpe.github.io/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_512x512_fill_lanczos_center_3.png</url>
+      <title>Projects</title>
+      <link>https://michaelkarpe.github.io/kaggle-competitions/</link>
+    </image>
+    
+    <item>
+      <title>★ NYC Taxi Trip Duration Prediction</title>
+      <link>https://michaelkarpe.github.io/kaggle-competitions/nyc-taxi/</link>
+      <pubDate>Sun, 10 May 2020 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/kaggle-competitions/nyc-taxi/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How long does it take to get from the Bronx to Staten Island in an NYC yellow cab?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the &amp;ldquo;NYC Taxi Trip Duration Prediction&amp;rdquo; challenge of my UC Berkeley &amp;ldquo;Applications in Data Analysis&amp;rdquo; course, I built a machine learning model to predict the duration of an NYC taxi trip as soon as you enter the taxi! As the winning model of the challenge, this model predicts the duration of such a trip with a root mean square error of less than 4.5 minutes.&lt;/p&gt;
+&lt;p&gt;If you are interested in machine learning and want to know how to build a powerful model on a simple regression problem (or if you just like machine learning memes), click on the &amp;ldquo;Code&amp;rdquo; button on top of this webpage!&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>★ Madness at Home and on the Court</title>
+      <link>https://michaelkarpe.github.io/kaggle-competitions/march-madness/</link>
+      <pubDate>Thu, 30 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/kaggle-competitions/march-madness/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;&amp;ldquo;Wow, we won a Kaggle competition!&amp;rdquo; That&amp;rsquo;s pretty much the reaction Emilien Etchevers, Kieran Janin, Remi Le Thai, Haley Wohlever and I got when the results of the &lt;em&gt;Google Cloud &amp;amp; NCAA March Madness Analytics competition&lt;/em&gt; were announced.&lt;/p&gt;
+&lt;p&gt;In this Kaggle competition, we aimed to understand the factors contributing to the entertainment, or madness, of a college basketball match using two sources: objective data on NCAA teams&amp;rsquo; previous performances, and subjective data on fans&amp;rsquo; reactions to games. For the purposes of this project, two dependent variables related to the madness were explored: predictability in March Madness matches, and the corresponding distribution of viewers&amp;rsquo; sentiment.&lt;/p&gt;
+&lt;p&gt;Click on the “Code” button on top of this webpage to discover our analysis!&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

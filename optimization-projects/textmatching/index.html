@@ -1,0 +1,1925 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.6.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Michaël Karpe" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Text matching from different languages without prior knowledge" />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://michaelkarpe.github.io/optimization-projects/textmatching/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#3f51b5" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.c7b8d9abd591ba2253ea42747e3ac3f5.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.9c4c13a48bae91f201c0af6081455e43.css" />
+
+  
+  
+  
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="/css/libs/chroma/github-light.min.css" title="hl-light" media="print" onload="this.media='all'" >
+    <link rel="stylesheet" href="/css/libs/chroma/dracula.min.css" title="hl-dark" media="print" onload="this.media='all'" disabled>
+  
+
+  
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-695H905YSX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'G-695H905YSX', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+  
+
+  
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  
+  <link rel="icon" type="image/png" href="/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://michaelkarpe.github.io/optimization-projects/textmatching/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@wowchemy" />
+    <meta property="twitter:creator" content="@wowchemy" />
+  
+  <meta property="og:site_name" content="Michaël Karpe" />
+  <meta property="og:url" content="https://michaelkarpe.github.io/optimization-projects/textmatching/" />
+  <meta property="og:title" content="★ Automated Text Matching | Michaël Karpe" />
+  <meta property="og:description" content="Text matching from different languages without prior knowledge" /><meta property="og:image" content="https://michaelkarpe.github.io/optimization-projects/textmatching/featured.png" />
+    <meta property="twitter:image" content="https://michaelkarpe.github.io/optimization-projects/textmatching/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2018-02-05T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2018-02-05T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+  
+
+
+  <title>★ Automated Text Matching | Michaël Karpe</title>
+
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="74f4eda7e7d5291b1d9ec0cc9e4d25a3" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.1ee5462d74c6c0de1f8881b384ecc58d.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/">Michaël Karpe</a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/">Michaël Karpe</a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#about"><span>Home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#kaggle-competitions"><span>Kaggle Competitions</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#computer-vision-projects"><span>Computer Vision</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#machine-learning-projects"><span>Machine Learning</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#optimization-projects"><span>Optimization</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#programming-projects"><span>Programming</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#quantitative-finance-projects"><span>Quantitative Finance</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#publications"><span>Publications</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+        
+
+        
+        
+
+        
+        
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    
+    
+    
+
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+<div class="article-container pt-3">
+  <h1>★ Automated Text Matching</h1>
+
+  
+  <p class="page-subtitle">Text matching from different languages without prior knowledge</p>
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span >
+      Michaël Karpe</span>, <span >
+      Bastien Déchamps</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Feb 5, 2018
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+  
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+    
+  
+<a class="btn btn-outline-primary btn-page-header" href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/optimization/text-matching" target="_blank" rel="noopener">
+  Code
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+    
+      
+    
+  
+  <a class="btn btn-outline-primary btn-page-header" href="/optimization-projects/textmatching/Poster_Text_matching.pdf" >
+    Poster</a>
+
+
+</div>
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 573px; max-height: 269px;">
+  <div style="position: relative">
+    <img src="/optimization-projects/textmatching/featured_hu27e2254dfd04c85c0dfd9c43893cc7d8_38211_720x2500_fit_q75_h2_lanczos_3.webp" width="573" height="269" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p> </p>
+<h1 id="presentation-of-the-project">Presentation of the project</h1>
+<p>In the field of translationology, there are many approaches and algorithms for making translations from one language to another. Each method has its advantages and disadvantages, and a compromise between several methods is usually needed to achieve an efficient translation algorithm.</p>
+<p>We are interested here in an algorithm for aligning texts in different languages based on dynamic time warping (DTW). Such an algorithm does not require either prior bilingual resources or knowledge of similarities between the languages studied.</p>
+<p>It can thus work on any language pair, especially on languages for which few linguistic resources are available. On the other hand, its accuracy in translation is low, so we will focus mainly on aligning paragraphs rather than words.</p>
+<p>The approach used in Kim Gerdes&rsquo; algorithm, although simple at first glance, is no less original. It consists in working on the occurrences and position of words in the texts under consideration using the DTW.</p>
+<p> </p>
+<h1 id="paragraph-alignment">Paragraph alignment</h1>
+<p>The application of DTW in a translation system can make bad associations, if one tries to be too precise, due to different syntaxes within languages. The algorithm proposed by Gerdes therefore uses the sum of the word alignments to align paragraphs, thus eliminating possible spurious signals due to erroneous word associations.</p>
+<p>Length-based alignment is an alignment method, not based on the DTW, which allows a first alignment of paragraphs based solely on the length of the paragraphs.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignbylength.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p> </p>
+<h2 id="jaro-winkler-distance">Jaro-Winkler distance</h2>
+<p>To complete the DTW distance, we use the Jaro-Winkler syntax distance between $2$ strings $d_w$ , depending on the Jaro distance $d_j$:</p>
+<p>$$ d_w = d_j+lp(1-d_j) \qquad \text{ with } \qquad d_j = \frac{1}{3}\left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) $$</p>
+<ul>
+<li>$|s_{i}|$ is the length of the string $s_{i}$</li>
+<li>$m$ is the number of corresponding characters</li>
+<li>$t$ is the number of transpositions</li>
+<li>$l$ is the length of the common prefix (maximum $4$ characters)</li>
+<li>$p$ is a coefficient that allows to favor strings with a common prefix (Winkler proposes for value $p = 0.1$)</li>
+</ul>
+<p> </p>
+<h2 id="dynamic-time-warping-dtw">Dynamic Time Warping (DTW)</h2>
+<p>In general, DTW algorithms seek to find the optimal monotonic (non-intersecting) alignment of two sequences of variable length. Monotonic means that the order of the sequence positions before and after DTW is respected, but that the distance between these positions may change. \newline</p>
+<p>DTW algorithms are dynamic programming algorithms. For our paragraph alignment, it is applied on recency vectors $(p_1, p_2-p_1, \dots, p_n-p_{n-1}, 1-p_n)$ where $p_i$ is the position of the $i$ occurrence (in text fraction) of the considered $p$ word.</p>
+<p>$$ W_{i+1,j+1} = \left| r_1-r_2 \right| + \min\left(W_{i,j+1}, W_{i+1,j}, W_{i,j}\right) $$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/dtw.PNG" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+<p> </p>
+<h3 id="integration-in-an-alignment-system">Integration in an alignment system</h3>
+<p>We describe here, in a synthetic way, the global algorithm performing the automatic matching of texts in different languages without prior knowledge, including the DTW algorithm explained above. This algorithm, described in detail by Kim Gerdes, can be synthesized in $4$ main steps:</p>
+<ul>
+<li>Reading and cleaning of texts: suppression of parasitic signals (accents, extra spaces, punctuation&hellip;)</li>
+<li>Construction of hash tables associating words with their different characteristics (number of occurrences, appearance indices&hellip;)</li>
+<li>Calculation for each of the texts of the internal cognates of the language (Jaro-Winkler distance), significant words or groups of words (frequent and well distributed in the text).</li>
+<li>Application of the DTW algorithm for the alignment of words, groups of words and paragraphs</li>
+</ul>
+<p> </p>
+<h1 id="execution-of-the-alignment-system">Execution of the alignment system</h1>
+<p>The alignment system described above was developed in C++ and applied to the Universal Declaration of Human Rights (UDHR) in the following languages: English, French, Spanish, German, Russian. We present here the results obtained for the French-English language pair.</p>
+<table>
+<thead>
+<tr>
+<th>French</th>
+<th>English</th>
+<th>DTW</th>
+<th>French</th>
+<th>English</th>
+<th>DTW</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>respect</td>
+<td>respect</td>
+<td>0.0039</td>
+<td>nations</td>
+<td>nations</td>
+<td>0.0228</td>
+</tr>
+<tr>
+<td>ces</td>
+<td>these</td>
+<td>0.0046</td>
+<td>conscience</td>
+<td>conscience</td>
+<td>0.0245</td>
+</tr>
+<tr>
+<td>déclaration</td>
+<td>declaration</td>
+<td>0.0070</td>
+<td>dignité</td>
+<td>dignity</td>
+<td>0.0306</td>
+</tr>
+<tr>
+<td>sans</td>
+<td>without</td>
+<td>0.0107</td>
+<td>religion</td>
+<td>religion</td>
+<td>0.0326</td>
+</tr>
+<tr>
+<td>considérant</td>
+<td>whereas</td>
+<td>0.0115</td>
+<td>éducation</td>
+<td>education</td>
+<td>0.0375</td>
+</tr>
+<tr>
+<td>nationalité</td>
+<td>nationality</td>
+<td>0.0116</td>
+<td>contre</td>
+<td>against</td>
+<td>0.0383</td>
+</tr>
+<tr>
+<td>libertés</td>
+<td>freedoms</td>
+<td>0.0124</td>
+<td>article</td>
+<td>article</td>
+<td>0.0545</td>
+</tr>
+<tr>
+<td>famille</td>
+<td>family</td>
+<td>0.0150</td>
+<td>droits</td>
+<td>rights</td>
+<td>0.0714</td>
+</tr>
+<tr>
+<td>société</td>
+<td>society</td>
+<td>0.0152</td>
+<td>présente</td>
+<td>declaration</td>
+<td>0.0849</td>
+</tr>
+<tr>
+<td>unies</td>
+<td>united</td>
+<td>0.0213</td>
+<td>religion</td>
+<td>property</td>
+<td>0.0979</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<h2 id="analysis-of-the-results">Analysis of the results</h2>
+<p>After applying the DTW algorithm to different languages, we found that word matching was effective when the DTW value returned for a word pair was less than $0.1$ (this value having been normalized to be between $0$ and 1).</p>
+<p>For the French and English language pair, we find erroneous associations for DTW values greater than $0.08$, notably due to the different syntax of the languages (see below). It is therefore necessary to include the Jaro-Winkler distance in the alignment system to correct this problem.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/piege.png" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+<p>Once the Jaro-Winkler distance is included in the alignment system, we can combine these word associations to proceed with the UDHR paragraph association. The UDHR consists of $89$ paragraphs, for a total of $2,106$ words and $11,663$ characters.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-déclaration-universelle-des-droits-de-lhomme-dudh">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/dudh.jpg" alt="Déclaration Universelle des Droits de l&#39;Homme (DUDH)." loading="lazy" data-zoomable width="83%" /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Déclaration Universelle des Droits de l&rsquo;Homme (DUDH).
+    </figcaption></figure></td>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-universal-declaration-of-human-rights-udhr">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/udhr.jpg" alt="Universal Declaration of Human Rights (UDHR)." loading="lazy" data-zoomable /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Universal Declaration of Human Rights (UDHR).
+    </figcaption></figure></td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>Reciprocal paragraph associations (dashes on vertical lines) are represented by solid arrows, while dashed arrows represent one-way associations.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-alignment-by-length">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignlongueur.png" alt="Alignment by length." loading="lazy" data-zoomable width="99%" /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Alignment by length.
+    </figcaption></figure></td>
+<td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-alignment-with-dtw">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignDTW.png" alt="Alignment with DTW." loading="lazy" data-zoomable /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Alignment with DTW.
+    </figcaption></figure></td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<h2 id="alignment-system-limits">Alignment system limits</h2>
+<p>The main limitation of the developed alignment system lies in the accuracy of the alignment, limited to a paragraph scale. The DTW algorithm alone is not sufficient to achieve an efficient alignment, and the addition of a syntax distance such as Jaro-Winkler is necessary to improve the results. The results obtained remain very satisfying.</p>
+<p> </p>
+<h3 id="references">References</h3>
+<ol>
+<li>
+<p>Kim Gerdes. <em>L’alignement pour les pauvres : Adapter la bonne métrique pour unalgorithme dynamique de dilatation temporelle pour l’alignement sans ressources de corpus bilingues.</em> 9e Journées internationales d’Analyse statistique des Données Textuelles, Mars 2008.</p>
+</li>
+<li>
+<p>Meinard Müller. <em>Information retrieval for music and motion.</em> Chapter 4 : Dynamic Time Warping, Septembre 2007.</p>
+</li>
+</ol>
+<p> </p>
+<!---
+
+&nbsp;
+
+# Présentation du projet
+
+Dans le domaine de la traductologie, il existe de nombreuses approches et de nombreux algorithmes pour réaliser des traductions d'une langue à une autre. Chaque méthode possède ses avantages et ses inconvénients, et il convient généralement d'utiliser un compromis entre plusieurs méthodes pour obtenir un algorithme de traduction efficace.
+
+Nous nous intéressons ici à un algorithme d'alignement de textes en langues différentes basé sur la déformation (ou dilatation) temporelle dynamique (ou *Dynamic Time Warping, DTW*). Un tel algorithme n'a besoin ni de ressources bilingues préalables, ni de connaissances de similarités entre les langues étudiées.
+
+Il peut ainsi fonctionner sur n'importe quel couple de langues, et notamment sur des langues pour lesquelles on possède peu de ressources linguistiques. En revanche, sa précision dans la traduction est faible ; ainsi nous nous concentrerons principalement sur l'alignement de paragraphes plutôt que de mots.
+
+L'approche employée dans l'algorithme de Kim Gerdes, bien que simple à première vue, n'en est pas moins originale. Elle consiste à travailler sur les occurrences et la position des mots dans les textes considérés en employant le DTW.
+
+&nbsp;
+
+# Alignement de paragraphes
+
+L'application du DTW dans un système de traduction peut réaliser de mauvaises associations, si l'on cherche à être trop précis, en raison de syntaxes différentes au sein des langues. Il s'agit donc, dans l'algorithme proposé par Gerdes, de se servir de la somme des alignements de mots pour procéder à l'alignement de paragraphes, et ainsi faire disparaître les éventuels signaux parasites dus à des associations erronées de mots.
+
+L'alignement par longueur est une méthode d'alignement, non basée sur le DTW, qui permet de réaliser un premier alignement de paragraphes uniquement basé sur la longueur des paragraphes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignbylength.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+&nbsp;
+
+## Distance de Jaro-Winkler
+
+Pour compléter la distance DTW, on utilise la distance syntaxique de Jaro-Winkler entre $2$ chaînes de caractères $d_w$, fonction de la distance de Jaro $d_j$ :
+
+$$ d_w = d_j+lp(1-d_j) \qquad \text{ avec } \qquad d_j = \frac{1}{3}\left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) $$
+
+- $|s_{i}|$ est la longueur de la chaîne de caractères $s_{i}$
+- $m$ est le nombre de caractères correspondants
+- $t$ est le nombre de transpositions
+- $l$ est la longueur du préfixe commun (maximum $4$ caractères)
+- $p$ est un coefficient qui permet de favoriser les chaînes avec un préfixe commun (Winkler propose pour valeur $p = 0.1$)
+
+&nbsp;
+
+## Dynamic Time Warping (DTW)
+
+De façon générale, les algorithmes DTW "cherchent à trouver l’alignement monotone (sans croisement) optimal de deux séquences de longueur variable." Par monotone, on entend que l'ordre des positions des séquences avant et après DTW est respecté, mais que l'écart entre ces positions peut changer. \newline
+
+Les algorithmes DTW sont des algorithmes de programmation dynamique. Pour notre alignement de paragraphes, il est appliqué sur des vecteurs de récence $(p_1, p_2-p_1, \dots, p_n-p_{n-1}, 1-p_n)$ où $p_i$ est la position de l'occurrence $i$ (en fraction de texte) du mot $p$ considéré.
+
+$$ W_{i+1,j+1} = \left| r_1-r_2 \right| + \min\left(W_{i,j+1}, W_{i+1,j}, W_{i,j}\right) $$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/dtw.PNG" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+
+&nbsp;
+
+### Intégration dans un système d'alignement
+
+Nous décrivons ici, de façon synthétique, l'algorithme global réalisant la mise en correspondance automatique de textes en langues différentes sans connaissances préalables, incluant l'algorithme DTW expliqué ci-dessus. Cet algorithme, décrit en détails par Kim Gerdes, peut être synthétisé en $4$ grandes étapes :
+
+- Lecture et nettoyage des textes : suppression des signaux parasites (accents, espaces en trop, ponctuation...)
+- Construction des tables de hachage associant les mots à leurs différentes caractéristiques (nombre d'occurrences, indices d'apparition...)
+- Calcul pour chacun des textes des cognats internes à la langue (distance de Jaro-Winkler), des mots ou groupes de mots significatifs (fréquents et bien répartis dans le texte)
+- Application de l'algorithme DTW pour l'alignement des mots, des groupes de mots et des paragraphes
+
+&nbsp;
+
+# Exécution du système d'alignement
+
+Le système d'alignement décrit précédemment a été développé en langage C++ et appliqué sur la Déclaration Universelle des Droits de l'Homme (DUDH ou *Universal Declaration of Human Rights, UDHR*) dans les langues suivantes : français, anglais, espagnol, allemand, russe. Nous présentons ici les résultats obtenus pour le couple de langues français-anglais.
+
+| Français    | Anglais     | DTW    | Français    | Anglais     | DTW    |
+|-------------|-------------|--------|-------------|-------------|--------|
+| respect     | respect     | 0.0039 | nations     | nations     | 0.0228 |
+| ces         | these       | 0.0046 | conscience  | conscience  | 0.0245 |
+| déclaration | declaration | 0.0070 | dignité     | dignity     | 0.0306 |
+| sans        | without     | 0.0107 | religion    | religion    | 0.0326 |
+| considérant | whereas     | 0.0115 | éducation   | education   | 0.0375 |
+| nationalité | nationality | 0.0116 | contre      | against     | 0.0383 |
+| libertés    | freedoms    | 0.0124 | article     | article     | 0.0545 |
+| famille     | family      | 0.0150 | droits      | rights      | 0.0714 |
+| société     | society     | 0.0152 | présente    | declaration | 0.0849 |
+| unies       | united      | 0.0213 | religion    | property    | 0.0979 |
+
+&nbsp;
+
+## Analyse des résultats
+
+Après application de l'algorithme DTW sur différentes langues, nous avons pu constater que la mise de correspondance de mots était efficace lorsque la valeur de DTW renvoyée pour un couple de mots était inférieure à $0,1$ (celle-ci ayant été normalisée pour être comprise entre $0$ et 1).
+
+Pour le couple de langues français et anglais, on constate des associations erronées pour à partir d'une valeur de DTW supérieure à $0,08$, notamment en raison de la syntaxe différente des langues (voir ci-dessous). Il convient donc d'inclure la distance de Jaro-Winkler dans le système d'alignement pour corriger ce problème.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/piege.png" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+
+Une fois la distance de Jaro-Winkler incluse dans le système d'alignement, nous pouvons combiner ces associations de mots pour procéder à l'association des paragraphes de la DUDH. La DUDH est constituée de $89$ paragraphes, pour un total de $2$ $106$ mots et $11$ $663$ caractères.
+
+|      |      |
+|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-déclaration-universelle-des-droits-de-lhomme-dudh">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/dudh.jpg" alt="Déclaration Universelle des Droits de l&#39;Homme (DUDH)." loading="lazy" data-zoomable width="83%" /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Déclaration Universelle des Droits de l&rsquo;Homme (DUDH).
+    </figcaption></figure> | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-universal-declaration-of-human-rights-udhr">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/udhr.jpg" alt="Universal Declaration of Human Rights (UDHR)." loading="lazy" data-zoomable /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Universal Declaration of Human Rights (UDHR).
+    </figcaption></figure>|
+
+&nbsp;
+
+Les associations réciproques de paragraphes (tirets sur les traits verticaux) sont représentées par des flèches pleines, tandis que les flèches en pointillés représentent les associations dans un seul sens.
+
+|      |      |
+|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-alignement-par-longueur">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignlongueur.png" alt="Alignement par longueur." loading="lazy" data-zoomable width="99%" /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Alignement par longueur.
+    </figcaption></figure> | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  id="figure-alignement-avec-dtw">
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/textmatching/alignDTW.png" alt="Alignement avec DTW." loading="lazy" data-zoomable /></div>
+  </div><figcaption data-pre="Figure&nbsp;" data-post=":&nbsp;" class="numbered">
+      Alignement avec DTW.
+    </figcaption></figure>|
+
+&nbsp;
+
+## Limites du système d'alignement
+
+La limite principale du système d'alignement développé réside dans la précision de l'alignement, limitée à une échelle de paragraphes. L'algorithme DTW seul n'est pas suffisant pour réaliser un alignement efficace, et l'ajout d'une distance syntaxique comme Jaro-Winkler est nécessaire pour améliorer les résultats. Les résultats obtenus sont très satisfaisants malgré tout.
+
+&nbsp;
+
+### Références
+
+1. Kim Gerdes. *L’alignement pour les pauvres : Adapter la bonne métrique pour unalgorithme dynamique de dilatation temporelle pour l’alignement sans ressources de corpus bilingues.* 9e Journées internationales d’Analyse statistique des Données Textuelles, Mars 2008.
+
+2. Meinard Müller. *Information retrieval for music and motion.* Chapter 4 : Dynamic Time Warping, Septembre 2007.
+
+&nbsp;
+
+--->
+
+    </div>
+
+    
+
+
+
+
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://michaelkarpe.github.io/"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu66194438bc6e14d260870deead871271_609448_270x270_fill_q75_lanczos_center.jpg" alt="Michaël Karpe"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://michaelkarpe.github.io/">Michaël Karpe</a></h5>
+      <h6 class="card-subtitle">Quantitative Developer</h6>
+      <p class="card-text">Quantitative Developer at Next Gate Tech. MEng in Industrial Engineering &amp; Operations Research, FinTech Concentration at University of California, Berkeley. Diplôme d&rsquo;Ingénieur (MSc) in Applied Mathematics &amp; Computer Science, Machine Learning &amp; Computer Vision Concentration at Ecole des Ponts ParisTech, France.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/michaelkarpe/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/MichaelKarpe" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.kaggle.com/mika30" target="_blank" rel="noopener">
+        <i class="fab fa-kaggle"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+  
+    
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  
+  <p class="powered-by copyright-license-text">
+    © Michaël Karpe 2022. All rights reserved.
+  </p>
+  
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+
+
+<script src="/js/vendor-bundle.min.d26509351aa0ff874abbee824e982e9b.js"></script>
+
+
+
+
+  
+
+  
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script id="search-hit-fuse-template" type="text/x-template">
+    <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+    </div>
+  </script>
+  
+    <script src="https://cdn.jsdelivr.net/gh/krisk/Fuse@v3.2.1/dist/fuse.min.js" integrity="sha512-o38bmzBGX+hD3JHWUFCDA09btWaqrNmoJ3RXLlrysA7PP01Kgs4UlE4MhelE1v5dJR3+cxlR4qQlotsW7jKsnw==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/julmot/mark.js@8.11.1/dist/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+<script id="page-data" type="application/json">{"use_headroom":true}</script>
+
+
+
+  <script src="/js/wowchemy-headroom.c251366b4128fd5e6b046d4c97a62a51.js" type="module"></script>
+
+
+
+
+
+
+
+
+  
+  
+
+
+<script src="/en/js/wowchemy.min.54dd6e4d8f2e4b1d098381b57f18dd83.js"></script>
+
+
+
+
+
+
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <pre><code></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script src="/js/wowchemy-publication.68f8d7090562ca65fc6d3cb3f8f2d2cb.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

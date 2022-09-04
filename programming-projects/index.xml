@@ -1,0 +1,941 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects | Michaël Karpe</title>
+    <link>https://michaelkarpe.github.io/programming-projects/</link>
+      <atom:link href="https://michaelkarpe.github.io/programming-projects/index.xml" rel="self" type="application/rss+xml" />
+    <description>Projects</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 02 Jun 2017 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://michaelkarpe.github.io/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_512x512_fill_lanczos_center_3.png</url>
+      <title>Projects</title>
+      <link>https://michaelkarpe.github.io/programming-projects/</link>
+    </image>
+    
+    <item>
+      <title>Simplified Zuma video game</title>
+      <link>https://michaelkarpe.github.io/programming-projects/zuma/</link>
+      <pubDate>Fri, 02 Jun 2017 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/programming-projects/zuma/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;presentation-of-the-project&#34;&gt;Presentation of the project&lt;/h1&gt;
+&lt;p&gt;This project was carried out during a programming course at École des Ponts ParisTech. The goal of this project was to create in pairs and in about thirty hours a simple game based on the C++ language.&lt;/p&gt;
+&lt;p&gt;We wanted to reproduce a Zuma game, as illustrated above, focusing on the algorithmic functioning of the game - graphics not being the priority of a C++ programming course, as you will see at the end of the article&amp;hellip;&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;principle-of-the-game&#34;&gt;Principle of the game&lt;/h1&gt;
+&lt;p&gt;&amp;ldquo;Zuma is a video game developed by PopCap Games, released in 2003. [&amp;hellip;] The goal is to form chains of balls of the same colour (which has the effect of making them disappear) before the balls arrive in the hole in the middle. The more levels progress, the more balls of different colours, the faster they go and the more courses there are. It is also possible to collect various bonuses (coins, various objects) that increase the score, and some balls have special powers (explosive, slowing down the game, etc.)&amp;rdquo;. &lt;em&gt;(Reference: French Wikipedia)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Thus for each level of the game, a global initialization of the level is made with the sending of a snake of balls, and the end of the level is defined according to certain criteria of difficulty: number of balls per snake, number of snakes, number of colors of balls, speed of movement of the snakes&amp;hellip;&lt;/p&gt;
+&lt;p&gt;As long as the level is not finished, you have to manage :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the movement of the snakes&lt;/li&gt;
+&lt;li&gt;the ball shot&lt;/li&gt;
+&lt;li&gt;inserting the ball into the snake&lt;/li&gt;
+&lt;li&gt;destruction of marbles if necessary ($3$ marbles or more of the same color aligned)&lt;/li&gt;
+&lt;li&gt;the sending of another snake under conditions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;making-the-game-in-c&#34;&gt;Making the game in C++&lt;/h1&gt;
+&lt;p&gt;Our main objective was to reproduce the scrolling of the log snakes around the frog, as well as the shooting of the frog&amp;rsquo;s logs to eliminate the log snakes. To do this, we created different classes briefly described below :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;zuma&lt;/em&gt;: launch and general operation of the game&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;frog&lt;/em&gt;: choice of shooting ball and shooting of balls&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;snake&lt;/em&gt;: creating and moving snakes, adding and destroying beads.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;ball&lt;/em&gt;: creation and movement of balls&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;level&lt;/em&gt; : difficulty criteria of the current level (number of balls, snakes, colors, speed&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;trajectory&lt;/em&gt; : path on which the snakes of marbles move&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;tools&lt;/em&gt;: global functions and parameters&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;expectation-vs-reality&#34;&gt;Expectation vs. reality&lt;/h1&gt;
+&lt;p&gt;Although the game was operational at the end of the time limit, we didn&amp;rsquo;t have time to work on the graphics&amp;hellip;&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/zuma/zumareal.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+&amp;nbsp;
+
+# Présentation du projet
+
+Ce projet a été réalisé pendant un cours de programmation à l&#39;École des Ponts ParisTech. Le but de ce projet était de réaliser par binôme et en une trentaine d&#39;heures un jeu simple basé sur le langage C++.
+
+Nous avons voulu reproduire un jeu de Zuma, comme illustré ci-dessus, en nous concentrant sur le fonctionnement algorithmique du jeu - les graphismes n&#39;étant pas la priorité d&#39;un cours de programmation en C++, comme vous pourrez l&#39;observer à la fin de l&#39;article...
+
+&amp;nbsp;
+
+# Principe du jeu
+
+&#34;Zuma est un jeu vidéo développé par PopCap Games, sorti en 2003. [...] Le but est de former des chaînes de boules de même couleur (ce qui a pour effet de les faire disparaître) avant l&#39;arrivée des boules dans le trou au milieu. Plus les niveaux avancent, plus il y a de boules de différentes couleurs, plus elles vont vite et plus les parcours sont nombreux. Il est aussi possible de récupérer différents bonus (pièces, objets divers) qui permettent d&#39;augmenter le score, et certaines boules ont des pouvoirs particuliers (explosives, ralentissement du jeu, etc.).&#34; *(Référence : Wikipédia)*
+
+Ainsi pour chaque niveau du jeu, une initialisation globale du niveau est réalisée avec l&#39;envoi d&#39;un serpent de billes, et la fin du niveau est définie selon certains critères de difficulté : nombre de billes par serpent, nombre de serpents, nombre de couleurs de billes, vitesse de déplacement des serpents...
+
+Tant que le niveau n&#39;est pas fini, il convient de gérer :
+- le déplacement des serpents
+- le tir de bille
+- l&#39;insertion de la bille dans le serpent
+- la destruction de billes si nécessaire ($3$ billes ou plus de même couleur alignées)
+- l&#39;envoi d&#39;un autre serpent sous conditions
+
+&amp;nbsp;
+
+# Réalisation du jeu en C++
+
+Notre objectif principal était de reproduire le défilement des serpents de billes autour de la grenouille, ainsi que les tirs de billes de la grenouille pour éliminer les serpents de billes. Pour cela, nous avons créé différentes classes brièvement décrites ci-dessous :
+
+- *zuma* : lancement et fonctionnement général du jeu
+- *grenouille* : choix de la bille de tir et tir de billes
+- *serpent* : création et déplacement des serpents, ajout et destruction de billes
+- *bille* : création et mouvement des billes
+- *niveau* : critères de difficulté du niveau en cours (nombre de billes, serpents, couleurs, vitesse...)
+- *trajectoire* : chemin sur lequel se déplacent les serpents de billes
+- *outils* : fonctions et paramètres globaux
+
+&amp;nbsp;
+
+# Espérance contre réalité
+
+Si le jeu était opérationnel à la fin du temps imparti, nous n&#39;avons en revanche pas eu le temps de travailler les graphismes...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/zuma/zumareal.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>★ Perfect Trajectory Forecasts in Billiards</title>
+      <link>https://michaelkarpe.github.io/programming-projects/billiards/</link>
+      <pubDate>Mon, 27 Jun 2016 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/programming-projects/billiards/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;presentation-of-the-project&#34;&gt;Presentation of the project&lt;/h1&gt;
+&lt;p&gt;Many pool players, myself included, would dream of pocketing all the balls one after the other. However, because of the many parameters that govern the movement of the balls, this is difficult, but not impossible. So we&amp;rsquo;re going to look for the perfect trajectory in billiards to find out &amp;ldquo;how to pocket a billiard ball for sure&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;*Since we are trying to make trajectories as predictable as possible, we will consider in our study balls moving without effect, therefore in a straight line.&lt;/p&gt;
+&lt;p&gt;We will first focus on an experimental study of friction, then on the theoretical study of the $3$ main physical laws governing motion, and finally I will develop the design of computer programs that will allow us to determine the perfect trajectories to pocket a ball.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;experimental-study-of-friction&#34;&gt;Experimental study of friction&lt;/h1&gt;
+&lt;p&gt;First of all, we will look at the friction of the ball with the mat, which is obviously the cause of the loss of speed of the ball. To study the evolution of this speed, I proceeded to a video scoring with the &lt;em&gt;LatisPro&lt;/em&gt; software, after having placed a mark and a $1.82 $m standard corresponding to the length of the billiard table.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/latispro.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;The software&amp;rsquo;s zoom allows for very accurate readings, however, the video has a frame rate of $30$ frames per second, so the ball only moves a few pixels between frames. The plot of the speed evolution on Excel is then rather chaotic. I then measured the position of the ball every $5$ images, to see a linear evolution of the speed, with a deceleration of $0.17$ $m.s^{-2}$, and an uncertainty on this deceleration of $0.044$ $m.s^{-2}$ obtained by the method of least squares :&lt;/p&gt;
+&lt;p&gt;$$a = -0,170 \pm 0,044 \ m.s^{-2}$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/regression.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;theoretical-study-of-the-3-main-laws-of-motion&#34;&gt;Theoretical study of the 3 main laws of motion&lt;/h1&gt;
+&lt;p&gt;We are now moving on to the theoretical study to justify this constant deceleration, as well as the movement of the balls during the rebounds on the belts and during the shocks between balls.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;study-of-rebounds&#34;&gt;Study of rebounds&lt;/h2&gt;
+&lt;p&gt;When considering rigid bands, bounces follow Descartes&amp;rsquo; law of reflection, analogous to light rays in optics.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/rebond.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;study-of-shocks&#34;&gt;Study of shocks&lt;/h2&gt;
+&lt;p&gt;Under the hypothesis of balls evolving without effect, the shocks between balls are governed by the laws of elastic shocks, i.e. conservation of the quantity of motion and kinetic energy :&lt;/p&gt;
+&lt;p&gt;$$\overrightarrow{p_1} = \overrightarrow{p_1&amp;rsquo;} + \overrightarrow{p_2&amp;rsquo;}$$
+$$\frac{1}{2}mv_1^2 = \frac{1}{2}mv_1&amp;rsquo;^2 + \frac{1}{2}mv_2&amp;rsquo;^2$$&lt;/p&gt;
+&lt;p&gt;This involves deflecting the balls along paths forming an angle $\alpha = 90°$.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/choc.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;study-of-friction&#34;&gt;Study of friction&lt;/h2&gt;
+&lt;p&gt;Finally, as far as friction is concerned, a distinction is theoretically made between two rolling phases. However, we will only be interested in the second phase of rolling without slip, the first phase of rolling with slip taking place only for a negligible period of time. The position of the ball during the rolling phase with slippage is given by the formula:&lt;/p&gt;
+&lt;p&gt;$$\overrightarrow{OG}(t) = \overrightarrow{OG}(0) + \overrightarrow{v_{/R}}(G, 0)t - \frac{\overrightarrow{v_{/R}}(I, 0)}{||\overrightarrow{v_{/R}}(I, 0)||} \frac{fgt^2}{2}$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/roulement.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;It is shown with the fundamental principle of dynamics and the theorem of the kinetic moment that, since the ball is rolling without slipping, one cannot neglect the force of resistance to the advance due to the sinking of the ball into the belt:&lt;/p&gt;
+&lt;p&gt;$$\overrightarrow{F} = -f_cmg\frac{\overrightarrow{v_{/R}}(G)}{||\overrightarrow{v_{/R}}(G)||}$$&lt;/p&gt;
+&lt;p&gt;Régis Petit, engineer-researcher, tells us in his &lt;em&gt;Théorie du jeu sur le billard&lt;/em&gt; that this force is opposed to speed, and proportional to a coefficient $f_c$ :&lt;/p&gt;
+&lt;p&gt;$$f_c = \frac{\sin(\gamma)}{0.4 + \cos(\gamma)}$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/glissement.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;A good approximation of this coefficient is obtained by measuring the time $t$ taken by the ball to travel the $L$ length of the billiard table, arriving at this $L$ length at zero speed:&lt;/p&gt;
+&lt;p&gt;$$f_c \approx \frac{2L}{gt^2}$$&lt;/p&gt;
+&lt;p&gt;For our experimental billiard table, it takes $5.5$ $s$ to the ball to go through the $1.82$ $m$ arriving at zero speed, which corresponds to an angle $\gamma = 1°$ and a coefficient $f_c = 1.25%$. These results are consistent since billiards are designed so that friction is as negligible as possible.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;trajectory-research-program-design&#34;&gt;Trajectory research program design&lt;/h1&gt;
+&lt;p&gt;Now that we know the laws governing the movement of marbles, we will be able to make computer programs that will show us the perfect trajectories to pocket a marble.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;In order to propose predictable and easily achievable trajectories on a real billiard game, we consider that only the cue ball moves, only bouncing, and $2$ maximum. When it hits the colored ball that we want to pocket, the colored ball goes directly into the hole without rebounding.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;searching-for-the-set-of-trajectories-to-reach-a-ball&#34;&gt;Searching for the set of trajectories to reach a ball&lt;/h2&gt;
+&lt;p&gt;As a first step, we need to carry out programs that trace the billiard table, the balls and the trajectories, so that we can check the proper functioning of our future programs.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;performing-a-graphical-simulation&#34;&gt;Performing a graphical simulation&lt;/h3&gt;
+&lt;p&gt;The main plotting program I have made is a program that takes as argument a number $n$, randomly plots $n$ balls on the billiard table, and returns the list of coordinates of the balls. A function traces the trajectory passing through a given position, and another function traces the trajectory after a bounce on a strip according to Descartes&amp;rsquo; law. These two functions return the coordinates of the impact of the balls on the boards.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/tracealeatoire.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;searching-for-positions-to-reach-to-pocket-a-ball&#34;&gt;Searching for positions to reach to pocket a ball&lt;/h3&gt;
+&lt;p&gt;Once these functions were completed, I first looked at where to hit a ball so that it would go into a hole. The elastic shock hypothesis implies that if the colored ball is stationary, there is a single shock position that allows the ball to be pocketed in a given hole. This position is defined by the relations presented here, knowing that at the moment of impact, the two balls and the hole must be aligned:&lt;/p&gt;
+&lt;p&gt;$$a^2 + b^2 = 4R^2 \text{ and } m = \frac{y_C - y_B}{x_C - x_B} = \frac{b}{a}$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/positionchoc.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Since we know the coordinates of the colored ball and the holes, we can determine $m$, then deduce $a$ and $b$ which define the coordinates of the shock position :&lt;/p&gt;
+&lt;p&gt;$$b = m \cdot a \text{ and } a = \pm \frac{2R}{\sqrt{1 + m^2}}$$&lt;/p&gt;
+&lt;p&gt;We can then realize a function which, taking as argument the coordinates of a ball, returns the coordinates of the $6$ hit positions corresponding to the $6$ holes of the billiard table, and draws these positions on the graphical interface.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;determination-of-the-set-of-possible-paths&#34;&gt;Determination of the set of possible paths&lt;/h3&gt;
+&lt;p&gt;We then have to see if these positions are accessible or not, i.e. if they can be reached in $2$ maximum rebounds.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;direct-or-parallel-strip-shooting&#34;&gt;Direct or parallel strip shooting&lt;/h4&gt;
+&lt;p&gt;In direct shooting, the trajectory is simply a segment delimited by the cue ball and the cue position. With one or two rebounds on parallel stripes, i.e. like this or like that, any position on the billiard table is accessible.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;shooting-in-perpendicular-strips&#34;&gt;Shooting in perpendicular strips&lt;/h4&gt;
+&lt;p&gt;In two bounces on perpendicular strips, on the other hand, like this for example, the whole billiard table is not accessible. Indeed, in this configuration, it is impossible with the cue ball to reach the black ball by a bounce on this cushion and then on the black ball. It is thus necessary to define a function which makes it possible to determine the zone of the billiard table accessible in $2$ rebounds on $2$ given perpendicular strips, while avoiding the rebounds in the holes.&lt;/p&gt;
+&lt;p&gt;This zone is delimited by a limit trajectory, which corresponds to the trajectory where the ball bounces as close as possible to the hole. The function then returns the coordinates of the segment that delimits this zone.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/changementbase.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;We will then use this segment to determine whether the cue ball positions are accessible. By transforming this segment into a vector and normalizing it, we will create a new orthonormal base:&lt;/p&gt;
+&lt;p&gt;$$\left(O&amp;rsquo;, \ \overrightarrow{x&amp;rsquo;}, \ \overrightarrow{y&amp;rsquo;}\right) = \left(B, \ \frac{\overrightarrow{BC}}{||\overrightarrow{BC}||}, \ \frac{\overrightarrow{BD}}{||\overrightarrow{BD}||}\right)$$&lt;/p&gt;
+&lt;p&gt;The following base change matrix is then defined:&lt;/p&gt;
+&lt;p&gt;$$ P = \frac{1}{||\overrightarrow{BC}||} \begin{pmatrix}
+x_{\overrightarrow{BC}} &amp;amp; -y_{\overrightarrow{BC}} \\\
+y_{\overrightarrow{BC}} &amp;amp; x_{\overrightarrow{BC}}
+\end{pmatrix}$$&lt;/p&gt;
+&lt;p&gt;Then a function is created that returns the coordinates of the shock positions in the new base. If a position is accessible, the $y&amp;rsquo;$ coordinate of this position will then be positive in this example.&lt;/p&gt;
+&lt;p&gt;We can then determine the trajectory to be taken in two rebounds thanks to Thales&amp;rsquo; theorem by unfolding the triangles formed by the trajectory to be taken.&lt;/p&gt;
+&lt;p&gt;$$\frac{a}{c} = \frac{b_1}{b_2 + d} \iff b_1 = \frac{a(b + d)}{a + c}$$
+$$\alpha = arctan\left(\frac{b + d}{a + c}\right)$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/trianglesthales.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/trianglesdeplies.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;75%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Since we know the coordinates of the cue ball and the cue position, thus the parameters $a$, $b$, $c$ and $d$, we can determine the angle to be given to the cue ball. The formula is presented here for $2$ rebounds, but it is analogous for $3$ rebounds or more.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;elimination-of-unattainable-trajectories&#34;&gt;Elimination of unattainable trajectories&lt;/h2&gt;
+&lt;p&gt;Now that we have determined all the trajectories to pocket a ball in $2$ maximum rebound, we must eliminate the trajectories that are unattainable, i.e. those where balls or holes are present on the trajectory.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;removing-paths-where-other-balls-are-present&#34;&gt;Removing paths where other balls are present&lt;/h3&gt;
+&lt;p&gt;In order to detect the balls present on the trajectory, basic changes are made again with the $x$-axis of the trajectory taken. A log is present on the path if the absolute value of its ordinate in the new base is less than twice the radius, i.e. $5$ $cm$ :&lt;/p&gt;
+&lt;p&gt;$$x&amp;rsquo; \geq 0 \text{ and } |y&amp;rsquo;| &amp;lt; 2R$$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;removal-of-paths-bouncing-in-holes&#34;&gt;Removal of paths bouncing in holes&lt;/h3&gt;
+&lt;p&gt;To eliminate rebound paths in the hole areas, simply define conditions on the abscissa and ordinate sides of the rebound positions. The final program then plots the achievable paths on the GUI.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;taking-into-account-the-deceleration-of-the-balls&#34;&gt;Taking into account the deceleration of the balls&lt;/h2&gt;
+&lt;p&gt;However, we have not yet taken into account the deceleration of the balls during movement, which is an important parameter. Indeed, a cue ball sent too softly will not reach its goal, and a ball going too fast will not check the reflection law during rebounds, and therefore will not reach its goal either. It is therefore necessary to calculate the minimum initial speed necessary to pocket a ball.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;calculation-of-the-speed-restored-on-impact&#34;&gt;Calculation of the speed restored on impact&lt;/h3&gt;
+&lt;p&gt;By considering a linear decrease of the cue ball velocity as determined experimentally with $a = 0.17$ $m.s^{-2}$, we know its velocity as a function of time and its position by integration :
+$$v(t) = v_0 - at$$
+$$x(t) = x_0 + v_0t - a\frac{t^2}{2}$$&lt;/p&gt;
+&lt;p&gt;At the moment $t_1$, the ball will have travelled a distance of $x_1$ to bounce against a strip :
+$$x_1 = v_0t_1 - a\frac{t_1^2}{2} \qquad \Longrightarrow \qquad t_1 = \frac{v_0 - \sqrt{v_0^2 - 2ax_1}}{a}$$&lt;/p&gt;
+&lt;p&gt;We then know the speed just before the bounce, then just after, considering that the ball starts again with a certain percentage $\eta = 0.8$ of its speed. In the same way, because of the angle between the balls during the impact, only a percentage $\beta$ of the speed of the cue ball is transmitted to the colored ball.&lt;/p&gt;
+&lt;p&gt;$$v_{1, ap} = \eta v_{1, av} = \eta(v_0 - at_1) = \eta \sqrt{v_0^2 - 2ax_1}$$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;determining-the-speed-of-the-ball-after-n-collisions&#34;&gt;Determining the speed of the ball after $n$ collisions&lt;/h3&gt;
+&lt;p&gt;We then obtain by recurrence the final speed of the ball after $n$ rebounds or shocks according to the initial speed :&lt;/p&gt;
+&lt;p&gt;$$v_n = \left(v_0^2 \prod_{i = 1}^n \eta_i^2 - 2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2\right)^{\frac{1}{2}}$$&lt;/p&gt;
+&lt;p&gt;We then define the minimum initial speed to be given to the cue ball, which is obtained when the colored ball is pocketed at zero speed :&lt;/p&gt;
+&lt;p&gt;$$ v_n = 0 \iff v_0 = \left(\frac{2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2}{\prod_{i = 1}^n \eta_i^2}\right)^{\frac{1}{2}} $$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;correction-of-programs-by-eliminating-paths&#34;&gt;Correction of programs by eliminating paths&lt;/h3&gt;
+&lt;p&gt;Finally, in order for the cue ball to respect Descartes&amp;rsquo; law of reflection, we define a maximum initial velocity of $2$ $m.s^{-1}$. We then add the formula of the initial velocity in the final program so that it calculates the minimum initial velocity required. If this speed is greater than the maximum initial speed, the move corresponding to the trajectory is considered to be unfeasible. Otherwise, the trajectory is plotted in orange.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Thus, to answer the initial problem, namely &amp;ldquo;how to pocket a billiard ball for sure&amp;rdquo;, we can first of all notice that the cue ball must be sent at medium speed, because then Descartes&amp;rsquo; law of reflection makes it possible to easily determine the possible trajectories to pocket a ball.&lt;/p&gt;
+&lt;p&gt;It should be remembered that the whole study is carried out under the hypothesis of balls moving without effect. Therefore the initial shot plays an essential role, because if one gives effect to the ball, the trajectories are parabolic and therefore the laws of reflection and elastic shocks are no longer valid at all.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+&amp;nbsp;
+
+# Présentation du projet
+
+De nombreux joueurs de billard, moi y compris, rêveraient d’empocher toutes les billes les unes à la suite des autres. Toutefois, en raison des nombreux paramètres qui régissent le mouvement des billes, la tâche est difficile à réaliser, mais pas impossible. Nous allons donc rechercher la trajectoire parfaite au billard pour savoir « comment empocher à coup sûr une bille de billard ».
+
+*Puisque nous cherchons à rendre les trajectoires le plus prévisible possible, nous considérerons dans notre étude des billes évoluant sans effet, donc de façon rectiligne.*
+
+Nous nous focaliserons dans un premier temps sur une étude expérimentale des frottements, puis sur l’étude théorique des $3$ principales lois physiques régissant le mouvement, et enfin je développerai la conception des programmes informatiques qui nous permettront de déterminer la, voire les trajectoires parfaites pour empocher une bille.
+
+&amp;nbsp;
+
+# Etude expérimentale des frottements
+
+Tout d’abord, nous allons nous intéresser aux frottements de la bille avec le tapis, qui sont bien évidemment la cause de la perte de vitesse de la bille. Pour étudier l’évolution de cette vitesse, j’ai procédé à un pointage vidéo avec le logiciel *LatisPro*, après avoir placé un repère et un étalon de $1,82$ $m$ correspondant à la longueur du billard.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/latispro.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+Le zoom du logiciel permet de faire des relevés très précis, néanmoins la vidéo ayant une cadence de $30$ images par seconde, la bille ne se déplace que de quelques pixels entre deux images. Le tracé de l’évolution de la vitesse sur Excel est alors assez chaotique. J’ai donc ensuite relevé la position de la bille toutes les $5$ images, pour constater une évolution linéaire de la vitesse, avec une décélération de $0,17$ $m.s^{-2}$, et une incertitude sur cette décélération de $0,044$ $m.s^{-2}$ obtenue par la méthode des moindres carrés :
+
+$$a = -0,170 \pm 0,044 \ m.s^{-2}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/regression.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+# Etude théorique des 3 principales lois du mouvement
+
+Nous passons désormais à l’étude théorique pour justifier cette décélération constante, ainsi que le mouvement des billes lors des rebonds sur les bandes et lors des chocs entre billes.
+
+&amp;nbsp;
+
+## Etude des rebonds
+
+En considérant des bandes rigides, les rebonds suivent la loi de réflexion de Descartes, de façon analogue aux rayons lumineux en optique.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/rebond.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+## Etude des chocs
+
+Sous l’hypothèse de billes évoluant sans effet, les chocs entre billes sont régis par les lois des chocs élastiques, à savoir conservation de la quantité de mouvement et de l’énergie cinétique :
+
+$$\overrightarrow{p_1} = \overrightarrow{p_1&#39;} + \overrightarrow{p_2&#39;}$$
+$$\frac{1}{2}mv_1^2 = \frac{1}{2}mv_1&#39;^2 + \frac{1}{2}mv_2&#39;^2$$
+
+Cela implique une déviation des billes selon des trajectoires formant un angle $\alpha = 90°$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/choc.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+## Etude des frottements
+
+Enfin, pour les frottements, on distingue théoriquement deux phases de roulement. Cependant, nous nous intéresserons qu’à la seconde phase de roulement sans glissement, la première phase de roulement avec glissement ne se déroulant que pendant une durée négligeable. La position de la bille pendant la phase de roulement avec glissement est donnée par la formule :
+
+$$\overrightarrow{OG}(t) = \overrightarrow{OG}(0) + \overrightarrow{v_{/R}}(G, 0)t - \frac{\overrightarrow{v_{/R}}(I, 0)}{||\overrightarrow{v_{/R}}(I, 0)||} \frac{fgt^2}{2}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/roulement.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+On montre avec le principe fondamental de la dynamique et le théorème du moment cinétique que, la bille étant en roulement sans glissement, on ne peut pas négliger la force de résistance à l’avancement due à l’enfoncement de la bille dans le tapis :
+
+$$\overrightarrow{F} = -f_cmg\frac{\overrightarrow{v_{/R}}(G)}{||\overrightarrow{v_{/R}}(G)||}$$
+
+Régis Petit, ingénieur-chercheur, nous indique dans sa *Théorie du jeu sur le billard* que cette force est opposée à la vitesse, et proportionnelle à un coefficient $f_c$ :
+
+$$f_c = \frac{\sin(\gamma)}{0.4 + \cos(\gamma)}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/glissement.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+Une bonne approximation de ce coefficient s’obtient en mesurant le temps $t$ mis par la bille pour parcourir la longueur $L$ du billard, en arrivant à cette longueur $L$ à vitesse nulle :
+
+$$f_c \approx \frac{2L}{gt^2}$$
+
+Pour notre billard expérimental, il faut $5,5$ $s$ à la bille pour parcourir les $1,82$ $m$ en arrivant à vitesse nulle, ce qui correspond à un angle $\gamma = 1°$ et un coefficient $f_c = 1,25\%$. Ces résultats sont cohérents puisque les billards sont conçus de façon à ce que les frottements soient le plus négligeable possible.
+
+&amp;nbsp;
+
+# Conception des programmes de recherche des trajectoires
+
+Maintenant que nous connaissons les lois régissant le mouvement des billes, nous allons pouvoir réaliser les programmes informatiques qui vont nous indiquer les trajectoires parfaites pour empocher une bille.
+
+*Dans le but de proposer des trajectoires prévisibles et réalisables facilement sur un vrai jeu de billard, on considère que seule la bille blanche se déplace, en effectuant uniquement des rebonds, et $2$ au maximum. Lorsqu’elle frappe la bille de couleur que nous souhaitons empocher, la bille de couleur se dirige directement dans le trou sans effectuer de rebonds.*
+
+&amp;nbsp;
+
+## Recherche de l&#39;ensemble des trajectoires permettant d&#39;atteindre une bille
+
+Dans un premier temps, il nous faut réaliser des programmes qui tracent le billard, les billes et les trajectoires, pour pouvoir vérifier le bon fonctionnement de nos futurs programmes.
+
+&amp;nbsp;
+
+### Réalisation d&#39;une simulation graphique
+
+Le principal programme de tracé que j’ai réalisé est un programme qui prend comme argument un nombre $n$, trace de façon aléatoire $n$ billes sur le billard, et renvoie la liste des coordonnées des billes. Une fonction trace la trajectoire passant par une position donnée, et une autre fonction trace la trajectoire après un rebond sur une bande selon la loi de Descartes. Ces deux fonctions renvoient les coordonnées d’impact des billes sur les bandes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/tracealeatoire.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+### Recherche des positions à atteindre pour empocher une bille
+
+Une fois ces fonctions réalisées, j’ai d’abord cherché à savoir où frapper une bille pour qu’elle se dirige dans un trou. L’hypothèse des chocs élastiques implique que si la bille de couleur est immobile, il existe une unique position de choc qui permette d’empocher la bille dans un trou donné. Cette position est définie par les relations présentées ici, sachant qu’à l’instant du choc, les deux billes et le trou doivent être alignés :
+
+$$a^2 + b^2 = 4R^2 \text{ et } m = \frac{y_C - y_B}{x_C - x_B} = \frac{b}{a}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/positionchoc.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;40%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+Puisqu’on connaît les coordonnées de la bille de couleur et des trous, on peut déterminer $m$, puis en déduire $a$ et $b$ qui définissent les coordonnées de la position de choc :
+
+$$b = m \cdot a \text{ et } a = \pm \frac{2R}{\sqrt{1 + m^2}}$$
+
+On peut alors réaliser une fonction qui, prenant en argument les coordonnées d’une bille, renvoie les coordonnées des $6$ positions de choc correspondant aux $6$ trous du billard, et trace ces positions sur l’interface graphique.
+
+&amp;nbsp;
+
+### Détermination de l&#39;ensemble des trajectoires possibles
+
+Il faut ensuite voir si ces positions sont accessibles ou non, c’est-à-dire si on peut les atteindre en $2$ rebonds maximum.
+
+&amp;nbsp;
+
+#### Tir direct ou en bandes parallèles
+
+En tir direct, la trajectoire est simplement un segment délimité par la bille blanche et la position de choc. En un rebond ou en deux rebonds sur bandes parallèles, c’est-à-dire comme ça ou comme ça, n’importe quelle position sur le billard est accessible.
+
+&amp;nbsp;
+
+#### Tir en bandes perpendiculaires
+
+En deux rebonds sur bandes perpendiculaires par contre, comme ceci par exemple, tout le billard n’est pas accessible. En effet, dans cette configuration, il est impossible avec la bille blanche d’atteindre la bille noire par un rebond sur cette bande puis sur celle-ci. Il faut donc définir une fonction qui permet de déterminer la zone du billard accessible en $2$ rebonds sur $2$ bandes perpendiculaires données, tout en évitant les rebonds dans les trous.
+
+Cette zone est délimitée par une trajectoire limite, qui correspond à la trajectoire où la bille rebondit le plus près possible du trou. La fonction renvoie alors les coordonnées du segment qui délimite cette zone.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/changementbase.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+Nous allons ensuite nous servir de ce segment pour déterminer si les positions de choc d’une bille sont accessibles. En transformant ce segment en vecteur et en le normant, nous allons créer une nouvelle base orthonormée :
+
+$$\left(O&#39;, \ \overrightarrow{x&#39;}, \ \overrightarrow{y&#39;}\right) = \left(B, \ \frac{\overrightarrow{BC}}{||\overrightarrow{BC}||}, \ \frac{\overrightarrow{BD}}{||\overrightarrow{BD}||}\right)$$
+
+On définit alors la matrice de changement de base présente suivante :
+
+$$ P = \frac{1}{||\overrightarrow{BC}||} \begin{pmatrix}
+x_{\overrightarrow{BC}} &amp; -y_{\overrightarrow{BC}} \\\\\\
+y_{\overrightarrow{BC}} &amp; x_{\overrightarrow{BC}}
+\end{pmatrix}$$
+
+Puis on crée une fonction qui renvoie les coordonnées des positions de choc dans la nouvelle base. Si une position est accessible, la coordonnée $y’$ de cette position sera alors positive dans cet exemple.
+
+On peut alors déterminer la trajectoire à emprunter en deux rebonds grâce au théorème de Thalès par un dépliage des triangles formés par la trajectoire à emprunter.
+
+$$\frac{a}{c} = \frac{b_1}{b_2 + d} \iff b_1 = \frac{a(b + d)}{a + c}$$
+$$\alpha = arctan\left(\frac{b + d}{a + c}\right)$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/trianglesthales.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/billiards/trianglesdeplies.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;75%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+Etant donné qu’on connaît les coordonnées de la bille blanche et de la position de choc, donc les paramètres $a$, $b$, $c$ et $d$, on peut déterminer l’angle à donner à la bille blanche. La formule est présentée ici dans le cas de $2$ rebonds, mais elle est analogue pour $3$ rebonds ou plus.
+
+&amp;nbsp;
+
+## Elimination des trajectoires irréalisables
+
+Maintenant que nous avons déterminé toutes les trajectoires pour empocher une bille en $2$ rebonds maximum, il nous faut éliminer les trajectoires qui ne sont pas réalisables, à savoir celles où des billes ou bien des trous sont présents sur la trajectoire.
+
+&amp;nbsp;
+
+### Suppression des trajectoires où d&#39;autres billes sont présentes
+
+Pour détecter les billes présentes sur la trajectoire, on procède de  nouveau à des changements de base avec pour axe des abscisses la trajectoire empruntée. Une bille est présente sur la trajectoire si la valeur absolue de son ordonnée dans la nouvelle base est inférieure à deux fois le rayon, soit $5$ $cm$:
+
+$$x&#39; \geq 0 \text{ et } |y&#39;| &lt; 2R$$
+
+&amp;nbsp;
+
+### Suppression des trajectoires rebondissant dans les trous
+
+Pour éliminer les trajectoires rebondissant dans les zones des trous, il suffit de définir des conditions sur les abscisses et ordonnées des positions de rebonds. Le programme final trace alors les trajectoires réalisables sur l’interface graphique.
+
+&amp;nbsp;
+
+## Prise en compte de la décélération des billes
+
+Toutefois, nous n’avons pas encore pris en compte la décélération des billes lors du mouvement, qui est un paramètre important. En effet, une bille blanche envoyée trop doucement n’atteindra pas son but, et une bille qui va trop vite ne vérifie plus en pratique la loi de réflexion lors des rebonds, et donc n’atteindra pas son but également. Il faut donc calculer la vitesse initiale minimale nécessaire pour empocher une bille.
+
+&amp;nbsp;
+
+### Calcul de la vitesse restituée lors d&#39;un choc
+
+En considérant une décroissance linéaire de la vitesse de la bille blanche telle que déterminée expérimentalement avec $a = 0,17$ $m.s^{-2}$, on connaît sa vitesse en fonction du temps et sa position par intégration :
+$$v(t) = v_0 - at$$
+$$x(t) = x_0 + v_0t - a\frac{t^2}{2}$$
+
+À l’instant $t_1$, la bille aura parcouru une distance $x_1$ pour rebondir contre une bande :
+$$x_1 = v_0t_1 - a\frac{t_1^2}{2} \qquad \Longrightarrow \qquad t_1 = \frac{v_0 - \sqrt{v_0^2 - 2ax_1}}{a}$$
+
+On connaît alors la vitesse juste avant le rebond, puis juste après en considérant que la bille repart avec un certain pourcentage $\eta = 0.8$ de sa vitesse. De même, en raison de l’angle entre les billes lors du choc, seul un pourcentage $\beta$ de la vitesse de la bille blanche est transmis à la bille de couleur.
+
+$$v_{1, ap} = \eta v_{1, av} = \eta(v_0 - at_1) = \eta \sqrt{v_0^2 - 2ax_1}$$
+
+&amp;nbsp;
+
+### Détermination de la vitesse de la bille après $n$ collisions
+
+On obtient alors par récurrence la vitesse finale de la bille après $n$ rebonds ou chocs en fonction de la vitesse initiale :
+
+$$v_n = \left(v_0^2 \prod_{i = 1}^n \eta_i^2 - 2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2\right)^{\frac{1}{2}}$$
+
+On définit ensuite la vitesse initiale minimale à donner à la bille blanche, qui est obtenue lorsque la bille de couleur est empochée à une vitesse nulle :
+
+$$ v_n = 0 \iff v_0 = \left(\frac{2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2}{\prod_{i = 1}^n \eta_i^2}\right)^{\frac{1}{2}} $$
+
+&amp;nbsp;
+
+### Correction des programmes par élimination des trajectoires
+
+Enfin, pour que la bille blanche respecte la loi de réflexion de Descartes, on définit une vitesse initiale maximale de $2$ $m.s^{-1}$. On ajoute alors la formule de la vitesse initiale dans le programme final pour qu’il calcule la vitesse initiale minimale nécessaire. Si cette vitesse est supérieure à la vitesse initiale maximale, le coup correspondant à la trajectoire est considéré comme irréalisable. Sinon, la trajectoire est tracée en orange.
+
+&amp;nbsp;
+
+# Conclusion
+
+Ainsi, pour répondre à la problématique initiale, à savoir « comment empocher à coup sûr une bille de billard », nous pouvons tout d’abord remarquer qu’il faut envoyer la bille blanche à vitesse moyenne, car alors la loi de réflexion de Descartes permet de déterminer facilement les trajectoires possibles pour empocher une bille.
+
+Il faut rappeler que toute l’étude est réalisée dans l’hypothèse de billes se déplaçant sans effet. Par conséquent le tir initial joue un rôle essentiel, car si l’on donne de l’effet à la bille, les trajectoires sont paraboliques et donc les lois de réflexion et des chocs élastiques ne sont plus du tout valables.
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

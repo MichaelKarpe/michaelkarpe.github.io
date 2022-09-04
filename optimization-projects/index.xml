@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects | Michaël Karpe</title>
+    <link>https://michaelkarpe.github.io/optimization-projects/</link>
+      <atom:link href="https://michaelkarpe.github.io/optimization-projects/index.xml" rel="self" type="application/rss+xml" />
+    <description>Projects</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 05 Feb 2018 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://michaelkarpe.github.io/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_512x512_fill_lanczos_center_3.png</url>
+      <title>Projects</title>
+      <link>https://michaelkarpe.github.io/optimization-projects/</link>
+    </image>
+    
+    <item>
+      <title>★ Automated Text Matching</title>
+      <link>https://michaelkarpe.github.io/optimization-projects/textmatching/</link>
+      <pubDate>Mon, 05 Feb 2018 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/optimization-projects/textmatching/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;presentation-of-the-project&#34;&gt;Presentation of the project&lt;/h1&gt;
+&lt;p&gt;In the field of translationology, there are many approaches and algorithms for making translations from one language to another. Each method has its advantages and disadvantages, and a compromise between several methods is usually needed to achieve an efficient translation algorithm.&lt;/p&gt;
+&lt;p&gt;We are interested here in an algorithm for aligning texts in different languages based on dynamic time warping (DTW). Such an algorithm does not require either prior bilingual resources or knowledge of similarities between the languages studied.&lt;/p&gt;
+&lt;p&gt;It can thus work on any language pair, especially on languages for which few linguistic resources are available. On the other hand, its accuracy in translation is low, so we will focus mainly on aligning paragraphs rather than words.&lt;/p&gt;
+&lt;p&gt;The approach used in Kim Gerdes&amp;rsquo; algorithm, although simple at first glance, is no less original. It consists in working on the occurrences and position of words in the texts under consideration using the DTW.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;paragraph-alignment&#34;&gt;Paragraph alignment&lt;/h1&gt;
+&lt;p&gt;The application of DTW in a translation system can make bad associations, if one tries to be too precise, due to different syntaxes within languages. The algorithm proposed by Gerdes therefore uses the sum of the word alignments to align paragraphs, thus eliminating possible spurious signals due to erroneous word associations.&lt;/p&gt;
+&lt;p&gt;Length-based alignment is an alignment method, not based on the DTW, which allows a first alignment of paragraphs based solely on the length of the paragraphs.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignbylength.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;jaro-winkler-distance&#34;&gt;Jaro-Winkler distance&lt;/h2&gt;
+&lt;p&gt;To complete the DTW distance, we use the Jaro-Winkler syntax distance between $2$ strings $d_w$ , depending on the Jaro distance $d_j$:&lt;/p&gt;
+&lt;p&gt;$$ d_w = d_j+lp(1-d_j) \qquad \text{ with } \qquad d_j = \frac{1}{3}\left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) $$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$|s_{i}|$ is the length of the string $s_{i}$&lt;/li&gt;
+&lt;li&gt;$m$ is the number of corresponding characters&lt;/li&gt;
+&lt;li&gt;$t$ is the number of transpositions&lt;/li&gt;
+&lt;li&gt;$l$ is the length of the common prefix (maximum $4$ characters)&lt;/li&gt;
+&lt;li&gt;$p$ is a coefficient that allows to favor strings with a common prefix (Winkler proposes for value $p = 0.1$)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;dynamic-time-warping-dtw&#34;&gt;Dynamic Time Warping (DTW)&lt;/h2&gt;
+&lt;p&gt;In general, DTW algorithms seek to find the optimal monotonic (non-intersecting) alignment of two sequences of variable length. Monotonic means that the order of the sequence positions before and after DTW is respected, but that the distance between these positions may change. \newline&lt;/p&gt;
+&lt;p&gt;DTW algorithms are dynamic programming algorithms. For our paragraph alignment, it is applied on recency vectors $(p_1, p_2-p_1, \dots, p_n-p_{n-1}, 1-p_n)$ where $p_i$ is the position of the $i$ occurrence (in text fraction) of the considered $p$ word.&lt;/p&gt;
+&lt;p&gt;$$ W_{i+1,j+1} = \left| r_1-r_2 \right| + \min\left(W_{i,j+1}, W_{i+1,j}, W_{i,j}\right) $$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/dtw.PNG&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;integration-in-an-alignment-system&#34;&gt;Integration in an alignment system&lt;/h3&gt;
+&lt;p&gt;We describe here, in a synthetic way, the global algorithm performing the automatic matching of texts in different languages without prior knowledge, including the DTW algorithm explained above. This algorithm, described in detail by Kim Gerdes, can be synthesized in $4$ main steps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reading and cleaning of texts: suppression of parasitic signals (accents, extra spaces, punctuation&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Construction of hash tables associating words with their different characteristics (number of occurrences, appearance indices&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Calculation for each of the texts of the internal cognates of the language (Jaro-Winkler distance), significant words or groups of words (frequent and well distributed in the text).&lt;/li&gt;
+&lt;li&gt;Application of the DTW algorithm for the alignment of words, groups of words and paragraphs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;execution-of-the-alignment-system&#34;&gt;Execution of the alignment system&lt;/h1&gt;
+&lt;p&gt;The alignment system described above was developed in C++ and applied to the Universal Declaration of Human Rights (UDHR) in the following languages: English, French, Spanish, German, Russian. We present here the results obtained for the French-English language pair.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;French&lt;/th&gt;
+&lt;th&gt;English&lt;/th&gt;
+&lt;th&gt;DTW&lt;/th&gt;
+&lt;th&gt;French&lt;/th&gt;
+&lt;th&gt;English&lt;/th&gt;
+&lt;th&gt;DTW&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;respect&lt;/td&gt;
+&lt;td&gt;respect&lt;/td&gt;
+&lt;td&gt;0.0039&lt;/td&gt;
+&lt;td&gt;nations&lt;/td&gt;
+&lt;td&gt;nations&lt;/td&gt;
+&lt;td&gt;0.0228&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ces&lt;/td&gt;
+&lt;td&gt;these&lt;/td&gt;
+&lt;td&gt;0.0046&lt;/td&gt;
+&lt;td&gt;conscience&lt;/td&gt;
+&lt;td&gt;conscience&lt;/td&gt;
+&lt;td&gt;0.0245&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;déclaration&lt;/td&gt;
+&lt;td&gt;declaration&lt;/td&gt;
+&lt;td&gt;0.0070&lt;/td&gt;
+&lt;td&gt;dignité&lt;/td&gt;
+&lt;td&gt;dignity&lt;/td&gt;
+&lt;td&gt;0.0306&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sans&lt;/td&gt;
+&lt;td&gt;without&lt;/td&gt;
+&lt;td&gt;0.0107&lt;/td&gt;
+&lt;td&gt;religion&lt;/td&gt;
+&lt;td&gt;religion&lt;/td&gt;
+&lt;td&gt;0.0326&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;considérant&lt;/td&gt;
+&lt;td&gt;whereas&lt;/td&gt;
+&lt;td&gt;0.0115&lt;/td&gt;
+&lt;td&gt;éducation&lt;/td&gt;
+&lt;td&gt;education&lt;/td&gt;
+&lt;td&gt;0.0375&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;nationalité&lt;/td&gt;
+&lt;td&gt;nationality&lt;/td&gt;
+&lt;td&gt;0.0116&lt;/td&gt;
+&lt;td&gt;contre&lt;/td&gt;
+&lt;td&gt;against&lt;/td&gt;
+&lt;td&gt;0.0383&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;libertés&lt;/td&gt;
+&lt;td&gt;freedoms&lt;/td&gt;
+&lt;td&gt;0.0124&lt;/td&gt;
+&lt;td&gt;article&lt;/td&gt;
+&lt;td&gt;article&lt;/td&gt;
+&lt;td&gt;0.0545&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;famille&lt;/td&gt;
+&lt;td&gt;family&lt;/td&gt;
+&lt;td&gt;0.0150&lt;/td&gt;
+&lt;td&gt;droits&lt;/td&gt;
+&lt;td&gt;rights&lt;/td&gt;
+&lt;td&gt;0.0714&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;société&lt;/td&gt;
+&lt;td&gt;society&lt;/td&gt;
+&lt;td&gt;0.0152&lt;/td&gt;
+&lt;td&gt;présente&lt;/td&gt;
+&lt;td&gt;declaration&lt;/td&gt;
+&lt;td&gt;0.0849&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;unies&lt;/td&gt;
+&lt;td&gt;united&lt;/td&gt;
+&lt;td&gt;0.0213&lt;/td&gt;
+&lt;td&gt;religion&lt;/td&gt;
+&lt;td&gt;property&lt;/td&gt;
+&lt;td&gt;0.0979&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;analysis-of-the-results&#34;&gt;Analysis of the results&lt;/h2&gt;
+&lt;p&gt;After applying the DTW algorithm to different languages, we found that word matching was effective when the DTW value returned for a word pair was less than $0.1$ (this value having been normalized to be between $0$ and 1).&lt;/p&gt;
+&lt;p&gt;For the French and English language pair, we find erroneous associations for DTW values greater than $0.08$, notably due to the different syntax of the languages (see below). It is therefore necessary to include the Jaro-Winkler distance in the alignment system to correct this problem.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/piege.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;p&gt;Once the Jaro-Winkler distance is included in the alignment system, we can combine these word associations to proceed with the UDHR paragraph association. The UDHR consists of $89$ paragraphs, for a total of $2,106$ words and $11,663$ characters.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-déclaration-universelle-des-droits-de-lhomme-dudh&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/dudh.jpg&#34; alt=&#34;Déclaration Universelle des Droits de l&amp;#39;Homme (DUDH).&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;83%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Déclaration Universelle des Droits de l&amp;rsquo;Homme (DUDH).
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-universal-declaration-of-human-rights-udhr&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/udhr.jpg&#34; alt=&#34;Universal Declaration of Human Rights (UDHR).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Universal Declaration of Human Rights (UDHR).
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Reciprocal paragraph associations (dashes on vertical lines) are represented by solid arrows, while dashed arrows represent one-way associations.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-alignment-by-length&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignlongueur.png&#34; alt=&#34;Alignment by length.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;99%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Alignment by length.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-alignment-with-dtw&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignDTW.png&#34; alt=&#34;Alignment with DTW.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Alignment with DTW.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;alignment-system-limits&#34;&gt;Alignment system limits&lt;/h2&gt;
+&lt;p&gt;The main limitation of the developed alignment system lies in the accuracy of the alignment, limited to a paragraph scale. The DTW algorithm alone is not sufficient to achieve an efficient alignment, and the addition of a syntax distance such as Jaro-Winkler is necessary to improve the results. The results obtained remain very satisfying.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Kim Gerdes. &lt;em&gt;L’alignement pour les pauvres : Adapter la bonne métrique pour unalgorithme dynamique de dilatation temporelle pour l’alignement sans ressources de corpus bilingues.&lt;/em&gt; 9e Journées internationales d’Analyse statistique des Données Textuelles, Mars 2008.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Meinard Müller. &lt;em&gt;Information retrieval for music and motion.&lt;/em&gt; Chapter 4 : Dynamic Time Warping, Septembre 2007.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+&amp;nbsp;
+
+# Présentation du projet
+
+Dans le domaine de la traductologie, il existe de nombreuses approches et de nombreux algorithmes pour réaliser des traductions d&#39;une langue à une autre. Chaque méthode possède ses avantages et ses inconvénients, et il convient généralement d&#39;utiliser un compromis entre plusieurs méthodes pour obtenir un algorithme de traduction efficace.
+
+Nous nous intéressons ici à un algorithme d&#39;alignement de textes en langues différentes basé sur la déformation (ou dilatation) temporelle dynamique (ou *Dynamic Time Warping, DTW*). Un tel algorithme n&#39;a besoin ni de ressources bilingues préalables, ni de connaissances de similarités entre les langues étudiées.
+
+Il peut ainsi fonctionner sur n&#39;importe quel couple de langues, et notamment sur des langues pour lesquelles on possède peu de ressources linguistiques. En revanche, sa précision dans la traduction est faible ; ainsi nous nous concentrerons principalement sur l&#39;alignement de paragraphes plutôt que de mots.
+
+L&#39;approche employée dans l&#39;algorithme de Kim Gerdes, bien que simple à première vue, n&#39;en est pas moins originale. Elle consiste à travailler sur les occurrences et la position des mots dans les textes considérés en employant le DTW.
+
+&amp;nbsp;
+
+# Alignement de paragraphes
+
+L&#39;application du DTW dans un système de traduction peut réaliser de mauvaises associations, si l&#39;on cherche à être trop précis, en raison de syntaxes différentes au sein des langues. Il s&#39;agit donc, dans l&#39;algorithme proposé par Gerdes, de se servir de la somme des alignements de mots pour procéder à l&#39;alignement de paragraphes, et ainsi faire disparaître les éventuels signaux parasites dus à des associations erronées de mots.
+
+L&#39;alignement par longueur est une méthode d&#39;alignement, non basée sur le DTW, qui permet de réaliser un premier alignement de paragraphes uniquement basé sur la longueur des paragraphes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignbylength.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+## Distance de Jaro-Winkler
+
+Pour compléter la distance DTW, on utilise la distance syntaxique de Jaro-Winkler entre $2$ chaînes de caractères $d_w$, fonction de la distance de Jaro $d_j$ :
+
+$$ d_w = d_j+lp(1-d_j) \qquad \text{ avec } \qquad d_j = \frac{1}{3}\left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) $$
+
+- $|s_{i}|$ est la longueur de la chaîne de caractères $s_{i}$
+- $m$ est le nombre de caractères correspondants
+- $t$ est le nombre de transpositions
+- $l$ est la longueur du préfixe commun (maximum $4$ caractères)
+- $p$ est un coefficient qui permet de favoriser les chaînes avec un préfixe commun (Winkler propose pour valeur $p = 0.1$)
+
+&amp;nbsp;
+
+## Dynamic Time Warping (DTW)
+
+De façon générale, les algorithmes DTW &#34;cherchent à trouver l’alignement monotone (sans croisement) optimal de deux séquences de longueur variable.&#34; Par monotone, on entend que l&#39;ordre des positions des séquences avant et après DTW est respecté, mais que l&#39;écart entre ces positions peut changer. \newline
+
+Les algorithmes DTW sont des algorithmes de programmation dynamique. Pour notre alignement de paragraphes, il est appliqué sur des vecteurs de récence $(p_1, p_2-p_1, \dots, p_n-p_{n-1}, 1-p_n)$ où $p_i$ est la position de l&#39;occurrence $i$ (en fraction de texte) du mot $p$ considéré.
+
+$$ W_{i+1,j+1} = \left| r_1-r_2 \right| + \min\left(W_{i,j+1}, W_{i+1,j}, W_{i,j}\right) $$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/dtw.PNG&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+### Intégration dans un système d&#39;alignement
+
+Nous décrivons ici, de façon synthétique, l&#39;algorithme global réalisant la mise en correspondance automatique de textes en langues différentes sans connaissances préalables, incluant l&#39;algorithme DTW expliqué ci-dessus. Cet algorithme, décrit en détails par Kim Gerdes, peut être synthétisé en $4$ grandes étapes :
+
+- Lecture et nettoyage des textes : suppression des signaux parasites (accents, espaces en trop, ponctuation...)
+- Construction des tables de hachage associant les mots à leurs différentes caractéristiques (nombre d&#39;occurrences, indices d&#39;apparition...)
+- Calcul pour chacun des textes des cognats internes à la langue (distance de Jaro-Winkler), des mots ou groupes de mots significatifs (fréquents et bien répartis dans le texte)
+- Application de l&#39;algorithme DTW pour l&#39;alignement des mots, des groupes de mots et des paragraphes
+
+&amp;nbsp;
+
+# Exécution du système d&#39;alignement
+
+Le système d&#39;alignement décrit précédemment a été développé en langage C++ et appliqué sur la Déclaration Universelle des Droits de l&#39;Homme (DUDH ou *Universal Declaration of Human Rights, UDHR*) dans les langues suivantes : français, anglais, espagnol, allemand, russe. Nous présentons ici les résultats obtenus pour le couple de langues français-anglais.
+
+| Français    | Anglais     | DTW    | Français    | Anglais     | DTW    |
+|-------------|-------------|--------|-------------|-------------|--------|
+| respect     | respect     | 0.0039 | nations     | nations     | 0.0228 |
+| ces         | these       | 0.0046 | conscience  | conscience  | 0.0245 |
+| déclaration | declaration | 0.0070 | dignité     | dignity     | 0.0306 |
+| sans        | without     | 0.0107 | religion    | religion    | 0.0326 |
+| considérant | whereas     | 0.0115 | éducation   | education   | 0.0375 |
+| nationalité | nationality | 0.0116 | contre      | against     | 0.0383 |
+| libertés    | freedoms    | 0.0124 | article     | article     | 0.0545 |
+| famille     | family      | 0.0150 | droits      | rights      | 0.0714 |
+| société     | society     | 0.0152 | présente    | declaration | 0.0849 |
+| unies       | united      | 0.0213 | religion    | property    | 0.0979 |
+
+&amp;nbsp;
+
+## Analyse des résultats
+
+Après application de l&#39;algorithme DTW sur différentes langues, nous avons pu constater que la mise de correspondance de mots était efficace lorsque la valeur de DTW renvoyée pour un couple de mots était inférieure à $0,1$ (celle-ci ayant été normalisée pour être comprise entre $0$ et 1).
+
+Pour le couple de langues français et anglais, on constate des associations erronées pour à partir d&#39;une valeur de DTW supérieure à $0,08$, notamment en raison de la syntaxe différente des langues (voir ci-dessous). Il convient donc d&#39;inclure la distance de Jaro-Winkler dans le système d&#39;alignement pour corriger ce problème.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/piege.png&#34; alt=&#34;&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+Une fois la distance de Jaro-Winkler incluse dans le système d&#39;alignement, nous pouvons combiner ces associations de mots pour procéder à l&#39;association des paragraphes de la DUDH. La DUDH est constituée de $89$ paragraphes, pour un total de $2$ $106$ mots et $11$ $663$ caractères.
+
+|      |      |
+|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-déclaration-universelle-des-droits-de-lhomme-dudh&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/dudh.jpg&#34; alt=&#34;Déclaration Universelle des Droits de l&amp;#39;Homme (DUDH).&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;83%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Déclaration Universelle des Droits de l&amp;rsquo;Homme (DUDH).
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-universal-declaration-of-human-rights-udhr&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/udhr.jpg&#34; alt=&#34;Universal Declaration of Human Rights (UDHR).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Universal Declaration of Human Rights (UDHR).
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+Les associations réciproques de paragraphes (tirets sur les traits verticaux) sont représentées par des flèches pleines, tandis que les flèches en pointillés représentent les associations dans un seul sens.
+
+|      |      |
+|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-alignement-par-longueur&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignlongueur.png&#34; alt=&#34;Alignement par longueur.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;99%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Alignement par longueur.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-alignement-avec-dtw&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/textmatching/alignDTW.png&#34; alt=&#34;Alignement avec DTW.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Alignement avec DTW.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+## Limites du système d&#39;alignement
+
+La limite principale du système d&#39;alignement développé réside dans la précision de l&#39;alignement, limitée à une échelle de paragraphes. L&#39;algorithme DTW seul n&#39;est pas suffisant pour réaliser un alignement efficace, et l&#39;ajout d&#39;une distance syntaxique comme Jaro-Winkler est nécessaire pour améliorer les résultats. Les résultats obtenus sont très satisfaisants malgré tout.
+
+&amp;nbsp;
+
+### Références
+
+1. Kim Gerdes. *L’alignement pour les pauvres : Adapter la bonne métrique pour unalgorithme dynamique de dilatation temporelle pour l’alignement sans ressources de corpus bilingues.* 9e Journées internationales d’Analyse statistique des Données Textuelles, Mars 2008.
+
+2. Meinard Müller. *Information retrieval for music and motion.* Chapter 4 : Dynamic Time Warping, Septembre 2007.
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Optimal Course Allocation</title>
+      <link>https://michaelkarpe.github.io/optimization-projects/allocation/</link>
+      <pubDate>Mon, 20 Mar 2017 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/optimization-projects/allocation/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;presentation-of-the-project&#34;&gt;Presentation of the project&lt;/h1&gt;
+&lt;p&gt;As part of the management of the assignment of first year students to second semester courses and projects at Ecole des Ponts, we were asked to design a computer program that manages the assignment of students to courses. In order to meet the requirements of the first year department, this program must comply with a number of constraints.&lt;/p&gt;
+&lt;p&gt;Our objective is to optimize the process of assigning students to courses and projects, by proposing a distribution of students that respects as much as possible the ranking of their wishes. Indeed, we have three main sets of courses and projects:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the department projects: there are $20$ projects in $2017$ and they take place on Monday afternoons.&lt;/li&gt;
+&lt;li&gt;the opening courses: they are spread over $4$ days, each day having a well-specified set of courses that the students have to classify.&lt;/li&gt;
+&lt;li&gt;introductory research projects: these are associated with the opening classes. Each opening course has a project on the same theme. As a result, every student must necessarily be assigned to a project that is associated with one of the courses he or she is taking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In addition, each course and each project has a maximum number of students and a minimum number of students required to open the course. These numbers may vary from one course to another. Finally, some courses or projects may be discontinued if demand is not high enough.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;mathematical-modelling&#34;&gt;Mathematical modelling&lt;/h1&gt;
+&lt;h2 id=&#34;optimization-program-for-a-single-project--course-choice&#34;&gt;Optimization program for a single project / course choice&lt;/h2&gt;
+&lt;p&gt;In order to account for the fact that a student has or has not received his first wish, we have introduced a regret function, the value of which is all the higher as the first wishes are not fulfilled. Our modeling aims at minimizing the total regret function. For a given project, the regret function of a student corresponds to the weight function evaluated at the wish number of the project. The weight function is a function that associates a number to a wish number that is higher the higher the wish number is, and is worth $0$ if it is the student&amp;rsquo;s $1$ wish. An example of a quadratic weight function ($f(x) = (x - 1)^2$) is given below :&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Rank&lt;/th&gt;
+&lt;th&gt;Weight&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;hellip;&lt;/td&gt;
+&lt;td&gt;&amp;hellip;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In order to know to which project a student is assigned, we use a matrix $A = (a_{e,p})&lt;em&gt;{e,p}$ whose coefficient $a&lt;/em&gt;{e,p}$ is $1$ if student $e$ is assigned to project $p$ and $0$ otherwise. Given this, the regret function of a student for a given project is $\sum_{p\in P} a_{e,p} w(c_{e,p})$. This minimization problem comes with several constraints:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The enrolment of the project numbered $p$, noted $n_{p}$ and defined as the sum over the students of the assignments $a_{e,p}$, must be between the minimum $m_{p}$ and the maximum $M_{p}$ enrolment associated with this project. These bounds are multiplied by a binary variable $\delta_{p}$ which equals $0$ if the project is closed and $1$ if it is open. Thus, if there are not enough students who have applied for a given project, that is, if it is not in the first wishes of a sufficient number of students, then the project in question will have a zero enrolment.&lt;/li&gt;
+&lt;li&gt;Each student must be assigned to one project only. For this purpose, the sum of the student&amp;rsquo;s $a_{e,p}$ assignments on projects is equal to $1$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Mathematically, the problem thus modeled is written as follows:&lt;/p&gt;
+&lt;p&gt;$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}.w(c_{e, p}) + Kr_{max}$$
+$$\text{s.t.} \ \forall p \in P, \ n_p = \sum_{e\in E} a_{e, p}$$
+$$\forall p \in P, \ \delta_p.m_p \leq n_p$$
+$$\forall p \in P, \ n_p \leq \delta_p.M_p$$
+$$\forall e \in E, \ \sum_{p \in P} a_{e, p} = 1$$
+$$\forall p \in P, \ \delta_p \in {0, 1}$$
+$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in {0, 1}$$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;settings&#34;&gt;Settings&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;$J$: All days, two courses or projects on the same day cannot be cumulated.&lt;/li&gt;
+&lt;li&gt;$E$: All students.&lt;/li&gt;
+&lt;li&gt;$P$: Set of all projects / courses to be chosen partitioned according to days $P = \bigcup_{j \in J} P_j$.&lt;/li&gt;
+&lt;li&gt;$C$: Matrix of students&amp;rsquo; choices tq. $c_{e, p}$ is the rank of the project $p$ for the student $e$.&lt;/li&gt;
+&lt;li&gt;$m_p$ and $M_p$: Minimum and maximum numbers for the $p$ project.&lt;/li&gt;
+&lt;li&gt;$w$: Weight function.&lt;/li&gt;
+&lt;li&gt;$pr$: Function that, with an opening course, associates a project of initiation to the search.&lt;/li&gt;
+&lt;li&gt;$K$: Constant increasing total regret.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;variables&#34;&gt;Variables&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;$\delta_p = 1$ if project $p$ is open, $0$ otherwise.&lt;/li&gt;
+&lt;li&gt;$A$ : Student assignment matrix tq $a_{e, p} = $1 if student $e$ is assigned to project $p$, $0$ otherwise.&lt;/li&gt;
+&lt;li&gt;$n_p$ : Enrollment in project $p$.&lt;/li&gt;
+&lt;li&gt;$r_{max}$ : Maximum pupil regret. May be a parameter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;optimization-program-for-multiple-project-or-course-choices&#34;&gt;Optimization program for multiple project or course choices&lt;/h2&gt;
+&lt;p&gt;When there are several projects or courses to choose from, the allocation results must take into account each other. For example, if a student is assigned to a Wish $3$, their other assignments should correspond, as much as possible, to Wish $1$ courses. This is accomplished by adding a variable $r_{max}$ which corresponds to the maximum regret per student. Each student&amp;rsquo;s regret ($\sum_{p \in P} a_{e, p}w(c_{e, p})$) is therefore increased by $r_{max}$.&lt;/p&gt;
+&lt;p&gt;In order to minimize this maximum regret, this variable is added to the total regret in the function to be minimized with a multiplicative coefficient $K$. This coefficient is a major of the total regret, therefore a very large number, so that the maximum regret per student only increases if there is no other possibility.&lt;/p&gt;
+&lt;p&gt;Finally, it must be ensured that if a student is assigned to a research project, then he or she is necessarily assigned to the associated opening course. Consequently, the assignment variable $a_{e,p}$ to a given opening course $p$ increases the assignment variable $a_{e, pr(p)}$ of the associated research project. Hence the reformulation of the previous problem as :&lt;/p&gt;
+&lt;p&gt;$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}w(c_{e, p}) + Kr_{max}$$
+$$\textrm{s.c.} \ \forall p \in P, \ n_p = \sum_{e_\in E} a_{e, p}$$
+$$\forall p \in P, \ \delta_p.m_p \leq n_p$$
+$$\forall p \in P, \ n_p \leq \delta_p.M_p$$
+$$\forall e \in E, \ \sum_{p \in P} a_{e, p}.w(c_{e, p}) \leq r_{max}$$
+$$\forall j \in J, \ \sum_{p \in P_j} a_{e, p} = 1$$
+$$\forall e \in E, \ \forall p \in P_{\text{c.o.}}, \ a_{e, pr(p)} \leq a_{e, p}$$
+$$\forall p \in P, \ \delta_p \in {0, 1}$$
+$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in {0, 1}$$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;results&#34;&gt;Results&lt;/h1&gt;
+&lt;h2 id=&#34;year-2017&#34;&gt;Year 2017&lt;/h2&gt;
+&lt;p&gt;We compared our program to the $2017$ allocation results. We could see in the modeling that the fundamental parameter of the optimization is the $w$ weight function. By playing with the weights, we can change the result of the optimization entirely. In the case of our problem, we want to give massively first or second choices, while exceptionally allowing third choices. To do this, we worked with the weight function below, as well as with another weight function where the weight of the $3$ rank goes from $15$ to $50$.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Rank&lt;/th&gt;
+&lt;th&gt;Weight&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;1000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;hellip;&lt;/td&gt;
+&lt;td&gt;&amp;hellip;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Let&amp;rsquo;s compare the results obtained for these two weight functions with the results of the current optimization. The results are summarized in the table below, since with our optimization program we obtain the same results as those obtained manually by the administration: they were already at an optimum.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Choice&lt;/th&gt;
+&lt;th&gt;Monday&lt;/th&gt;
+&lt;th&gt;Tuesday&lt;/th&gt;
+&lt;th&gt;Wednesday&lt;/th&gt;
+&lt;th&gt;Thursday&lt;/th&gt;
+&lt;th&gt;Research&lt;/th&gt;
+&lt;th&gt;Department&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;137&lt;/td&gt;
+&lt;td&gt;126&lt;/td&gt;
+&lt;td&gt;114&lt;/td&gt;
+&lt;td&gt;111&lt;/td&gt;
+&lt;td&gt;92&lt;/td&gt;
+&lt;td&gt;107&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;16&lt;/td&gt;
+&lt;td&gt;28&lt;/td&gt;
+&lt;td&gt;31&lt;/td&gt;
+&lt;td&gt;45&lt;/td&gt;
+&lt;td&gt;35&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Above all, our software saves time since it runs in about $30$ seconds. The method previously used required to manually take over the results of the algorithm and lasted about $15$ hours. The time saved is therefore considerable.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;year-2018&#34;&gt;Year 2018&lt;/h2&gt;
+&lt;p&gt;Due to the very good results of our software in $2017$, it has been used every year since then by the first year department. Here are the results obtained for the year $2018$, where $152$ students had to grant wishes, compared to $142$ the year before:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Choice&lt;/th&gt;
+&lt;th&gt;Monday&lt;/th&gt;
+&lt;th&gt;Tuesday&lt;/th&gt;
+&lt;th&gt;Wednesday&lt;/th&gt;
+&lt;th&gt;Thursday&lt;/th&gt;
+&lt;th&gt;Research&lt;/th&gt;
+&lt;th&gt;Department&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;121&lt;/td&gt;
+&lt;td&gt;143&lt;/td&gt;
+&lt;td&gt;120&lt;/td&gt;
+&lt;td&gt;110&lt;/td&gt;
+&lt;td&gt;102&lt;/td&gt;
+&lt;td&gt;NC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;30&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;31&lt;/td&gt;
+&lt;td&gt;40&lt;/td&gt;
+&lt;td&gt;43&lt;/td&gt;
+&lt;td&gt;NC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;NC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The results are very satisfying, although there is an increase in the number of wishes $3$. This is mainly due to the fact that despite the increase in the number of students, the number of students in the proposed courses has not been revised upwards.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+&amp;nbsp;
+
+# Présentation du projet
+
+Dans le cadre de la gestion de l&#39;affectation des élèves de première année aux cours et projets du second semestre à l&#39;Ecole des Ponts, il nous a été demandé de concevoir un programme informatique qui gère l&#39;affectation des élèves aux cours. Pour qu&#39;il réponde aux exigences du département de première année, ce programme doit respecter un certain nombre de contraintes.
+
+Notre objectif est d&#39;optimiser le processus d&#39;affectation des élèves aux cours et aux projets, en proposant une répartition des élèves qui respecte au maximum le classement de leurs voeux. En effet, nous disposons de trois grands ensembles de cours et de projets :
+- les projets de département : ils sont au nombre de $20$ en $2017$ et se déroulent le lundi après-midi.
+
+- les cours d&#39;ouverture : ils se répartissent sur $4$ jours, chaque jour disposant d&#39;un ensemble bien spécifié de cours que les élèves doivent classer.
+- les projets d&#39;initiation à la recherche : ils sont associés aux cours d&#39;ouverture. Chaque cours d&#39;ouverture dispose d&#39;un projet qui porte sur le même thème. De ce fait, tout élève doit nécessairement être affecté à un projet qui est associé à l&#39;un des cours qu&#39;il suit.
+
+D&#39;autre part, chaque cours et chaque projet possède un effectif maximal d&#39;élèves et un effectif minimal nécessaire à l&#39;ouverture du cours. Ces effectifs peuvent varier d&#39;un cours à un autre. Enfin, certains cours ou projets peuvent être supprimés si la demande n&#39;est pas assez forte.
+
+&amp;nbsp;
+
+# Modélisation mathématique
+
+## Programme d&#39;optimisation pour un seul choix de projet/cours
+
+Afin de rendre compte du fait qu&#39;un élève a ou n&#39;a pas reçu son premier voeu, nous avons introduit une fonction de regret dont la valeur est d&#39;autant plus élevée que les premiers voeux ne sont pas remplis. Notre modélisation vise à minimiser la fonction de regret total. Pour un projet donné, la fonction de regret d&#39;un élève correspond à la fonction de poids évaluée au numéro de voeu du projet. La fonction de poids est une fonction qui, à un numéro de voeu, associe un nombre d&#39;autant plus élevé que le numéro du voeu est élevé, et qui vaut $0$ s&#39;il s&#39;agit du voeu $1$ de l&#39;élève. Un exemple de fonction de poids quadratique ($f(x) = (x - 1)^2$) est donné ci-dessous :
+
+| Rang     | Poids    |
+|----------|----------|
+| 1        | 0        |
+| 2        | 1        |
+| 3        | 4        |
+| 4        | 9        |
+| 5        | 16       |
+| ...      | ...      |
+
+Afin de savoir à quel projet un élève est affecté, on utilise une matrice $A = (a_{e,p})_{e,p}$ dont le coefficient $a_{e,p}$ vaut $1$ si l&#39;élève e est affecté au projet p et $0$ sinon. Compte tenu de cela, la fonction de regret d&#39;un élève pour un projet donné est $\sum_{p\in P} a_{e,p} w(c_{e,p})$. Ce problème de minimisation s&#39;accompagne de plusieurs contraintes:
+
+- L&#39;effectif du projet numéroté $p$, noté $n_{p}$ et défini comme la somme sur les élèves des affectations $a_{e,p}$, doit être compris entre l&#39;effectif minimum $m_{p}$ et l&#39;effectif maximum $M_{p}$ associés à ce projet. Ces bornes sont multipliées par une variable binaire $\delta_{p}$ qui est égale à $0$ si le projet est fermé et $1$ s&#39;il est ouvert. Ainsi, s&#39;il n&#39;y a pas assez d&#39;élèves qui ont demandé un projet donné, c&#39;est-à-dire qu&#39;il ne figure pas dans les premiers voeux d&#39;un nombre suffisant d&#39;élèves, alors le projet en question aura un effectif nul.
+- Chaque élève doit être affecté à un seul et unique projet. À cet effet, la somme sur les projets des affectations $a_{e,p}$ de l&#39;élève est égale à $1$.
+
+Mathématiquement, le problème ainsi modélisé s&#39;écrit :
+
+$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}.w(c_{e, p}) + Kr_{max}$$
+$$\text{s.c.} \ \forall p \in P, \ n_p = \sum_{e\in E} a_{e, p}$$
+$$\forall p \in P, \ \delta_p.m_p \leq n_p$$
+$$\forall p \in P, \ n_p \leq \delta_p.M_p$$
+$$\forall e \in E, \ \sum_{p \in P} a_{e, p} = 1$$
+$$\forall p \in P, \ \delta_p \in \{0, 1\}$$
+$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in \{0, 1\}$$
+
+&amp;nbsp;
+
+### Paramètres
+
+- $J$ : Ensemble des jours, deux cours ou projets le même jour ne peuvent pas être cumulés.
+- $E$ : Ensemble des élèves.
+- $P$ : Ensemble de tous les projets / cours à choisir partitionnés selon les jours $P = \bigcup_{j \in J} P_j$.
+- $C$ : Matrice des choix des élèves tq. $c_{e, p}$ est le rang du projet $p$ pour l&#39;élève $e$.
+- $m_p$ et $M_p$ : Effectifs minimal et maximal pour le projet $p$.
+- $w$ : Fonction de poids.
+- $pr$ : Fonction qui, à un cours d&#39;ouverture, associe un projet d&#39;initiation à la recherche.
+- $K$ : Constante majorant le regret total.
+
+&amp;nbsp;
+
+### Variables
+
+- $\delta_p = 1$ si le projet p est ouvert, $0$ sinon.
+- $A$ : Matrice d&#39;affectation des élèves tq $a_{e, p} = 1$ si l&#39;élève $e$ est affecté au projet $p$, $0$ sinon.
+- $n_p$ : Effectif dans le projet $p$.
+- $r_{max}$ : Regret par élève maximal. Éventuellement un paramètre.
+
+&amp;nbsp;
+
+## Programme d&#39;optimisation pour plusieurs choix de projets ou cours
+
+Lorsqu&#39;il y a plusieurs projets ou cours à choisir, il faut que les résultats d&#39;affectation tiennent compte les uns des autres. Ainsi, si par exemple un étudiant est affecté à un projet placé en voeu $3$, ses autres affectations doivent correspondre, dans la mesure du possible, à des cours placés en voeu 1. Pour cela, on ajoute une variable $r_{max}$ qui correspond au regret maximal par élève. Le regret de chaque élève ($\sum_{p \in P} a_{e, p}w(c_{e, p})$) est donc majoré par $r_{max}$.
+
+De façon à minimiser ce regret maximum, on ajoute cette variable au regret total dans la fonction à minimiser avec un coefficient multiplicatif $K$. Ce coefficient est un majorant du regret total, donc un nombre très grand, de façon à ce que le regret maximal par élève n&#39;augmente que s&#39;il n&#39;y a pas d&#39;autre possibilité.
+
+Enfin, il faut faire en sorte que si un élève est attribué à un projet de recherche, alors il est nécessairement attribué au cours d&#39;ouverture associé. En conséquence, la variable d&#39;affectation $a_{e,p}$ à un cours d&#39;ouverture donné $p$ majore la variable d&#39;affectation $a_{e, pr(p)}$ du projet de recherche associé. D&#39;où la reformulation du problème précédent sous la forme :
+
+$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}w(c_{e, p}) + Kr_{max}$$
+$$\textrm{s.c.} \ \forall p \in P, \ n_p = \sum_{e_\in E} a_{e, p}$$
+$$\forall p \in P, \ \delta_p.m_p \leq n_p$$
+$$\forall p \in P, \ n_p \leq \delta_p.M_p$$
+$$\forall e \in E, \ \sum_{p \in P} a_{e, p}.w(c_{e, p}) \leq r_{max}$$
+$$\forall j \in J, \ \sum_{p \in P_j} a_{e, p} = 1$$
+$$\forall e \in E, \ \forall p \in P_{\text{c.o.}}, \ a_{e, pr(p)} \leq a_{e, p}$$
+$$\forall p \in P, \ \delta_p \in \{0, 1\}$$
+$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in \{0, 1\}$$
+
+&amp;nbsp;
+
+# Résultats
+
+## Année 2017
+
+Nous avons comparé notre programme aux résultats d&#39;affectation obtenus en $2017$. Nous avons pu voir dans la modélisation que le paramètre fondamental de l&#39;optimisation est la fonction de poids $w$. En jouant sur les poids, on peut changer entièrement le résultat de l&#39;optimisation. Dans le cas de notre problème, on souhaite donner massivement des premiers ou des deuxièmes choix, tout en autorisant exceptionnellement les troisièmes choix. Pour cela, nous avons travaillé avec la fonction de poids ci-dessous, ainsi qu&#39;avec une autre fonction de poids où le poids du rang $3$ passe de $15$ à $50$.
+
+| Rang     | Poids    |
+|----------|----------|
+| 1        | 0        |
+| 2        | 5        |
+| 3        | 15       |
+| 4        | 1000     |
+| 5        | 10000    |
+| ...      | ...      |
+
+Comparons les résultats obtenus pour ces deux fonctions de poids avec les résultats de l&#39;optimisation actuelle. Les résultats sont synthétisés dans le tableau ci-dessous, puisque nous obtenons avec notre programme d&#39;optimisation les mêmes résultats que ceux obtenus manuellement par l&#39;administration : ils correspondaient donc déjà à un optimum.
+
+| Choix | Lundi | Mardi | Mercredi | Jeudi | Recherche | Département |
+|-------|-------|-------|----------|-------|-----------|-------------|
+| 1     | 137   | 126   | 114      | 111   | 92        | 107         |
+| 2     | 5     | 16    | 28       | 31    | 45        | 35          |
+| 3     | 0     | 0     | 0        | 0     | 5         | 0           |
+
+Notre logiciel offre surtout un gain de temps puisqu&#39;il tourne en une trentaine de secondes. La méthode précédemment employée obligeait à reprendre manuellement les résultats de l&#39;algorithme et durait environ $15$ heures. Le gain de temps est donc considérable.
+
+&amp;nbsp;
+
+## Année 2018
+
+En raison des très bons résultats de notre logiciel en $2017$, celui-ci est depuis utilisé tous les ans par le département de première année. Voici les résultats obtenus pour l&#39;année $2018$, où $152$ élèves ont eu à réaliser des voeux, contre $142$ l&#39;année précédente :
+
+| Choix | Lundi | Mardi | Mercredi | Jeudi | Recherche | Département |
+|-------|-------|-------|----------|-------|-----------|-------------|
+| 1     | 121   | 143   | 120      | 110   | 102       | NC          |
+| 2     | 30    | 7     | 31       | 40    | 43        | NC          |
+| 3     | 1     | 2     | 1        | 2     | 7         | NC          |
+
+Les résultats sont très satisfaisants, bien que l&#39;on constate une augmentation du nombre de voeux $3$. Cela est notamment dû au fait que malgré l&#39;augmentation du nombre d&#39;élèves, les effectifs des cours proposés n&#39;ont pas été revus à la hausse.
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

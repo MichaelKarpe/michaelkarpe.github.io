@@ -1,0 +1,3928 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects | Michaël Karpe</title>
+    <link>https://michaelkarpe.github.io/computer-vision-projects/</link>
+      <atom:link href="https://michaelkarpe.github.io/computer-vision-projects/index.xml" rel="self" type="application/rss+xml" />
+    <description>Projects</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 30 May 2018 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://michaelkarpe.github.io/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_512x512_fill_lanczos_center_3.png</url>
+      <title>Projects</title>
+      <link>https://michaelkarpe.github.io/computer-vision-projects/</link>
+    </image>
+    
+    <item>
+      <title>Image Segmentation: Mean Shift &amp; Normalized Cut</title>
+      <link>https://michaelkarpe.github.io/computer-vision-projects/segmentation/</link>
+      <pubDate>Wed, 30 May 2018 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/computer-vision-projects/segmentation/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;mean-shift&#34;&gt;Mean Shift&lt;/h1&gt;
+&lt;p&gt;The Mean Shift algorithm is a &lt;em&gt;non-parametric&lt;/em&gt; technique whose aim is to find local maxima in a &lt;em&gt;high-dimensional data distribution&lt;/em&gt; without computing the latter. Therefore, the main issue is how to efficiently estimate a density function given a set of samples.&lt;/p&gt;
+&lt;p&gt;The simpliest way is to smooth the data. A common technique to smooth data is to compute a &lt;em&gt;kernel density estimation&lt;/em&gt; $f(\mathbf{x})$:&lt;/p&gt;
+&lt;p&gt;$$f(x) = \sum_{i \in \mathcal{I}} K(\mathbf{x}-\mathbf{x_i}) = \sum_{i \in \mathcal{I}} k\left(\dfrac{||\mathbf{x}-\mathbf{x_i}||^2}{h^2}\right)$$&lt;/p&gt;
+&lt;p&gt;where $(x_i)_{i \in \mathcal{I}}$ are the input samples, $k$ the kernel function and $h$ the kernel width. Then, we can find $f(x)$ maxima with usual optimization techniques (e.g. gradient ascent).&lt;/p&gt;
+&lt;p&gt;However, $f(x)$ computation can have a too high complexity in high dimensional spaces. Thus, mean shift becomes useful. The algorithm uses a technique called &lt;em&gt;multiple restart gradient descent&lt;/em&gt;, starting from $y_0$ and iterating under the following procedure (where $G$ is associated with the kernel function $g(r)=-k&amp;rsquo;(r)$):&lt;/p&gt;
+&lt;p&gt;$$\mathbf{y}_{k+1} = \mathbf{y}_k + \mathbf{m}(\mathbf{y}_k)$$&lt;/p&gt;
+&lt;p&gt;$$\text{with} \quad \mathbf{m}(\mathbf{x}) = \dfrac{\sum_{i \in \mathcal{I}} \mathbf{x_i}G(\mathbf{x}-\mathbf{x_i})}{\sum_{i \in \mathcal{I}} G(\mathbf{x}-\mathbf{x_i})} - \mathbf{x} \quad \text{called the mean shift vector}$$&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-one-dimensional-visualization-of-the-kernel-density-estimate-its-derivative-and-a-mean-shift&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/segmentation/meanshift.png&#34; alt=&#34;One-dimensional visualization of the kernel density estimate, its derivative, and a mean shift.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      One-dimensional visualization of the kernel density estimate, its derivative, and a mean shift.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;It has been proven that this algorithm converges if the kernel $k(r)$ is monotonically decreasing. Two kernels commonly used for the mean shift algorithm are the &lt;em&gt;Gaussian kernel&lt;/em&gt;, and the &lt;em&gt;Epanechnikov kernel&lt;/em&gt;, whose formula is $k_{E}(r) = \max(0,1-r)$. Therefore, the simpliest way to apply mean shift algorithm is to use the above gradient procedure at every input point $x_i$, in order to find all local maxima.&lt;/p&gt;
+&lt;p&gt;In &lt;em&gt;image segmentation&lt;/em&gt;, mean shift algorithm is generally used taking into account spatial coordinates and color of pixels, as with the bilateral filter, through a kernel of the form:&lt;/p&gt;
+&lt;p&gt;$$K(\mathbf{x_i}) = k\left(\dfrac{||\mathbf{x_r}||^2}{h_r^2}\right)k\left(\dfrac{||\mathbf{x_s}||^2}{h_s^2}\right)$$&lt;/p&gt;
+&lt;p&gt;where $\mathbf{x_s} = (x,y)$ are the spatial coordinates (spatial domain), $\mathbf{x_r}$ is the color value (range domain), $h_s$ (resp. $h_r$) the spatial (resp. range) bandwith.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;normalized-cut&#34;&gt;Normalized Cut&lt;/h1&gt;
+&lt;p&gt;The Normalized Cut algorithm is an efficient way to segment an image. This algorithm is based on a graph representation of the image: pixels are vertices and weights (edges) depend on the image (brightness, intensity, distance or whatever can be useful to segment the image). The vertices could be just a subset of pixels like points of interest.&lt;/p&gt;
+&lt;p&gt;Once the graph is computed, the problem is to cut vertices into two disjoint subsets $A$ and $B$ such that weights from A to B, $cut(A, B) = \sum_{u \in A, v\in B} w(u, v)$ is minimal. Unfortunately, algorithms tend to make unbalanced sets ($cut(A, B)$ is smaller if $A$ contains only one element). The idea for this algorithm is to \textit{normalize the cut}:&lt;/p&gt;
+&lt;p&gt;$$N_{cut}(A, B) = \frac{cut(A, B)}{assoc(A, V)} + \frac{cut(A, B)}{assoc(B, V)}$$&lt;/p&gt;
+&lt;p&gt;where $assoc(A, V) = \sum_{u \in A, t \in V} w(u, t)$.&lt;/p&gt;
+&lt;p&gt;It has been proven in &lt;em&gt;reference 1&lt;/em&gt; that the &lt;em&gt;normalized cut&lt;/em&gt; is equivalent to find the eigenvector with the second smallest eigenvalue for:&lt;/p&gt;
+&lt;p&gt;$$(D - W)x = \lambda Dx$$&lt;/p&gt;
+&lt;p&gt;where, if $N = |V|$, $W \in \mathbb{R}^{N\times N}$ is the weight matrix and $D \in \mathbb{R}^{N\times N}$ is the diagonal matrix where $D(i, i) = \sum_j w(i, j)$. Signs of the second eigenvector $x$ decide on the cut ($i \in A$ iff $x(i) &amp;gt; 0$).&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;our-results&#34;&gt;Our results:&lt;/h2&gt;
+&lt;p&gt;We decided to test this algorithm. Firstly, we worked on a set of points in $\mathbb{R}^2$ and we made a graph where vertices are points and weights are $w(x,y) = ||x - y||_2^{-1}$. We obtained the segmentation shown in the left figure below, which give good results (the algorithm did not know the colors / the labels of the points). Then, we decided to work on artificial images and we found two main issues:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How can we make efficiently (in Python) the graph from the image?&lt;/li&gt;
+&lt;li&gt;How can we speed up the algorithm (because the complexity is $O(N^3)$ where $N = |V|$, $N = 10^6$ for a $1000\times 1000$ image)?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To solve the first issue, we decided to make a graph only based on colors, i.e. $w(x, y) = np.abs(I(x) - I(y))$. To solve the second one, we used a &lt;em&gt;sparsed matrix&lt;/em&gt;. We obtained great results for two artificial black and white images but results are awful for real images. Therefore the idea is to change our graph representation.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-results-for-the-cut-of-two-gaussians&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/segmentation/cut1.png&#34; alt=&#34;Results for the cut of two gaussians.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Results for the cut of two gaussians.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-perfect-results-for-an-artificial-and-complex-bw-picture&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/segmentation/cut2.png&#34; alt=&#34;Perfect results for an artificial and complex B&amp;amp;W picture.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Perfect results for an artificial and complex B&amp;amp;W picture.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-failure-with-a-real-photograph-coins&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/segmentation/cut3.png&#34; alt=&#34;Failure with a real photograph (coins).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Failure with a real photograph (coins).
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Shi, J., &amp;amp; Malik, J. (2000). Normalized cuts and image segmentation. IEEE Transactions on pattern analysis and machine intelligence, 22(8), 888-905.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Szeliski, R. (2010). Computer vision: algorithms and applications. Springer Science &amp;amp; Business Media.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>★ Lloyd Iteration Convergence</title>
+      <link>https://michaelkarpe.github.io/computer-vision-projects/lloyd/</link>
+      <pubDate>Mon, 07 May 2018 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/computer-vision-projects/lloyd/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;relocation-vectors&#34;&gt;Relocation vectors&lt;/h1&gt;
+&lt;h2 id=&#34;calculation&#34;&gt;Calculation&lt;/h2&gt;
+&lt;p&gt;The visualization of the relocation vectors is obtained by plotting the segments between the generators before and after Lloyd&amp;rsquo;s iteration. The generators of the cells in the previous iteration have been drawn in red.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-relocation-vectors&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q2_relocation.png&#34; alt=&#34;Visualization of relocation vectors.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of relocation vectors.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_image.png&#34; alt=&#34;Visualization of the cells after convergence.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;convergence&#34;&gt;Convergence&lt;/h2&gt;
+&lt;p&gt;For the plotting of the convergence curves, we saved the different values in .txt files and processed the data in Python language, with the matplotlib.pyplot library. We can see that this evolution is globally decreasing, with an increase in energy when the cells &amp;ldquo;unblock&amp;rdquo; after having converged to a local minimum of energy.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-in-logarithmic-scale-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-uniform-initialization&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_length.png&#34; alt=&#34;Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a **uniform** initialization.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a &lt;strong&gt;uniform&lt;/strong&gt; initialization.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-in-logarithmic-scale-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-an-initialization-in-one-corner&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_coin_length.png&#34; alt=&#34;Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for an initialization **in one corner**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for an initialization &lt;strong&gt;in one corner&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-in-logarithmic-scale-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-an-initialization-on-a-line&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_line_length.png&#34; alt=&#34;Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for an initialization **on a line**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for an initialization &lt;strong&gt;on a line&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;By zooming the first convergence curve between $30$ and $60$ iterations and plotting it in real scale (and not in logarithmic scale as on the different images), it becomes clear that the convergence of the mean length is quadratic.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-sampling-of-the-square-domain-with-n--10-000-points&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_regression.png&#34; alt=&#34;Visualization of the sampling of the square domain with $N = 10 000$ points.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the sampling of the square domain with $N = 10 000$ points.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;energy-distribution-by-cell&#34;&gt;Energy distribution by cell&lt;/h1&gt;
+&lt;h2 id=&#34;calculation-1&#34;&gt;Calculation&lt;/h2&gt;
+&lt;p&gt;The global energy of a domain partition in $N_c$ cells $\mathcal{C}_i$ is given by the following formula :&lt;/p&gt;
+&lt;p&gt;$$E_{dom} = \sum_{i=1}^{N_c} E_{cell} = \sum_{i=1}^{N_c} \int_{x \in \mathcal{C}_i} ||x-x_i||^2 dx$$&lt;/p&gt;
+&lt;p&gt;To carry out the calculation of integrals, we proceed by Monte-Carlo method, by sampling a number $N$ of points $x_j$ on the whole domain and by approximating the integral by a discrete sum :&lt;/p&gt;
+&lt;p&gt;$$E_{cell} = \int_{x \in \mathcal{C}&lt;em&gt;i} ||x-x_i||^2 dx = \sum&lt;/em&gt;{x_j \in \mathcal{C}_i} ||x_j-x_i||^2$$&lt;/p&gt;
+&lt;p&gt;A representation of this sampling is shown for $N = 10,000$. In order to cover the entire domain sufficiently, we have chosen $N = 100,000$.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-cells-after-convergence-in-an-hourglass-shaped-domain&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q4_sampling.png&#34; alt=&#34;Visualization of cells after convergence in an hourglass-shaped domain.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of cells after convergence in an hourglass-shaped domain.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;convergence-1&#34;&gt;Convergence&lt;/h2&gt;
+&lt;p&gt;Still in the square domain with an initialization of $10$ points, the evolution of the energy of the cells is represented below. For the $3$ initializations tested, we can see that the cells converge to a close energy after about thirty iterations. This convergence is fast for uniform and one-line initializations, with a slight energy correction at about $23$ iterations for the uniform initialization, due to the cells getting stuck (which we find with the growth of the average norm of the relocation vectors around the same number of iterations).&lt;/p&gt;
+&lt;p&gt;For initialization in a corner, convergence is slower because more iterations are needed to allow the $10$ generators to occupy the entire domain space. However, there is no major energy jump due to a blockage of cells between them.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-uniform-initialization&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a **uniform** initialization.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a &lt;strong&gt;uniform&lt;/strong&gt; initialization.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-an-initialization-in-a-corner&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_coin_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for an initialization **in a corner**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for an initialization &lt;strong&gt;in a corner&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-an-initialization-on-a-line&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_line_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for an initialization **on a line**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for an initialization &lt;strong&gt;on a line&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;domain-influence&#34;&gt;Domain influence&lt;/h2&gt;
+&lt;p&gt;The shape of the domain greatly influences the convergence results. For example, for the circular domain, which is a &amp;ldquo;regular&amp;rdquo; domain in the sense that the edges do not have &amp;ldquo;corners&amp;rdquo; or abrupt breaks in direction (the edges are well continuous and driftable), convergence occurs without any problem after about ten iterations and is not characterized by any particular jumps. The results for the circular domain are shown below.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-cells-after-convergence-in-a-circular-domain&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_image.png&#34; alt=&#34;Visualization of cells after convergence in a circular domain.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of cells after convergence in a circular domain.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-relocation-vectors-in-a-circular-domain-as-a-function-of-the-number-of-lloyds-iterations-for-uniform-initialization&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_length.png&#34; alt=&#34;Evolution of the mean norm of relocation vectors in a circular domain as a function of the number of Lloyd&amp;#39;s iterations for uniform initialization.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of relocation vectors in a circular domain as a function of the number of Lloyd&amp;rsquo;s iterations for uniform initialization.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-cell-energy-in-a-circular-domain-as-a-function-of-the-number-of-lloyds-iterations-for-uniform-initialization&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_energy.png&#34; alt=&#34;Evolution of the mean cell energy in a circular domain as a function of the number of Lloyd&amp;#39;s iterations for uniform initialization.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean cell energy in a circular domain as a function of the number of Lloyd&amp;rsquo;s iterations for uniform initialization.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;For the other areas provided, more original behaviour can be observed, due to the same observations as those made previously. For the L-shape, the inner corner of the L will cause some increases in average length, as the cells &amp;ldquo;crossing&amp;rdquo; the corner move quickly at once to adapt to the shape, and convergence is quite slow relative to the square and circular shapes.&lt;/p&gt;
+&lt;p&gt;For the key-shaped domain, convergence is also slower due to the complexity of the domain, and medium-length jumps are more important due to this complexity, because cells move a lot when a &amp;ldquo;corner&amp;rdquo; is crossed and filled by the cells.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-cells-after-convergence-in-a-l-domain&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_image.png&#34; alt=&#34;Visualization of cells after convergence in a **L** domain.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of cells after convergence in a &lt;strong&gt;L&lt;/strong&gt; domain.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-cells-after-convergence-in-a-domain-containing-a-cross&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_image.png&#34; alt=&#34;Visualization of cells after convergence in a domain **containing a cross**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of cells after convergence in a domain &lt;strong&gt;containing a cross&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-cells-after-convergence-in-a-domain-in-the-form-of-a-key&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_image.png&#34; alt=&#34;Visualization of cells after convergence in a domain **in the form of a key**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of cells after convergence in a domain &lt;strong&gt;in the form of a key&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-in-a-l-domain&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_length.png&#34; alt=&#34;Evolution of the mean norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations in a **L** domain.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations in a &lt;strong&gt;L&lt;/strong&gt; domain.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-in-a-domain-containing-a-cross&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_length.png&#34; alt=&#34;Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations in a domain **containing a cross**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations in a domain &lt;strong&gt;containing a cross&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-in-a-domain-in-the-form-of-a-key&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_length.png&#34; alt=&#34;Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations in a domain **in the form of a key**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations in a domain &lt;strong&gt;in the form of a key&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-cell-energy-as-a-function-of-the-number-of-lloyds-iterations-in-a-l-domain&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_energy.png&#34; alt=&#34;Evolution of the average cell energy as a function of the number of Lloyd&amp;#39;s iterations in a **L** domain.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average cell energy as a function of the number of Lloyd&amp;rsquo;s iterations in a &lt;strong&gt;L&lt;/strong&gt; domain.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-in-a-domain-containing-a-cross&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations in a domain **containing a cross**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations in a domain &lt;strong&gt;containing a cross&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-in-a-domain-in-the-form-of-a-key&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations in a domain **in the form of a key**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations in a domain &lt;strong&gt;in the form of a key&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;For hourglass-shaped domains (hard-coded in C++ code according to a parameter corresponding to the size of the bottleneck), this difficulty for the Lloyd&amp;rsquo;s iteration to cross corners or narrow passages is clearly highlighted. Indeed, we can see that, in general, the narrower the bottleneck, the longer the cells take to cross the bottleneck, and thus the greater the average length rise when the bottleneck is crossed.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Initialization:&lt;/strong&gt; The observation on all domains leads us to think that for fairly simple and regular domains, a uniform initialization is quite efficient. For more complex domain forms, it is advisable to initialize the algorithm with more generators at the irregular edges of the domain, or at places with narrow passages.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-in-an-hourglass-shaped-domain-with-bottleneck-width-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_image.png&#34; alt=&#34;Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-in-an-hourglass-shaped-domain-with-bottleneck-width-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_image.png&#34; alt=&#34;Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-in-an-hourglass-shaped-domain-with-bottleneck-width-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_image.png&#34; alt=&#34;Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_length.png&#34; alt=&#34;Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_length.png&#34; alt=&#34;Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-norm-of-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_length.png&#34; alt=&#34;Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average norm of relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-cell-energy-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_energy.png&#34; alt=&#34;Evolution of the average cell energy as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average cell energy as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-cell-energy-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_energy.png&#34; alt=&#34;Evolution of the average cell energy as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average cell energy as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-cell-energy-as-a-function-of-the-number-of-lloyds-iterations-for-an-hourglass-domain-with-bottleneck-width-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_energy.png&#34; alt=&#34;Evolution of the average cell energy as a function of the number of Lloyd&amp;#39;s iterations for an hourglass domain with bottleneck width **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average cell energy as a function of the number of Lloyd&amp;rsquo;s iterations for an hourglass domain with bottleneck width &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;overshooting-and-temporal-inertia&#34;&gt;Overshooting and temporal inertia&lt;/h1&gt;
+&lt;h2 id=&#34;overshooting&#34;&gt;Overshooting&lt;/h2&gt;
+&lt;p&gt;Overshooting involves moving the generators not to the centres of mass of the cells, but slightly beyond. Informally, we consider the displacement vector $v_N$ at the $N$ iteration of a classical Lloyd&amp;rsquo;s iteration, and instead of moving the generator according to $v_N$, we move it according to $v_{N+1} = (1+\alpha)v_N$, where $\alpha \in \mathbb{R}^{+}$.&lt;/p&gt;
+&lt;p&gt;There are three classes of behaviour of the Lloyd&amp;rsquo;s iteration according to the value of the overshooting parameter (determined approximately by numerical testing, the limit values of these behaviours change notably according to the shape of the domain and the initialization of the generators) for the square domain and for a uniform initialization:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\alpha \in [0,1]$ : the overshooting parameter is quite small: it speeds up the convergence of Lloyd&amp;rsquo;s iteration&amp;hellip;&lt;/li&gt;
+&lt;li&gt;$\alpha \approx [1, 1 + \epsilon]$ : the overshooting parameter is a bit too big : the iteration leads to a situation where $(1+\alpha)v_{N+1} = -(1+\alpha)v_N$, which causes the generators to alternate between two configurations&lt;/li&gt;
+&lt;li&gt;$\alpha &amp;gt; &amp;gt; 1+\epsilon$: the overshooting parameter is much too large: Lloyd&amp;rsquo;s iteration diverges and behaves chaotically.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-an-overshooting-parameter-with-an-overshooting-parameter-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_image.png&#34; alt=&#34;Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-an-overshooting-parameter-with-an-overshooting-parameter-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_image.png&#34; alt=&#34;Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-an-overshooting-parameter-with-an-overshooting-parameter-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_image.png&#34; alt=&#34;Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with an overshooting parameter with an overshooting parameter $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-an-overshooting-parameter-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with an overshooting parameter $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with an overshooting parameter $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Thus, if the parameter is too large, the Lloyd&amp;rsquo;s iteration may not converge. To prevent this problem, we can impose a rather small $\alpha$ parameter (at least strictly less than $1$, less than $0.5$ if we want to be sure to converge even in particular cases).&lt;/p&gt;
+&lt;p&gt;Another risk is that if the $\alpha$ parameter is too large, Lloyd&amp;rsquo;s iteration will take the generators out of the domain. To overcome this problem, we could use the &lt;em&gt;inside&lt;/em&gt; function of &lt;em&gt;cdt.h&lt;/em&gt; file, to apply overshooting to the relocation of a generator only if the new generator is inside the domain.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;temporal-inertia&#34;&gt;Temporal inertia&lt;/h2&gt;
+&lt;p&gt;Temporal inertia consists in keeping in memory the centers of mass of the previous iterations, and moving the generators with a linear combination of the previous $n$ displacement vectors. Informally, we move a generator at iteration $N$ according to the vector $v_{N+1} = \sum_{i=N-n}^N w_i v_i$, where the $w_i$ are weights given by the user to the relocation vectors of the previous iterations.&lt;/p&gt;
+&lt;p&gt;There are three classes of Lloyd&amp;rsquo;s iteration behaviour according to the value of the different coefficients (classes determined approximately by numerical testing, the limit values of these behaviours change in particular according to the shape of the domain and the initialization of the generators) for the square domain and for a uniform initialization, with a number $n = 5$ of displacement vectors taken into account:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\sum_{i=N-n}^N w_i \leq 1$: the previous relocation vectors are relatively little taken into account: convergence is accelerated because the generators move faster, since the first iterations concern larger displacements&lt;/li&gt;
+&lt;li&gt;$\sum_{i=N-n}^N w_i \approx 1 + \epsilon$: the previous relocation vectors are a bit too much taken into account, and the generators move a bit too much: their positions alternate between $2$ configurations (oscillating behavior)&lt;/li&gt;
+&lt;li&gt;$\sum_{i=N-n}^N w_i &amp;gt; &amp;gt; 1+\epsilon$: the first relocation vectors are much too much taken into account, and the addition of vectors with too large coefficients produces larger and larger vectors: the Lloyd&amp;rsquo;s iteration diverges and the generators leave the domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_image.png&#34; alt=&#34;Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_image.png&#34; alt=&#34;Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualization-of-the-cells-after-convergence-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_image.png&#34; alt=&#34;Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-mean-norm-of-the-relocation-vectors-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_length.png&#34; alt=&#34;Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;td&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-of-the-average-energy-of-the-cells-as-a-function-of-the-number-of-lloyds-iterations-for-a-square-domain-with-temporal-inertia-of-the-last-5-displacements-with-weights-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_energy.png&#34; alt=&#34;Evolution of the average energy of the cells as a function of the number of Lloyd&amp;#39;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution of the average energy of the cells as a function of the number of Lloyd&amp;rsquo;s iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Convergence is faster when the coefficients are not taken too large. Indeed, taking into account the &amp;ldquo;large&amp;rdquo; vectors of previous displacements allows the generators to move faster.&lt;/p&gt;
+&lt;p&gt;However, similarly to the overshooting parameter being too large, too large coefficients cause the algorithm to diverge (and even with small coefficients, convergence with slight oscillations can be seen in the middle image above). To overcome this, we impose small coefficients, or we check that the generators stay inside the domain with &lt;em&gt;inside&lt;/em&gt; parameter.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+# Vecteurs de relocalisation
+
+## Calcul
+
+La visualisation des vecteurs de relocalisation s&#39;obtient en traçant les segments entre les générateurs avant et après itération de Lloyd. Le résultat obtenu est présenté Figure $1$, où l&#39;on a tracé en rouge les générateurs des cellules à l&#39;itération précédente.
+
+|      |      |
+|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-vecteurs-de-relocalisation&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q2_relocation.png&#34; alt=&#34;Visualisation des vecteurs de relocalisation.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des vecteurs de relocalisation.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_image.png&#34; alt=&#34;Visualisation des cellules après convergence.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+Pour le tracé des courbes de convergence, nous avons sauvegardé les différentes valeurs dans des fichiers .txt et traité les données en langage Python, avec la bibliothèque matplotlib.pyplot. Les résultats obtenus sont présentés en Figure $2$. On constate que cette évolution est globalement décroissance, avec une augmentation de l&#39;énergie lorsque les cellules se &#34;débloquent&#34; après avoir convergé vers un minimum local d&#39;énergie.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-en-échelle-logarithmique-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-uniforme&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_length.png&#34; alt=&#34;Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **uniforme**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;uniforme&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-en-échelle-logarithmique-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-dans-un-coin&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_coin_length.png&#34; alt=&#34;Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **dans un coin**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;dans un coin&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-en-échelle-logarithmique-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-sur-une-ligne&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_line_length.png&#34; alt=&#34;Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **sur une ligne**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution en échelle logarithmique de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;sur une ligne&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+En zoomant la première courbe de convergence entre $30$ et $60$ itérations et en la traçant en échelle réelle (et non pas en échelle logarithmique comme sur les différentes images), il apparaît clairement que la convergence de la longueur moyenne est quadratique (Figure $3$).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-de-léchantillonnage-du-domaine-carré-avec-n--10-000-points&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_regression.png&#34; alt=&#34;Visualisation de l&amp;#39;échantillonnage du domaine carré avec $N = 10 000$ points.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation de l&amp;rsquo;échantillonnage du domaine carré avec $N = 10 000$ points.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+# Distribution des énergies par cellule
+
+## Calcul
+
+[//]: # (L&#39;énergie globale d&#39;une partition de domaine en $N_c$ cellules $\mathcal{C}_i$ est donnée par la formule suivante :)
+
+$$E_{dom} = \sum_{i=1}^{N_c} E_{cell} = \sum_{i=1}^{N_c} \int_{x \in \mathcal{C}_i} ||x-x_i||^2 dx$$
+
+Pour réaliser le calcul des intégrales, on procède par méthode de Monte-Carlo, en échantillonnant un nombre $N$ de points $x_j$ sur l&#39;ensemble du domaine et en approximant l&#39;intégrale par une somme discrète :
+
+$$E_{cell} = \int_{x \in \mathcal{C}_i} ||x-x_i||^2 dx = \sum_{x_j \in \mathcal{C}_i} ||x_j-x_i||^2$$
+
+Une représentation de cet échantillonnage est réalisée en Figure $4$ pour $N = 10 000$. Pour assez couvrir entièrement le domaine, nous avons choisi $N = 100 000$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-forme-de-sablier&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q4_sampling.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine en forme de sablier.&#34; loading=&#34;lazy&#34; data-zoomable width=&#34;50%&#34; /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine en forme de sablier.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+## Convergence
+
+Toujours dans le domaine carré avec une initialisation de $10$ points, l&#39;évolution de l&#39;énergie des cellules est représentée Figure $5$. Pour les $3$ initialisations testées, on constate que les cellules convergent vers une énergie proche après une trentaine d&#39;itérations. Cette convergence est rapide pour les initialisations uniforme et sur une ligne, avec une légère correction d&#39;énergie à environ 23 itérations pour l&#39;initialisation uniforme, en raison des cellules qui se bloquaient (ce que l&#39;on retrouve avec la croissance de la norme moyenne des vecteurs de relocalisation autour du même nombre d&#39;itérations).
+
+Pour l&#39;initialisation dans un coin, la convergence est plus lente car plus d&#39;itérations sont nécessaires pour permettre aux $10$ générateurs d&#39;occuper l&#39;espace entier du domaine. Cependant, on ne constate pas de saut majeur d&#39;énergie qui serait dû à un blocage de cellules entre elles.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-uniforme&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_uniform_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **uniforme**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;uniforme&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-dans-un-coin&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_coin_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **dans un coin**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;dans un coin&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-sur-une-ligne&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q3_line_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation **sur une ligne**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation &lt;strong&gt;sur une ligne&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+## Influence du domaine
+
+La forme du domaine influence beaucoup les résultats de convergence. Pour le domaine circulaire par exemple, qui est un domaine &#34;régulier&#34; dans le sens où les bords ne présentent pas de &#34;coins&#34; ou de rupture brutale de direction (les bords sont bien continus et dérivables), la convergence se fait sans problème au bout d&#39;une dizaine d&#39;itérations et n&#39;est pas caractérisée par des sauts particuliers. Les résultats pour le domaine circulaire sont présentés Figure $6$.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-circulaire&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine circulaire.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine circulaire.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-évolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-dans-un-domaine-circulaire-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-uniforme&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_length.png&#34; alt=&#34;Évolution de la norme moyenne des vecteurs de relocalisation dans un domaine circulaire en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation uniforme.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Évolution de la norme moyenne des vecteurs de relocalisation dans un domaine circulaire en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation uniforme.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-évolution-de-lénergie-moyenne-des-cellules-dans-un-domaine-circulaire-en-fonction-du-nombre-ditérations-de-lloyd-pour-une-initialisation-uniforme&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_circle_energy.png&#34; alt=&#34;Évolution de l&amp;#39;énergie moyenne des cellules dans un domaine circulaire en fonction du nombre d&amp;#39;itérations de Lloyd pour une initialisation uniforme.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Évolution de l&amp;rsquo;énergie moyenne des cellules dans un domaine circulaire en fonction du nombre d&amp;rsquo;itérations de Lloyd pour une initialisation uniforme.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+Pour les autres domaines fournis, on constate des comportements plus originaux, dus aux mêmes observations que formulées précédemment. Pour la forme en L, le coin intérieur du L va provoquer quelques augmentations de la longueur moyenne, les cellules &#34;franchissant&#34; le coin se déplaçant rapidement d&#39;un coup pour s&#39;adapter à la forme, et la convergence est assez lente relativement aux formes carrée et circulaire.
+
+Pour le domaine en forme de clé, la convergence est aussi plus lente en raison de la complexité du domaine, et les sauts de longueur moyenne sont plus importants en raison de cette complexité, car les cellules se déplacent beaucoup lorsqu&#39;un &#34;coin&#34; est franchi et comblé par les cellules. L&#39;ensemble des résultats est présenté dans les Figures $7$ à $9$.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-l&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine **en L**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine &lt;strong&gt;en L&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-comportant-une-croix&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine **comportant une croix**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine &lt;strong&gt;comportant une croix&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-forme-de-clé&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine **en forme de clé**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine &lt;strong&gt;en forme de clé&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-en-l&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **en L**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;en L&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-comportant-une-croix&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **comportant une croix**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;comportant une croix&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-en-forme-de-clé&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **en forme de clé**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;en forme de clé&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-en-l&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_lform_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **en L**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;en L&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-comportant-une-croix&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_cross_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **comportant une croix**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;comportant une croix&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-dans-un-domaine-en-forme-de-clé&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_key_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd dans un domaine **en forme de clé**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd dans un domaine &lt;strong&gt;en forme de clé&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+Pour les domaines en forme de sablier (codées en dur dans le code C++ en fonction d&#39;un paramètre correspondant à la taille du goulet d&#39;étranglement), cette difficulté pour l&#39;itération de Lloyd à franchir des coins ou des passages étroits est nettement mise en évidence. On constate en effet que, de façon générale, plus le goulet d&#39;étranglement est étroit, plus les cellules mettent du temps à franchir le goulet d&#39;étranglement, et donc plus la remontée de longueur moyenne est importante lorsqu&#39;il est franchi (Figure $11$).
+
+**Initialisation:** L&#39;observation sur l&#39;ensemble des domaines nous amène à penser que pour des domaines assez simples et réguliers, une initialisation uniforme est assez efficace. Pour des formes de domaines plus complexes, il convient d&#39;initialiser l&#39;algorithme avec plus de générateurs aux bords irréguliers du domaine, ou aux endroits présentant des passages étroits.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-forme-de-sablier-avec-goulet-détranglement-de-largeur-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;#39;étranglement de largeur **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-forme-de-sablier-avec-goulet-détranglement-de-largeur-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;#39;étranglement de largeur **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-dans-un-domaine-en-forme-de-sablier-avec-goulet-détranglement-de-largeur-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_image.png&#34; alt=&#34;Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;#39;étranglement de largeur **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence dans un domaine en forme de sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-1&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass001_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **1**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;1&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-3&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass003_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **3**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;3&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-en-sablier-avec-goulet-détranglement-de-largeur-5&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q5_sandglass005_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;#39;étranglement de largeur **5**.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine en sablier avec goulet d&amp;rsquo;étranglement de largeur &lt;strong&gt;5&lt;/strong&gt;.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+# Dépassement des centres (overshooting) et inertie temporelle
+
+## Overshooting
+
+L&#39;overshooting consiste à déplacer les générateurs non pas aux centres de masse des cellules, mais un peu au-delà. Informatiquement, on considère le vecteur de déplacement $v_N$ à l&#39;itération $N$ d&#39;une itération de Lloyd classique, et au lieu de déplacer le générateur selon $v_N$, on le déplace selon $v_{N+1} = (1+\alpha)v_N$, où $\alpha \in \mathbb{R}^{+}$.
+
+On distingue trois classes de comportement de l&#39;itération de Lloyd selon la valeur du paramètre d&#39;overshooting (déterminées de façon approximative en testant numériquement, les valeurs limites de ces comportements changent notamment selon la forme du domaine et l&#39;initialisation des générateurs) pour le domaine carré et pour une initialisation uniforme (Figures $13$ à $15$) :
+
+$\alpha \in [0,1]$ : la paramètre d&#39;overshooting est assez petit : il permet d&#39;accélérer la convergence de l&#39;itération de Lloyd
+- $\alpha \approx [1, 1 + \epsilon]$ : le paramètre d&#39;overshooting est un peu trop grand : l&#39;itération aboutit à une situation où $(1+\alpha)v_{N+1} = -(1+\alpha)v_N$, ce qui entraîne l&#39;alternance des générateurs entre deux configurations
+- $\alpha &gt; &gt; 1+\epsilon$ : le paramètre d&#39;overshooting est beaucoup trop grand : l&#39;itération de Lloyd diverge et a un comportement chaotique
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-un-paramètre-dovershooting-avec-un-paramètre-dovershooting-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec un paramètre d&amp;#39;overshooting avec un paramètre d&amp;#39;overshooting $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec un paramètre d&amp;rsquo;overshooting avec un paramètre d&amp;rsquo;overshooting $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-un-paramètre-dovershooting-avec-un-paramètre-dovershooting-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec un paramètre d&amp;#39;overshooting avec un paramètre d&amp;#39;overshooting $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec un paramètre d&amp;rsquo;overshooting avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-un-paramètre-dovershooting-avec-un-paramètre-dovershooting-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec un paramètre d&amp;#39;overshooting avec un paramètre d&amp;#39;overshooting $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec un paramètre d&amp;rsquo;overshooting avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--05&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting050_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 0.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 0.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--11&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting110_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 1.1$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.1$.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-un-paramètre-dovershooting-alpha--15&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q7_overshooting150_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;#39;overshooting $\alpha = 1.5$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec un paramètre d&amp;rsquo;overshooting $\alpha = 1.5$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+Ainsi, si le paramètre est trop important, l&#39;itération de Lloyd risque de ne pas converger. Pour prévenir ce problème, on peut imposer un paramètre $\alpha$ assez petit (au moins strictement inférieur à 1, inférieur à $0.5$ si l&#39;on veut être sûr de converger y compris dans des cas particuliers).
+
+Un autre risque est que si le paramètre $\alpha$ est trop grand, l&#39;itération de Lloyd fasse sortir les générateurs du domaine. Pour pallier ce problème informatiquement, on pourrait utiliser la fonction inside de cdt.h, pour appliquer l&#39;overshooting à la relocalisation d&#39;un générateur seulement si le nouveau générateur est bien à l&#39;intérieur (inside) du domaine.
+
+&amp;nbsp;
+
+## Inertie temporelle
+
+L&#39;inertie temporelle consiste à garder en mémoire les centres de masse des itérations précédentes, et à déplacer les générateurs avec une combinaison linéaire des $n$ vecteurs déplacements précédents. Informatiquement, on déplace un générateur à l&#39;itération $N$ selon le vecteur $v_{N+1} = \sum_{i=N-n}^N w_i v_i$, où les $w_i$ sont des poids données par l&#39;utilisateur aux vecteurs de relocalisation des itérations précédentes.
+
+On distingue trois classes de comportement de l&#39;itération de Lloyd selon la valeur des différents coefficients (classes déterminées de façon approximative en testant numériquement, les valeurs limites de ces comportements changent notamment selon la forme du domaine et l&#39;initialisation des générateurs) pour le domaine carré et pour une initialisation uniforme, avec un nombre $n = 5$ de vecteurs déplacements pris en compte (Figures $16$ à $18$):
+
+- $\sum_{i=N-n}^N w_i \leq 1$ : les précédents vecteurs de relocalisation sont relativement peu pris en compte : la convergence est accélérée car les générateurs se déplacent plus vite, puisque les premières itérations concernent des déplacements plus importants
+- $\sum_{i=N-n}^N w_i \approx 1 + \epsilon$ : les précédents vecteurs de relocalisation sont un peu trop pris en compte, et les générateurs se déplacent un peu trop : leurs positions alternent entre 2 configurations (comportement oscillant)
+- $\sum_{i=N-n}^N w_i &gt; &gt; 1+\epsilon$ : les premiers vecteurs de relocalisation sont beaucoup trop pris en compte, et l&#39;addition des vecteurs avec de trop grands coefficients produit des vecteurs de plus en plus grands : l&#39;itération de Lloyd diverge et les générateurs sortent du domaine.
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-visualisation-des-cellules-après-convergence-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_image.png&#34; alt=&#34;Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Visualisation des cellules après convergence avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt;| 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-la-norme-moyenne-des-vecteurs-de-relocalisation-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_length.png&#34; alt=&#34;Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de la norme moyenne des vecteurs de relocalisation en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+|      |      |      |
+|------|------|------|
+|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--015&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_015_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.15$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--030&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_030_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.30$.
+    &lt;/figcaption&gt;&lt;/figure&gt; | 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-evolution-de-lénergie-moyenne-des-cellules-en-fonction-du-nombre-ditérations-de-lloyd-pour-un-domaine-carré-avec-inertie-temporelle-des-5-derniers-déplacements-avec-des-poids-w_i--050&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/lloyd/q8_inertia_050_energy.png&#34; alt=&#34;Evolution de l&amp;#39;énergie moyenne des cellules en fonction du nombre d&amp;#39;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Evolution de l&amp;rsquo;énergie moyenne des cellules en fonction du nombre d&amp;rsquo;itérations de Lloyd pour un domaine carré avec inertie temporelle des 5 derniers déplacements, avec des poids $w_i = 0.50$.
+    &lt;/figcaption&gt;&lt;/figure&gt;|
+
+&amp;nbsp;
+
+La convergence est plus rapide lorsque les coefficients ne sont pas pris trop grands. En effet, la prise de comptes des &#34;grands&#34; vecteurs de déplacements précédents permet aux générateurs de se déplacer plus vite.
+
+Cependant, de façon analogue au paramètre d&#39;overshooting trop grand, des coefficients trop grands provoquent une divergence de l&#39;algorithme (et même avec des coefficients petits, on constate une convergence avec de légères oscillations sur l&#39;image de gauche en Figure $17$). Pour pallier cela, on impose des coefficients petits, ou on vérifie que les générateurs restent à l&#39;intérieur du domaine avec le paramètre *inside*.
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Markovian Image Restoration</title>
+      <link>https://michaelkarpe.github.io/computer-vision-projects/restoration/</link>
+      <pubDate>Wed, 07 Jun 2017 00:00:00 +0000</pubDate>
+      <guid>https://michaelkarpe.github.io/computer-vision-projects/restoration/</guid>
+      <description>&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;presentation-of-the-project&#34;&gt;Presentation of the project&lt;/h1&gt;
+&lt;p&gt;The acquisition of a digital image is most often accompanied by the appearance of noise, often due to imperfections in the detection, transmission or compression of the signal, or to inherent defects in the environment such as insufficient or too much lighting. The suppression of this noise is even a vital issue in several fields, including medical imaging, and the search for an effective image denoising algorithm remains a persistent challenge at the crossroads of several scientific fields: functional analysis, probability, statistics and physical sciences.&lt;/p&gt;
+&lt;p&gt;In this study, we implement different algorithms for the restitution of an image containing simple grayscale patterns, noisy according to Gaussian noise. For this, we adopt a probabilistic description of the image, considering its pixels as random variables $X_i$, energy $U(X_i)$ which depends on its neighborhood. This approach allows us to consider the image as a Markov field.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;numerical-implementation-of-markov-fields&#34;&gt;Numerical implementation of Markov fields&lt;/h1&gt;
+&lt;p&gt;We are now formulating the probabilistic methods that we have digitally implemented to apply them to image processing.&lt;/p&gt;
+&lt;p&gt;In our study, we will consider rectangular grayscale images (0 to 255), length $w$ and height $h$. Each pixel in the image is represented by its coordinates $(i, j)$ and a value corresponding to the gray level of the pixel, which value belongs to $E = [|0, 255|]$. The total image can thus be represented by an array of values of $E$, of dimension $w \times h$.&lt;/p&gt;
+&lt;p&gt;For each pixel, a click system can be defined as represented on the first image of this article. In our computer codes, the presence of a variable $c$ which will take the value $4$ or $8$ will allow us to choose if we consider $4$ or $8$-connected neighborhoods, and we will consider clicks of order $2$.&lt;/p&gt;
+&lt;p&gt;The implementation of image processing algorithms has three main phases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the choice of a suitable Markov field&lt;/li&gt;
+&lt;li&gt;the drawing of a configuration according to the chosen Markov field&lt;/li&gt;
+&lt;li&gt;the implementation of the algorithm that converges to a correct image after a certain number of prints.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We describe these three phases in a theoretical way, then we will analyze the results obtained with the different methods.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;markov-fields-in-image-processing&#34;&gt;Markov fields in image processing&lt;/h2&gt;
+&lt;p&gt;We present here the most used Markov fields in image processing as well as some variants giving better results.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;ising-model&#34;&gt;Ising Model&lt;/h3&gt;
+&lt;p&gt;The Ising model is only applicable to an image with $2$ levels of gray. By an affine transformation, we can associate to these $2$ values the values of the set $E = \{-1, 1\}$. We recall the energy of this model:&lt;/p&gt;
+&lt;p&gt;$$U(x) = - \sum_{c=(s,t) \in C} \beta x_s x_t - \sum_{s \in S} B x_s$$&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;potts-model&#34;&gt;Potts Model&lt;/h3&gt;
+&lt;p&gt;This is a generalization of Ising&amp;rsquo;s model, adapted to a set $E$ of cardinal $N$, as $E = [|0, 255|]$. The main difference with the Ising model is that only potentials related to second-order clicks are defined. There is no energy term related to first-order clicks, corresponding to an external magnetic field. The energy of this model is :&lt;/p&gt;
+&lt;p&gt;$$U(x) = \ \beta \sum_{c=(s,t) \in C} (\textbf{1}&lt;em&gt;{\{x_s \neq x_t\}} - \textbf{1}&lt;/em&gt;{\{x_s = x_t\}})$$&lt;/p&gt;
+&lt;p&gt;Such a model tends to create homogenous zones the larger the $\beta$ is.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;gaussian-markovian-model&#34;&gt;Gaussian Markovian model&lt;/h3&gt;
+&lt;p&gt;This model can only be used for grayscale images, which is perfectly suited to our study. We consider, here again, $4$- or $8$-axis neighborhoods and only second order clicks. The energy of this model is :&lt;/p&gt;
+&lt;p&gt;$$U(x) = \beta \sum_{c=(s,t) \in C} (x_s-x_t)^2 + \alpha \sum_{s \in S} (x_s-\mu_s)^2$$&lt;/p&gt;
+&lt;p&gt;For $\beta &amp;gt; 0$, the first quadratic term favors small differences in gray level, since it minimizes an energy that increases quadratically with the difference in gray levels. The second term involves a $\mu_s$ term that corresponds to a reference image. If we know an approximation of the image we want to obtain, or if we want to remain close to the initial image, this term allows the solution image $x$ to not move away from the reference image $\mu$.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;drawing-a-configuration-according-to-the-markov-field&#34;&gt;Drawing a configuration according to the Markov field&lt;/h2&gt;
+&lt;p&gt;Once a Markov field has been chosen, its total energy must be minimized. This is done by pulling configurations. The general idea is to draw a random value for each pixel and to assign it this value if it allows the total energy to be reduced.&lt;/p&gt;
+&lt;p&gt;The algorithms most commonly used to make these draws, the Gibbs sampler and the Metropolis algorithm, work in a similar way. The $n$ iterations, where a $s$ pixel is randomly selected and then an image-dependent random experiment is associated with $s$ at the $n-1$ iteration. We update or not $s$ depending on the result of the random experiment.&lt;/p&gt;
+&lt;p&gt;Since all the pixels $s$ must be scanned a large number of times, one usually scans all the pixels line by line and from left to right without performing a random draw, to make sure that all pixels have been updated. The algorithm stops after a large number $n$ of iterations, or when there are few pixel changes for an iteration.&lt;/p&gt;
+&lt;p&gt;Both algorithms are called probabilistic relaxation algorithms: relaxation because the algorithm performs successive updates of the different pixels, and probabilistic because the algorithm simulates random draws.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;gibbs-sampler&#34;&gt;Gibbs&amp;rsquo; sampler&lt;/h3&gt;
+&lt;p&gt;For each of the $n$ iterations of the algorithm, we scan all the pixels. For each pixel (noted $s$) :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Calculation of the local probability, knowing the configuration of the neighbors $V_s$ for the image at iteration $n-1$ :&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$ \mathbb{P} (X_s = x_s | V_s) = \dfrac{\exp (-U_s(x_s | V_s))}{\sum_{a_s \in A_s}{\exp (-U_s(a_s | V_s))}}$$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Updating of the site by random draw according to the law $\mathbb{P}(X_s = x_s | V_s)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;metropolis-algorithm&#34;&gt;Metropolis algorithm&lt;/h3&gt;
+&lt;p&gt;For each of the $n$ iterations of the algorithm, we scan all the pixels. For each pixel (noted $s$) :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Random draw of $\lambda$ in $E$ according to a uniform law on $E$:&lt;/li&gt;
+&lt;li&gt;Calculation of the energy variation if the value of $s$, $x_s^{(n-1)}$, is replaced by $\lambda$:
+$$ \Delta U = U_s(\lambda | V_s^{(n-1)}) - U_s(x_s^{(n-1)} | V_s^{(n-1)}) $$&lt;/li&gt;
+&lt;li&gt;If $ \Delta U \leq $0, then we update the pixel: $x_s^{(n)} = \lambda$&lt;/li&gt;
+&lt;li&gt;Otherwise, update to the probability of success $p = \exp (- \Delta U)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;implementation-of-the-image-restoration-algorithm&#34;&gt;Implementation of the image restoration algorithm&lt;/h2&gt;
+&lt;p&gt;After implementing a configuration pull algorithm, it is necessary to implement an algorithm converging to a solution image of the total energy minimization problem. Two algorithms are mainly used in Markov field image processing.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;simulated-annealing&#34;&gt;Simulated annealing&lt;/h3&gt;
+&lt;p&gt;Simulated annealing is a classical method of energy minimization frequently used in physics. In image processing, the algorithm consists of $n$ iterations during which configuration prints are made. However, these prints now depend only on the configuration energy, but also on a quantity $T^{(n)}$ which measures the degree of randomness introduced in these prints, called temperature, and which decreases with each iteration. Starting from a fairly large temperature $T^{(0)}$ and the image to be processed, the algorithm is as follows:&lt;/p&gt;
+&lt;p&gt;For each iteration $n$,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Printing a configuration by replacing the energies $U(x)$ by the quantities $U(x) / T^{(n)}$ for pixel update prints&lt;/li&gt;
+&lt;li&gt;Temperature decrease in logarithmic decay: $T^{(n)} &amp;gt; \dfrac{c}{\log(2+n)}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Logarithmic decay is necessary to obtain the convergence in probability of the algorithm to the image that minimizes energy. In practice, for complex or large images, this decay is too slow and it is preferable to use a linear or quadratic decay, which can cause convergence to only a local minimum of energy. However, the size ($200 \times 200$ pixels) and the simplicity of the images we process allow us to use this logarithmic decay. Slight differences between logarithmic and linear decay have been observed, which is consistent with the notions of local and global energy minimum.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;iterated-conditional-modes&#34;&gt;Iterated conditional modes&lt;/h3&gt;
+&lt;p&gt;The &lt;em&gt;Iterated Conditional Modes (ICM)&lt;/em&gt; method consists in testing &lt;em&gt;all&lt;/em&gt; shades of gray for each pixel and updating with the configuration that allows the most important energy decrease. Even if all shades of grey are tested at each iteration, the absence of the probabilistic character (present in the simulated annealing) allows the ICM to converge much faster. On the other hand, we do not necessarily converge towards the global minimum.&lt;/p&gt;
+&lt;p&gt;The ICM algorithm is as follows: For each of the $n$ iterations of the algorithm, we scan all the pixels. For each pixel (noted $s$) :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\forall \lambda \in E$, calculating the energy variation if the value of $s$, $x_s^{(n-1)}$, is replaced by $\lambda$:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$$ \Delta U = U_s(\lambda | V_s^{(n-1)}) - U_s(x_s^{(n-1)} | V_s^{(n-1)}) $$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If the U delta is $0$, then update the pixel with a label that minimizes $\Delta U$ : $x_s^{(n)} = \lambda$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;practical-results-and-discussion&#34;&gt;Practical results and discussion&lt;/h1&gt;
+&lt;p&gt;Before we could restore images, we had to deteriorate them. To do this, we used a Gaussian noise with an amplitude of $50$, simulating a Gaussian random variable and modifying the value of the pixels in the image by adding the value of the variable if this addition allows the pixel value to remain within $E = [|0, 255|]$.&lt;/p&gt;
+&lt;p&gt;The figure below shows the image we studied, as well as the same image scrambled with a Gaussian noise of amplitude $50$. This image is composed of a white background (pixels of value $x_s = 255$), a black square ($x_s = 0$), a dark gray star ($x_s = 70$), a gray heart ($x_s = 140$) and a light gray circle ($x_s = 210$).&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-initial-image-without-noise-left-and-with-gaussian-noise-of-amplitude-50-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures1.png&#34; alt=&#34;Initial image without noise (left) and with Gaussian noise of amplitude 50 (right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Initial image without noise (left) and with Gaussian noise of amplitude 50 (right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt;To quantitatively evaluate the image restoration, we consider the &lt;em&gt;signal-to-noise ratio (SNR)&lt;/em&gt;, which is expressed in decibels (dB) and is given by :&lt;/p&gt;
+&lt;p&gt;$$SNR = 10 \log \left(\dfrac{\sum_{s \in S} x_s^2}{\sum_{s \in S} (y_s-x_s)^2} \right)$$&lt;/p&gt;
+&lt;p&gt;where $x_s$ is the value of the $s$ pixel of the original noiseless image, and $y_s$ is the value of the $s$ pixel of the noiseless image. The greater the SNR, the less noise deteriorates the initial image. To know if the noise removal is effective, we will have to compare the values with the SNR obtained with the noisy image. The table below summarizes the SNR for a Gaussian noise of amplitude $50$.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Amplitude&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;63.9516&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;25&lt;/td&gt;
+&lt;td&gt;45.2884&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;50&lt;/td&gt;
+&lt;td&gt;31.9855&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;20.3203&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Remember that we consider grayscale images, because the computing time is too long for color images ($E = [|0, 255|]^3$). Even for very simple grayscale images, the results obtained are far from perfect, which justifies limiting our study to this type of images.&lt;/p&gt;
+&lt;p&gt;There are several methods of Markov field image processing and each of these methods has its own parameters. To perform image processing, we must choose the values given to these parameters. The table below summarizes all the parameters with the default choices made, which are the choices that gave the best results when executing our algorithms.&lt;/p&gt;
+&lt;p&gt;The main differences in our results lie in the choice of the minimization algorithm and in the choice of the potential model.&lt;/p&gt;
+&lt;p&gt;We are going to apply to the scrambled image the different algorithms described above, for different parameter values. We will first study the Potts model, then the Markovian-Gaussian model.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;first-series-of-tests&#34;&gt;First series of tests&lt;/h2&gt;
+&lt;p&gt;At first, we consider that we know nothing about the image we need to obtain. We implement the algorithms described previously and execute them.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;potts-model-1&#34;&gt;Potts Model&lt;/h3&gt;
+&lt;h4 id=&#34;with-simulated-annealing&#34;&gt;With simulated annealing&lt;/h4&gt;
+&lt;p&gt;Given the size of the image, a scan of the noisy image shows that all shades of gray are present in the image: $E = [|0, 255|]$. We then run the simulated annealing with a Metropolis algorithm that pulls $\lambda \in E$.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-and-potts-model-for-beta-in-50-100-500-from-left-to-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures10.png&#34; alt=&#34;Image processed by simulated annealing and Potts model for $\beta \in \\{50, 100, 500\\}$ (from left to right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing and Potts model for $\beta \in \{50, 100, 500\}$ (from left to right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$\beta$&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;50&lt;/td&gt;
+&lt;td&gt;2.73104&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;8.48355&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;500&lt;/td&gt;
+&lt;td&gt;11.3079&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10000&lt;/td&gt;
+&lt;td&gt;11.6187&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We see that the results improve when $\beta$ increases, with a saturation phenomenon for $\beta$ large ($\beta \approx 10^4$). However, the results are worse than the noisy image itself! The image being very noisy, the algorithm tends to replace the pixels by any value between $0$ and $255$, which does not allow to unclutter the image.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;with-icm&#34;&gt;With ICM&lt;/h4&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-icm-and-potts-model-for-1-2-and-4-iterations-from-left-to-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures3.png&#34; alt=&#34;Image processed by ICM and Potts model for 1, 2 and 4 iterations (from left to right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by ICM and Potts model for 1, 2 and 4 iterations (from left to right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Itérations&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;29.2689&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;27.3294&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;25.5964&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;23.1687&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The results are very good after a few iterations. Even after only one iteration, the noise has almost completely disappeared. However, the ICM tends to crop the figures, resulting in an SNR that decreases as the number of iterations increases. The SNR does not change when changing $\beta$, so $\beta$ does not seem to have any influence on the result.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;gaussian-markovian-model-1&#34;&gt;Gaussian Markovian model&lt;/h3&gt;
+&lt;p&gt;The Gaussian Markovian model is now being considered, and both energy minimization algorithms are being tested with and without attachment to the initial data.&lt;/p&gt;
+&lt;p&gt;We find that the Markovian Gaussian model blurs the images. Indeed, it tends to perform a kind of local average. Since the image is blurred by noise that takes on all values of $E = [|0, 255|]$, the averaging homogenizes the different grey areas into an average grey. Thus, even though the table below shows that the SNR is better than in the blurred image, the visual rendering and the disappearance of the noise in the white area are not good.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-top-and-icm-bottom-and-markovian-gaussian-model-without-left-and-with-right-data-attachment&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures4.png&#34; alt=&#34;Image processed by simulated annealing (top) and ICM (bottom) and Markovian Gaussian model without (left) and with (right) data attachment.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing (top) and ICM (bottom) and Markovian Gaussian model without (left) and with (right) data attachment.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Méthode&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Annealing without attachment&lt;/td&gt;
+&lt;td&gt;35.2715&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Annealing with attachment&lt;/td&gt;
+&lt;td&gt;38.9796&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ICM without attachment&lt;/td&gt;
+&lt;td&gt;38.0792&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ICM with attachment&lt;/td&gt;
+&lt;td&gt;17.2107&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This first series of tests shows that, except for the ICM with Potts model, the image restoration results are poor. For the simulated annealing with Potts, the poor results are explained by the random drawing on the $255$ shades of grey, whereas in the initial un-noiseed image, only $5$ shades are present.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;second-series-of-tests&#34;&gt;Second series of tests&lt;/h2&gt;
+&lt;p&gt;Configuration drawings are now made only among the shades present in the initial unclouded image: $\lambda \in E = \{0, 70, 140, 210, 255\}$.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;potts-model-2&#34;&gt;Potts model&lt;/h3&gt;
+&lt;h4 id=&#34;with-simulated-annealing-1&#34;&gt;With simulated annealing&lt;/h4&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-and-potts-model-for-beta-in-5-25-35-50-100-500-from-left-to-right-then-top-to-bottom&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures2.png&#34; alt=&#34;Image processed by simulated annealing and Potts model for $\beta \in \\{5, 25, 35, 50, 100, 500\\}$ (from left to right then top to bottom).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing and Potts model for $\beta \in \{5, 25, 35, 50, 100, 500\}$ (from left to right then top to bottom).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$\beta$&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;3.38126&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;25&lt;/td&gt;
+&lt;td&gt;3.18447&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;35&lt;/td&gt;
+&lt;td&gt;14.8631&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;50&lt;/td&gt;
+&lt;td&gt;22.8984&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;23.9018&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;500&lt;/td&gt;
+&lt;td&gt;25.9764&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The results are much better than when nothing is known about the initial image, even if the SNR remains lower than that of the noisy image. We can see here the importance of the $\beta$ parameter: the larger $\beta$ is, the larger the size of the homogeneous areas increases. However, there is always a saturation phenomenon for large $\beta$. The image converges towards a state close to the initial state.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;with-icm-1&#34;&gt;With ICM&lt;/h4&gt;
+&lt;p&gt;The results become excellent: the image obtained is almost the initial image and the SNR is better than for the noisy image. The SNR also shows that $\beta$ still has no influence.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3 id=&#34;markovian-gaussian-model&#34;&gt;Markovian Gaussian model&lt;/h3&gt;
+&lt;p&gt;The Gaussian Markovian model also gives much better results. The results are slightly better for ICM than for simulated annealing. The image obtained when the attachment is added to the initial data, including the correction of the adverse effects of the ICM at the edges, is extremely close to the initial noise-free image.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-top-and-icm-bottom-and-markovian-gaussian-model-without-left-and-with-right-attached-to-the-data-and-knowing-the-shades-of-grey-present-in-the-initial-unblurred-image&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures5.png&#34; alt=&#34;Image processed by simulated annealing (top) and ICM (bottom) and Markovian Gaussian model without (left) and with (right) attached to the data and knowing the shades of grey present in the initial unblurred image.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing (top) and ICM (bottom) and Markovian Gaussian model without (left) and with (right) attached to the data and knowing the shades of grey present in the initial unblurred image.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Méthode&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Annealing without attachment&lt;/td&gt;
+&lt;td&gt;40.3498&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Annealing with attachment&lt;/td&gt;
+&lt;td&gt;44.4864&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ICM without attachment&lt;/td&gt;
+&lt;td&gt;43.9946&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ICM with attachment&lt;/td&gt;
+&lt;td&gt;44.7768&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;with-simulated-annealing-2&#34;&gt;With simulated annealing&lt;/h4&gt;
+&lt;p&gt;The influence of $\beta$ and the saturation phenomenon are preserved: the greater the $\beta$, the better the restoration. The SNR is better than for the noisy image.&lt;/p&gt;
+&lt;p&gt;Modifications of the $\alpha$ parameter have been performed on the tests with data attachment, however the results are already very good for $\alpha$ small, so $\alpha$ does not seem to have a big influence. It is recalled that in theory, the larger $\alpha$ is, the greater the attachment to the initial data.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-and-gaussian-markovian-model-without-top-and-with-bottom-data-attachment-for-beta-in-1-10-25-left-to-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures11.png&#34; alt=&#34;Image processed by simulated annealing and Gaussian Markovian model without (top) and with (bottom) data attachment for $\beta \in \\{1, 10, 25\\}$ (left to right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing and Gaussian Markovian model without (top) and with (bottom) data attachment for $\beta \in \{1, 10, 25\}$ (left to right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$\beta$&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;40.7834&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;40.0753&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;25&lt;/td&gt;
+&lt;td&gt;40.0668&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5000&lt;/td&gt;
+&lt;td&gt;39.6827&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$\beta$&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;32.5507&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;38.6730&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;25&lt;/td&gt;
+&lt;td&gt;43.5519&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5000&lt;/td&gt;
+&lt;td&gt;43.4116&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h4 id=&#34;with-icm-2&#34;&gt;With ICM&lt;/h4&gt;
+&lt;p&gt;We make the same observations as with the simulated annealing. The best SNR among all the tests is obtained here, for $\beta = 20$.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-icm-and-markovian-gaussian-model-with-data-attachment-for-beta-in-1-10-25-from-left-to-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures8.png&#34; alt=&#34;Image processed by ICM and Markovian Gaussian model with data attachment for $\beta \in \\{1, 10, 25\\}$ (from left to right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by ICM and Markovian Gaussian model with data attachment for $\beta \in \{1, 10, 25\}$ (from left to right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$\beta$&lt;/th&gt;
+&lt;th&gt;SNR (dB)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;19.7154&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;39.8086&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;46.9805&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;25&lt;/td&gt;
+&lt;td&gt;46.474&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1000&lt;/td&gt;
+&lt;td&gt;43.4296&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5000&lt;/td&gt;
+&lt;td&gt;43.3621&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2 id=&#34;limitations-of-markovian-methods&#34;&gt;Limitations of Markovian methods&lt;/h2&gt;
+&lt;p&gt;The image processed in the first series of tests had separate shapes with distant shades of grey. We are now studying an image composed of a gray scale gradient to show the limitations of Markov methods.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-initial-image-without-noise-left-and-with-gaussian-noise-of-amplitude-50-right&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/cercles1.png&#34; alt=&#34;Initial image without noise (left) and with Gaussian noise of amplitude 50 (right).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Initial image without noise (left) and with Gaussian noise of amplitude 50 (right).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt;Simulated annealing methods and ICM with $\beta$ large, Gaussian Markovian model with data attachment and knowledge of the initial grades are applied to the image as these are the choices that have given the best results so far. The results are shown in below.&lt;/p&gt;
+&lt;p&gt;It can be seen that the simulated annealing with Potts&amp;rsquo; model gives a result similar to the one of the image with the different shapes for $\beta = 25$. When $\beta$ is increased, the result does not improve and remains close to that.&lt;/p&gt;
+&lt;p&gt;ICM with Potts tends to deteriorate the edges as seen in the first series of tests. However, as the shades of grey are close together, this causes some of them to disappear.&lt;/p&gt;
+&lt;p&gt;The Gaussian Markovian model gives very good results whatever the potential. The SNR obtained is double that of the noisy image, which is even better than the results for the image with the different shapes.&lt;/p&gt;
+&lt;p&gt;To conclude this study and to show the limits of Markovian methods on close shades, we tested the different algorithms on a photo with the $255$ shades of grey. The method giving the best SNR is the Markovian Gaussian model with data attachment, although this model results in blurring of the image.&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-processed-by-simulated-annealing-left-and-icm-right-for-the-potts-model-top-and-the-markovian-gaussian-model-with-data-attachment-bottom-for-beta-large&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/cercles2.png&#34; alt=&#34;Image processed by simulated annealing (left) and ICM (right) for the Potts model (top) and the Markovian-Gaussian model with data attachment (bottom) for $\beta$ large.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image processed by simulated annealing (left) and ICM (right) for the Potts model (top) and the Markovian-Gaussian model with data attachment (bottom) for $\beta$ large.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-initial-noise-free-image-left-with-gaussian-noise-of-amplitude-50-middle-and-image-processed-by-markovian-gaussian-model-with-data-attachment-right-for-beta-large&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/resultatslenna.png&#34; alt=&#34;Initial noise-free image (left), with Gaussian noise of amplitude $50$ (middle) and image processed by Markovian Gaussian model with data attachment (right) for $\beta$ large.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Initial noise-free image (left), with Gaussian noise of amplitude $50$ (middle) and image processed by Markovian Gaussian model with data attachment (right) for $\beta$ large.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Denoising an image is an important step in many advanced fields such as medicine or cartography. Our project presents a method for denoising black and white images based on Markov field theory and Ising and Potts physical models. The theoretical study of the Markov model highlights the need to choose the right minimization approach, as well as the sampling algorithm.&lt;/p&gt;
+&lt;p&gt;We were confronted with the problem of calibrating different parameters. The results show the efficiency of the ICM algorithm with the potentials from the Gaussian Markovian model, which, compared to other models, presents a better restitution of the deteriorated image. The better the information is known about the original image, the better the restoration.&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;!---
+
+&amp;nbsp;
+
+# Présentation du projet
+
+L&#39;acquisition d&#39;une image numérique est le plus souvent accompagnée de l&#39;apparition de bruit, souvent dû à une imperfection au niveau de la détection, de la transmission ou de la compression du signal, ou encore à des défauts inhérents à l&#39;environnement comme la présence d&#39;éclairage insuffisant ou trop prononcé. La suppression de ce bruit est même un enjeu vital dans plusieurs domaines, notamment l&#39;imagerie médicale, et la recherche d&#39;un algorithme efficace de débruitage d&#39;image demeure un défi persistant, à la croisée de plusieurs domaines scientifiques : analyse fonctionelle, probabilités, statistiques et sciences physiques.
+
+Dans cette étude, nous implémentons différents algorithmes de restitution d&#39;une image contenant des motifs simples, en niveaux de gris, bruitée selon un bruit gaussien. Pour cela, nous adoptons une description probabiliste de l&#39;image, considérant ses pixels comme des variables aléatoires $X_i$, d&#39;énergie $U(X_i)$ qui dépend de son voisinage. Cette approche permet d&#39;envisager l&#39;image comme un champ de Markov.
+
+&amp;nbsp;
+
+# Implémentation numérique des champs de Markov
+
+Nous formulons à présent les méthodes probabilistes que nous avons implémentées numériquement pour les appliquer au traitement d&#39;images.
+
+Dans le cadre de notre étude, nous considérerons des images rectangulaires en niveau de gris (de 0 à 255), de longueur $w$ et de hauteur $h$. Chaque pixel de l&#39;image est représenté par ses coordonnées $(i,j)$ et une valeur correspondant au niveau de gris du pixel, cette valeur appartenant à $E = [|0, 255|]$. L&#39;image totale peut donc être représentée par un tableau de valeurs de E, de dimension $w \times h$.
+
+Pour chaque pixel, on peut définir un système de cliques tel qu&#39;expliqué en *(2.1.2)*. Dans nos codes informatiques, la présence d&#39;une variable $c$ qui prendra la valeur $4$ ou $8$ permettra de choisir si l&#39;on considère des voisinages 4 ou 8-connexe, et on considèrera des cliques d&#39;ordre 2.
+
+L&#39;implémentation des algorithmes de traitement d&#39;image comporte trois phases principales :
+
+- le choix d&#39;un champ de Markov adapté
+- le tirage d&#39;une configuration selon le champ de Markov choisi
+- l&#39;implémentation de l&#39;algorithme qui converge vers une image correcte après un certain nombre de tirages.
+
+Nous décrivons ces trois phases de façon théorique, puis nous analyserons les résultats obtenus avec les différentes méthodes.
+
+&amp;nbsp;
+
+## Champs de Markov en traitement d&#39;image
+
+Nous présentons ici les champs de Markov les plus utilisés en traitement d&#39;image ainsi que quelques variantes donnant de meilleurs résultats.
+
+&amp;nbsp;
+
+### Modèle d&#39;Ising :
+
+Comme nous l&#39;avons indiqué en \textbf{(2.2)}, ce modèle n&#39;est applicable qu&#39;à une image comprenant 2 niveaux de gris. Par une transformation affine, on peut associer à ces 2 valeurs les valeurs de l&#39;ensemble $E = \{-1, 1\}$. On rappelle l&#39;énergie de ce modèle :
+
+$$U(x) = - \sum_{c=(s,t) \in C} \beta x_s x_t - \sum_{s \in S} B x_s$$
+
+&amp;nbsp;
+
+### Modèle de Potts :
+
+Il s&#39;agit de la généralisation du modèle d&#39;Ising, adaptée à un ensemble $E$ de cardinal N, comme $E = [|0, 255|]$. La différence principale avec le modèle d&#39;Ising est que seuls les potentiels liés aux cliques d&#39;ordre 2 sont définis. Il n&#39;y a pas de terme d&#39;énergie lié aux cliques d&#39;ordre 1, correspondant à un champ magnétique externe. L&#39;énergie de ce modèle est :
+
+$$U(x) = \ \beta \sum_{c=(s,t) \in C} (\textbf{1}_{\{x_s \neq x_t\}} - \textbf{1}_{\{x_s = x_t\}})$$
+
+Un tel modèle tend à créer des zones homogènes de taille d&#39;autant plus grande que $\beta$ est grand.
+
+&amp;nbsp;
+
+### Modèle markovien gaussien :
+
+Ce modèle n&#39;est utilisable que pour les images en niveaux de gris, ce qui est parfaitement adapté à notre étude. On considère, ici encore, des voisinages 4 ou 8-connexes et seulement des cliques d&#39;ordre 2. L&#39;énergie de ce modèle est :
+
+$$U(x) = \beta \sum_{c=(s,t) \in C} (x_s-x_t)^2 + \alpha \sum_{s \in S} (x_s-\mu_s)^2$$
+
+Pour $\beta &gt; 0$, le premier terme quadratique favorise les faibles différences de niveaux de gris, puisqu&#39;il s&#39;agit de minimiser une énergie qui augmente de façon quadratique avec l&#39;écart en niveaux de gris. Le second terme fait intervenir un terme $\mu_s$ qui correspond à une image de référence. Si l&#39;on connaît une approximation de l&#39;image que l&#39;on veut obtenir, ou si l&#39;on veut rester proche de l&#39;image initiale, ce terme permet à l&#39;image solution $x$ de ne pas s&#39;éloigner de l&#39;image de référence $\mu$.
+
+&amp;nbsp;
+
+## Tirage d&#39;une configuration selon le champ de Markov
+
+Après le choix d&#39;un champ de Markov, il faut procéder à la minimisation de son énergie totale. On procède par tirage de configurations. L&#39;idée générale est de tirer pour chaque pixel une valeur aléatoire et de lui attribuer cette valeur si elle permet la diminution de l&#39;énergie totale.
+
+Les algorithmes les plus utilisés pour réaliser ces tirages, l&#39;échantillonneur de Gibbs et l&#39;algorithme de Metropolis, fonctionnent de façon similaire. On procède à $n$ itérations, où l&#39;on choisit aléatoirement un pixel $s$ puis on associe à $s$ une expérience aléatoire en fonction de l&#39;image à l&#39;itération $n-1$. On met à jour ou non $s$ selon le résultat de l&#39;expérience aléatoire.
+
+Comme il faut balayer l&#39;ensemble des pixels $s$ un grand nombre de fois, on balaye généralement l&#39;ensemble des pixels ligne par ligne et de gauche à droite sans réaliser de tirage aléatoire, pour être sûr que tous les pixels ont été soumis à des mises à jour. L&#39;algorithme cesse après un grand nombre $n$ d&#39;itérations, ou lorsqu&#39;il y a peu de changements de pixels pour une itération.
+
+Pour ces deux algorithmes, on parle d&#39;algorithme de relaxation probabiliste : relaxation car l&#39;algorithme réalise des mises à jour successives des différents pixels, et probabiliste car l&#39;algorithme simule des tirages aléatoires.
+
+Voici le contenu des algorithmes.
+
+&amp;nbsp;
+
+### L&#39;échantillonneur de Gibbs :
+
+Pour chacune des $n$ itérations de l&#39;algorithme, on balaye l&#39;ensemble des pixels. Pour chaque pixel (noté $s$) :
+
+- Calcul de la probabilité locale, connaissant la configuration des voisins $V_s$ pour l&#39;image à l&#39;itération $n-1$ :
+
+$$ \mathbb{P} (X_s = x_s | V_s) = \dfrac{\exp (-U_s(x_s | V_s))}{\sum_{a_s \in A_s}{\exp (-U_s(a_s | V_s))}}$$
+
+- Mise à jour du site par tirage aléatoire selon la loi $\mathbb{P}(X_s = x_s | V_s)$
+
+&amp;nbsp;
+
+### L&#39;algorithme de Metropolis :
+
+Pour chacune des $n$ itérations de l&#39;algorithme, on balaye l&#39;ensemble des pixels. Pour chaque pixel (noté $s$) :
+
+- Tirage aléatoire de $\lambda$ dans $E$ selon une loi uniforme sur $E$:
+- Calcul de la variation d&#39;énergie si la valeur de $s$, $x_s^{(n-1)}$, est remplacée par $\lambda$ :
+    $$ \Delta U = U_s(\lambda | V_s^{(n-1)}) - U_s(x_s^{(n-1)} | V_s^{(n-1)}) $$
+- Si $ \Delta U \leq 0$, alors on met à jour le pixel : $x_s^{(n)} = \lambda$
+- Sinon, on met à jour selon la probabilité de succès $p = \exp (- \Delta U)$
+
+&amp;nbsp;
+
+## Implémentation de l&#39;algorithme de restauration d&#39;image
+
+Après avoir implémenté un algorithme de tirage de configuration, il faut implémenter un algorithme convergeant vers une image solution du problème de minimisation de l&#39;énergie totale. Deux algorithmes sont principalement utilisés dans le cadre du traitement d&#39;image par champs de Markov.
+
+&amp;nbsp;
+
+### Le recuit simulé :
+
+Le recuit simulé est une méthode classique de minimisation d&#39;énergie fréquemment utilisée en physique. En traitement d&#39;image, l&#39;algorithme consiste en $n$ itérations au cours desquelles on réalise des tirages de configuration tels que décrits en *(2.3.2)*. Cependant, ces tirages ne dépendent plus que de l&#39;énergie de configuration, mais aussi d&#39;une quantité $T^{(n)}$ qui mesure le degré d&#39;aléatoire introduit dans ces tirages, qu&#39;on nomme température et qui décroît à chaque itération. Partant d&#39;une température $T^{(0)}$ assez grande et de l&#39;image à traiter, l&#39;algorithme est le suivant :
+
+Pour chaque itération $n$,
+
+- Tirage d&#39;une configuration en remplaçant les énergies $U(x)$ par les quantités $U(x) / T^{(n)}$ pour les tirages de mise à jour des pixels
+- Diminution de la température selon une décroissance logarithmique : $T^{(n)} &gt; \dfrac{c}{\log(2+n)}$
+
+La décroissance logarithmique est nécessaire pour obtenir la convergence en probabilité de l&#39;algorithme vers l&#39;image qui minimise l&#39;énergie. En pratique, pour des images complexes ou grandes, cette décroissance est trop lente et on préfère utiliser une décroissance linéaire ou quadratique, ce qui peut provoquer une convergence vers un minimum seulement local de l&#39;énergie. Cependant, la taille ($200 \times 200$ pixels) et la simplicité des images que nous traitons nous autorise à utiliser cette décroissance logarithmique. On a observé de légères différences entre la décroissance logarithmique et la décroissance linéaire, ce qui est cohérent avec les notions de minimum local et minimum global de l&#39;énergie.
+
+&amp;nbsp;
+
+### Les modes conditionnels itérés :
+
+La méthode *Iterated Conditional Mode (ICM)* consiste à tester *toutes* les nuances de gris pour chaque pixel et à mettre à jour avec la configuration qui permet la diminution d&#39;énergie la plus importante. Même si l&#39;on teste à chaque itération toutes les nuances de gris, l&#39;absence du caractère probabiliste (présent dans le recuit simulé) permet à l&#39;ICM de converger bien plus rapidement. En revanche, on ne converge pas forcément vers le minimum global.
+
+L&#39;algorithme ICM est le suivant : Pour chacune des $n$ itérations de l&#39;algorithme, on balaye l&#39;ensemble des pixels. Pour chaque pixel (noté $s$) :
+
+- $\forall \lambda \in E$, calcul de la variation d&#39;énergie si la valeur de $s$, $x_s^{(n-1)}$, est remplacée par $\lambda$ :
+
+$$ \Delta U = U_s(\lambda | V_s^{(n-1)}) - U_s(x_s^{(n-1)} | V_s^{(n-1)}) $$
+
+- Si $ \Delta U \leq 0$, alors mise à jour le pixel avec $\lambda$ qui minimise $ \Delta U$ : $x_s^{(n)} = \lambda$
+
+&amp;nbsp;
+
+# Résultats pratiques et discussion
+
+Avant de pouvoir restaurer des images, il nous a fallu les détériorer. Pour cela, nous avons utilisé un bruit gaussien d&#39;amplitude 50. Il s&#39;agit de simuler une variable aléatoire gaussienne et de modifier la valeur des pixels de l&#39;image en ajoutant la valeur de la variable si cet ajout permet à la valeur du pixel de rester dans $E = [|0, 255|]$.
+
+La figure ci-dessous montre l&#39;image que nous avons étudiée, ainsi que la même image brouillée avec un bruit gaussien d&#39;amplitude 50. Cette image est composée d&#39;un fond blanc (pixels de valeur $x_s = 255$), d&#39;un carré noir ($x_s = 0$), d&#39;une étoile gris foncé ($x_s = 70$), d&#39;un coeur gris ($x_s = 140$) et d&#39;un rond gris clair ($x_s = 210$).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-initiale-sans-bruit-à-gauche-et-avec-bruit-gaussien-damplitude-50-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures1.png&#34; alt=&#34;Image initiale sans bruit (à gauche) et avec bruit gaussien d’amplitude 50 (à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image initiale sans bruit (à gauche) et avec bruit gaussien d’amplitude 50 (à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+Pour évaluer quantitativement la restauration d&#39;image, nous considérons le rapport signal sur bruit *(signal-to-noise ratio, SNR)*, qui s&#39;exprime en décibels (dB) et est donné par :
+
+$$SNR = 10 \log \left(\dfrac{\sum_{s \in S} x_s^2}{\sum_{s \in S} (y_s-x_s)^2} \right)$$
+
+où $x_s$ est la valeur du pixel $s$ de l&#39;image initiale non bruitée, et $y_s$ de même pour l&#39;image débruitée. Plus SNR est grand, moins le bruit détériore l&#39;image initiale. Pour savoir si le débruitage est efficace, il nous faudra comparer les valeurs avec le SNR obtenu avec l&#39;image bruitée. Le tableau 1 rescense notamment le SNR pour un bruit gaussien d&#39;amplitude 50.
+
+| Amplitude | SNR (dB) |
+|-----------|----------|
+| 10        | 63.9516  |
+| 25        | 45.2884  |
+| 50        | 31.9855  |
+| 100       | 20.3203  |
+
+On rappelle qu&#39;on considère des images en niveaux de gris, car le temps de calcul est trop important pour des images en couleur ($E = [|0, 255|]^3$). Même pour des images très simples en niveaux de gris, les résultats obtenus sont loin d&#39;être parfaits, ce qui justifie de limiter notre étude à ce type d&#39;images.
+
+Comme expliqué en *(2.3}*, il existe plusieurs méthodes de traitement d&#39;image par champs de Markov et chacune de ces méthodes possède ses propres paramètres. Pour réaliser un traitement d&#39;image, nous devons choisir les valeurs données à ces paramètres. Le tableau ci-dessous rescense l&#39;ensemble des paramètres avec les choix par défaut effectués, qui sont les choix qui ont donné les meilleurs résultats lors de l&#39;exécution de nos algorithmes.
+
+Les principales différences dans nos résultats résident dans le choix de l&#39;algorithme de minimisation et dans le choix du modèle de potentiel.
+
+On va appliquer à l&#39;image brouillée les différents algorithmes décrits précédemment, pour différentes valeurs des paramètres. On va d&#39;abord étudier le modèle de Potts, puis le modèle markovien gaussien.
+
+&amp;nbsp;
+
+## Première série d&#39;essais
+
+On considère dans un premier temps que l&#39;on ne connaît rien de l&#39;image que l&#39;on doit obtenir. On implémente les algorithmes tels que décrits en *(2.3)* et on les exécute.
+
+&amp;nbsp;
+
+### Le modèle de Potts
+
+#### Avec recuit simulé :
+
+Étant donné la taille de l&#39;image, un balayage de l&#39;image bruitée montre que toutes les nuances de gris sont présentes sur l&#39;image : $E = [|0, 255|]$. On exécute alors le recuit simulé avec un algorithme de Metropolis qui tire $\lambda \in E$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-et-modèle-de-potts-pour-beta-in-50-100-500-de-gauche-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures10.png&#34; alt=&#34;Image traitée par recuit simulé et modèle de Potts pour $\beta \in \\{50, 100, 500\\}$ (de gauche à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé et modèle de Potts pour $\beta \in \{50, 100, 500\}$ (de gauche à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| $\beta$   | SNR (dB) |
+|-----------|----------|
+| 50        | 2.73104  |
+| 100       | 8.48355  |
+| 500       | 11.3079  |
+| 10000     | 11.6187  |
+
+On constate que les résultats s&#39;améliorent lorsque $\beta$ augmente, avec un phénomène de saturation pour $\beta$ grand ($\beta \approx 10^4$). Cependant, les résultats sont pires que l&#39;image bruitée elle-même ! L&#39;image étant très bruitée, l&#39;algorithme tend à remplacer les pixels par n&#39;importe quelle valeur entre 0 et 255, ce qui ne permet pas de débruiter l&#39;image.
+
+&amp;nbsp;
+
+#### Avec ICM :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-icm-et-modèle-de-potts-pour-1-2-et-4-itérations-de-gauche-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures3.png&#34; alt=&#34;Image traitée par ICM et modèle de Potts pour 1, 2 et 4 itérations (de gauche à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par ICM et modèle de Potts pour 1, 2 et 4 itérations (de gauche à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| Itérations | SNR (dB) |
+|------------|----------|
+| 1          | 29.2689  |
+| 2          | 27.3294  |
+| 4          | 25.5964  |
+| 10         | 23.1687  |
+
+Les résultats sont très bons après quelques itérations. Même après une seule itération, le bruit a presque entièrement disparu. Toutefois, l&#39;ICM tend à rogner les figures, d&#39;où un SNR qui diminue lorsque le nombre d&#39;itérations augmente. Le SNR ne varie pas lorsqu&#39;on change $\beta$, donc  $\beta$ ne semble pas avoir d&#39;influence sur le résultat.
+
+&amp;nbsp;
+
+### Le modèle markovien gaussien
+
+On considère désormais le modèle markovien gaussien, et on teste les deux algorithmes de minimisation d&#39;énergie avec et sans attache aux données initiales.
+
+On constate que le modèle markovien gaussien floute les images. En effet, il tend à effectuer une sorte de moyenne locale. Or, l&#39;image étant brouillée par un bruit qui prend toutes les valeurs de $E = [|0, 255|]$, le moyennage homogénéise les différentes zones de gris en un gris moyen. Ainsi, même si le tableau 5 montre que le SNR est meilleur que sur l&#39;image brouillée, le rendu visuel et la disparition du bruit sur la zone blanche ne sont pas bons.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-en-haut-et-icm-en-bas-et-modèle-markovien-gaussien-sans-à-gauche-et-avec-à-droite-attache-aux-données&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures4.png&#34; alt=&#34;Image traitée par recuit simulé (en haut) et ICM (en bas) et modèle markovien gaussien sans (à gauche) et avec (à droite) attache aux données.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé (en haut) et ICM (en bas) et modèle markovien gaussien sans (à gauche) et avec (à droite) attache aux données.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| Méthode             | SNR (dB) |
+|---------------------|----------|
+| Recuit sans attache | 35.2715  |
+| Recuit avec attache | 38.9796  |
+| ICM sans attache    | 38.0792  |
+| ICM avec attache    | 17.2107  |
+
+Cette première série d&#39;essais montre que, mis à part pour l&#39;ICM avec modèle de Potts, les résultats de restauration d&#39;image sont mauvais. Pour le recuit simulé avec Potts, les mauvais résultats s&#39;expliquent par le tirage aléatoire sur les 255 nuances de gris, alors que dans l&#39;image initiale non bruitée, seules 5 nuances sont présentes.
+
+&amp;nbsp;
+
+## Seconde série d&#39;essais
+
+On réalise désormais les tirages de configuration seulement parmi les nuances présentes sur l&#39;image initiale non bruitée : $\lambda \in E = \\{0, 70, 140, 210, 255\\}$.
+
+&amp;nbsp;
+
+### Le modèle de Potts
+
+#### Avec recuit simulé :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-et-modèle-de-potts-pour-beta-in-5-25-35-50-100-500-de-gauche-à-droite-puis-de-haut-en-bas&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures2.png&#34; alt=&#34;Image traitée par recuit simulé et modèle de Potts pour $\beta \in \\{5, 25, 35, 50, 100, 500\\}$ (de gauche à droite puis de haut en bas).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé et modèle de Potts pour $\beta \in \{5, 25, 35, 50, 100, 500\}$ (de gauche à droite puis de haut en bas).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| $\beta$   | SNR (dB) |
+|-----------|----------|
+| 5         | 3.38126  |
+| 25        | 3.18447  |
+| 35        | 14.8631  |
+| 50        | 22.8984  |
+| 100       | 23.9018  |
+| 500       | 25.9764  |
+
+Les résultats sont bien meilleurs que lorsqu&#39;on ne connaît rien de l&#39;image initiale, même si le SNR reste inférieur à celui de l&#39;image bruitée. On constate ici l&#39;importance du paramètre $\beta$ : plus $\beta$ est grand, plus la taille des zones homogènes augmente. On a cependant toujours un phénomène de saturation pour $\beta$ grand. L&#39;image converge vers un état proche de l&#39;état initial.
+
+&amp;nbsp;
+
+#### Avec ICM :
+
+Les résultats deviennent excellents : l&#39;image obtenue est quasiment l&#39;image initiale et le SNR est meilleur que pour l&#39;image bruitée. Le SNR montre aussi que $\beta$ n&#39;a toujours pas d&#39;influence.
+
+&amp;nbsp;
+
+### Le modèle markovien gaussien
+
+Le modèle markovien gaussien donne aussi de biens meilleurs résultats. Les résultats sont légèrement meilleurs pour l&#39;ICM que pour le recuit simulé. L&#39;image obtenue lorsqu&#39;on ajoute l&#39;attache aux données initiales, qui permet notamment de corriger les effets néfastes de l&#39;ICM sur les bords, est extrêmement proche de l&#39;image initiale non bruitée.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-en-haut-et-icm-en-bas-et-modèle-markovien-gaussien-sans-à-gauche-et-avec-à-droite-attache-aux-données-et-connaissant-les-nuances-de-gris-présentes-dans-limage-initiale-non-brouillée&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures5.png&#34; alt=&#34;Image traitée par recuit simulé (en haut) et ICM (en bas) et modèle markovien gaussien sans (à gauche) et avec (à droite) attache aux données et connaissant les nuances de gris présentes dans l’image initiale non brouillée.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé (en haut) et ICM (en bas) et modèle markovien gaussien sans (à gauche) et avec (à droite) attache aux données et connaissant les nuances de gris présentes dans l’image initiale non brouillée.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| Méthode             | SNR (dB) |
+|---------------------|----------|
+| Recuit sans attache | 40.3498  |
+| Recuit avec attache | 44.4864  |
+| ICM sans attache    | 43.9946  |
+| ICM avec attache    | 44.7768  |
+
+&amp;nbsp;
+
+#### Avec recuit simulé :
+
+L&#39;influence de $\beta$ et le phénomène de saturation sont conservés : plus $\beta$ est grand, meilleure est la restauration. Le SNR est meilleur que pour l&#39;image bruitée.
+
+Des modifications du paramètre $\alpha$ ont été réalisées sur les tests avec attache aux données, cependant les résultats étant déjà très bons pour $\alpha$ petit, $\alpha$ ne semble pas avoir une grande influence. On rappelle qu&#39;en théorie, plus $\alpha$ est grand, plus l&#39;attache aux données initiales est importante.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-et-modèle-markovien-gaussien-sans-en-haut-et-avec-en-bas-attache-aux-données-pour-beta-in-1-10-25-de-gauche-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures11.png&#34; alt=&#34;Image traitée par recuit simulé et modèle markovien gaussien sans (en haut) et avec (en bas) attache aux données pour $\beta \in \\{1, 10, 25\\}$ (de gauche à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé et modèle markovien gaussien sans (en haut) et avec (en bas) attache aux données pour $\beta \in \{1, 10, 25\}$ (de gauche à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| $\beta$   | SNR (dB) |
+|-----------|----------|
+| 1         | 40.7834  |
+| 10        | 40.0753  |
+| 25        | 40.0668  |
+| 5000      | 39.6827  |
+
+| $\beta$   | SNR (dB) |
+|-----------|----------|
+| 1         | 32.5507  |
+| 10        | 38.6730  |
+| 25        | 43.5519  |
+| 5000      | 43.4116  |
+
+&amp;nbsp;
+
+#### Avec ICM :
+
+On réalise les mêmes constats qu&#39;avec le recuit simulé. Le meilleur SNR parmi tous les essais est obtenu ici, pour $\beta = 20$ (tableau 10).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-icm-et-modèle-markovien-gaussien-avec-attache-aux-données-pour-beta-in-1-10-25-de-gauche-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/figures8.png&#34; alt=&#34;Image traitée par ICM et modèle markovien gaussien avec attache aux données pour $\beta \in \\{1, 10, 25\\}$ (de gauche à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par ICM et modèle markovien gaussien avec attache aux données pour $\beta \in \{1, 10, 25\}$ (de gauche à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+| $\beta$   | SNR (dB) |
+|-----------|----------|
+| 1         | 19.7154  |
+| 10        | 39.8086  |
+| 20        | 46.9805  |
+| 25        | 46.474   |
+| 1000      | 43.4296  |
+| 5000      | 43.3621  |
+
+&amp;nbsp;
+
+## Limites des méthodes markoviennes
+
+L&#39;image traitée dans la première série de tests comportait des formes séparées avec des nuances de gris éloignées. Nous étudions désormais une image composée d&#39;un dégradé de gris pour montrer les limites des méthodes markoviennes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-initiale-sans-bruit-à-gauche-et-avec-bruit-gaussien-damplitude-50-à-droite&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/cercles1.png&#34; alt=&#34;Image initiale sans bruit (à gauche) et avec bruit gaussien d’amplitude 50 (à droite).&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image initiale sans bruit (à gauche) et avec bruit gaussien d’amplitude 50 (à droite).
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+On applique à l&#39;image les méthodes de recuit simulé et l&#39;ICM avec $\beta$ grand, modèle markovien gaussien avec attache aux données et connaissance des nuances initiales car ce sont les choix qui ont donné les meilleurs résultats jusqu&#39;à présent. Les résultats sont représentés en *figure 17*.
+
+On constate que le recuit simulé avec modèle de Potts donne un résultat analogue à celui de la *figure 12* pour $\beta = 25$. Lorsqu&#39;on augmente $\beta$, le résultat ne s&#39;améliore pas et reste proche de celui en *figure 17*.
+
+L&#39;ICM avec Potts tend à détériorer les bords comme constaté dans la première série de tests. Toutefois, les nuances de gris étant proches, cela provoque la disparition de certaines.
+
+Le modèle markovien gaussien donne de très bons résultats quel que soit le potentiel. Le SNR obtenu est le double de celui de l&#39;image bruitée en *figure 16*, ce qui est même meilleur que pour les résultats de la *figure 15*.
+
+Pour conclure cette étude et montrer les limites des méthodes markoviennes sur des nuances proches, nous avons testé les différents algorithmes sur une photo avec les 255 nuances de gris. La méthode donnant le meilleur SNR est le modèle markovien gaussien avec attache aux données, bien que ce modèle ait pour conséquence de flouter l&#39;image.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-traitée-par-recuit-simulé-à-gauche-et-icm-à-droite-pour-le-modèle-de-potts-en-haut-et-le-modèle-markovien-gaussien-avec-attache-aux-données-en-bas-pour-beta-grand&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/cercles2.png&#34; alt=&#34;Image traitée par recuit simulé (à gauche) et ICM (à droite) pour le modèle de Potts (en haut) et le modèle markovien gaussien avec attache aux données (en bas) pour $\beta$ grand.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image traitée par recuit simulé (à gauche) et ICM (à droite) pour le modèle de Potts (en haut) et le modèle markovien gaussien avec attache aux données (en bas) pour $\beta$ grand.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-image-initiale-sans-bruit-à-gauche-avec-bruit-gaussien-damplitude-50-au-milieu-et-image-traitée-par-modèle-markovien-gaussien-avec-attache-aux-données-à-droite-pour-beta-grand&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;https://michaelkarpe.github.io/media/restoration/resultatslenna.png&#34; alt=&#34;Image initiale sans bruit (à gauche), avec bruit gaussien d’amplitude 50 (au milieu) et image traitée par modèle markovien gaussien avec attache aux données (à droite) pour $\beta$ grand.&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption data-pre=&#34;Figure&amp;nbsp;&#34; data-post=&#34;:&amp;nbsp;&#34; class=&#34;numbered&#34;&gt;
+      Image initiale sans bruit (à gauche), avec bruit gaussien d’amplitude 50 (au milieu) et image traitée par modèle markovien gaussien avec attache aux données (à droite) pour $\beta$ grand.
+    &lt;/figcaption&gt;&lt;/figure&gt;
+
+&amp;nbsp;
+
+# Conclusion
+
+Débruiter une image est une étape importante dans plusieurs domaines avancés comme la médecine ou la cartographie. Notre projet présente une méthode de débruitage d&#39;images en noir et blanc reposant sur la théorie des champs de Markov et sur les modèles physiques d&#39;Ising et de Potts. L&#39;étude théorique du modèle markovien met en avant la nécessité de choisir la bonne approche de minimisation, ainsi que de l&#39;algorithme d&#39;échantillonnage.
+
+Nous avons été confrontés au problème de calibrage de différents paramètres. Les résultats montrent l&#39;efficacité de l&#39;algorithme ICM avec les potentiels issus du modèle markovien gaussien, qui, par comparaison aux autres modèles, présente une meilleure restitution de l&#39;image détériorée. La restauration est d&#39;autant meilleure que l&#39;on connaît des informations sur l&#39;image initiale.
+
+&amp;nbsp;
+
+---&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

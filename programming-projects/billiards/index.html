@@ -1,0 +1,2119 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.6.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Michaël Karpe" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="How to compute perfect trajectories to win a billiard game" />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://michaelkarpe.github.io/programming-projects/billiards/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#3f51b5" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.c7b8d9abd591ba2253ea42747e3ac3f5.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.9c4c13a48bae91f201c0af6081455e43.css" />
+
+  
+  
+  
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="/css/libs/chroma/github-light.min.css" title="hl-light" media="print" onload="this.media='all'" >
+    <link rel="stylesheet" href="/css/libs/chroma/dracula.min.css" title="hl-dark" media="print" onload="this.media='all'" disabled>
+  
+
+  
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-695H905YSX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'G-695H905YSX', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  
+
+  
+  
+
+  
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  
+  <link rel="icon" type="image/png" href="/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu942ec82bbfdd4b8fc9bf90d8cd76fd06_20106_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://michaelkarpe.github.io/programming-projects/billiards/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@wowchemy" />
+    <meta property="twitter:creator" content="@wowchemy" />
+  
+  <meta property="og:site_name" content="Michaël Karpe" />
+  <meta property="og:url" content="https://michaelkarpe.github.io/programming-projects/billiards/" />
+  <meta property="og:title" content="★ Perfect Trajectory Forecasts in Billiards | Michaël Karpe" />
+  <meta property="og:description" content="How to compute perfect trajectories to win a billiard game" /><meta property="og:image" content="https://michaelkarpe.github.io/programming-projects/billiards/featured.jpg" />
+    <meta property="twitter:image" content="https://michaelkarpe.github.io/programming-projects/billiards/featured.jpg" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2016-06-27T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2016-06-27T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+  
+
+
+  <title>★ Perfect Trajectory Forecasts in Billiards | Michaël Karpe</title>
+
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="95d6254f2be40fcb4062e5a5603222f8" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.1ee5462d74c6c0de1f8881b384ecc58d.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/">Michaël Karpe</a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/">Michaël Karpe</a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#about"><span>Home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#kaggle-competitions"><span>Kaggle Competitions</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#computer-vision-projects"><span>Computer Vision</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#machine-learning-projects"><span>Machine Learning</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#optimization-projects"><span>Optimization</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#programming-projects"><span>Programming</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#quantitative-finance-projects"><span>Quantitative Finance</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/#publications"><span>Publications</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+        
+
+        
+        
+
+        
+        
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    
+    
+    
+
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+<div class="article-container pt-3">
+  <h1>★ Perfect Trajectory Forecasts in Billiards</h1>
+
+  
+  <p class="page-subtitle">How to compute perfect trajectories to win a billiard game</p>
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  <span >
+      Michaël Karpe</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Jun 27, 2016
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+  
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+    
+  
+<a class="btn btn-outline-primary btn-page-header" href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/programming/billiard-trajectory-prediction" target="_blank" rel="noopener">
+  Code
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+    
+      
+    
+  
+  <a class="btn btn-outline-primary btn-page-header" href="/programming-projects/billiards/Transparents_oral_TIPE.pdf" >
+    Slides</a>
+
+
+</div>
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 242px;">
+  <div style="position: relative">
+    <img src="/programming-projects/billiards/featured_huc874c0101a29352d6ff88b4d4652c2df_199593_720x2500_fit_q75_h2_lanczos.webp" width="720" height="242" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p> </p>
+<h1 id="presentation-of-the-project">Presentation of the project</h1>
+<p>Many pool players, myself included, would dream of pocketing all the balls one after the other. However, because of the many parameters that govern the movement of the balls, this is difficult, but not impossible. So we&rsquo;re going to look for the perfect trajectory in billiards to find out &ldquo;how to pocket a billiard ball for sure&rdquo;.</p>
+<p>*Since we are trying to make trajectories as predictable as possible, we will consider in our study balls moving without effect, therefore in a straight line.</p>
+<p>We will first focus on an experimental study of friction, then on the theoretical study of the $3$ main physical laws governing motion, and finally I will develop the design of computer programs that will allow us to determine the perfect trajectories to pocket a ball.</p>
+<p> </p>
+<h1 id="experimental-study-of-friction">Experimental study of friction</h1>
+<p>First of all, we will look at the friction of the ball with the mat, which is obviously the cause of the loss of speed of the ball. To study the evolution of this speed, I proceeded to a video scoring with the <em>LatisPro</em> software, after having placed a mark and a $1.82 $m standard corresponding to the length of the billiard table.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/latispro.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p> </p>
+<p>The software&rsquo;s zoom allows for very accurate readings, however, the video has a frame rate of $30$ frames per second, so the ball only moves a few pixels between frames. The plot of the speed evolution on Excel is then rather chaotic. I then measured the position of the ball every $5$ images, to see a linear evolution of the speed, with a deceleration of $0.17$ $m.s^{-2}$, and an uncertainty on this deceleration of $0.044$ $m.s^{-2}$ obtained by the method of least squares :</p>
+<p>$$a = -0,170 \pm 0,044 \ m.s^{-2}$$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/regression.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p> </p>
+<h1 id="theoretical-study-of-the-3-main-laws-of-motion">Theoretical study of the 3 main laws of motion</h1>
+<p>We are now moving on to the theoretical study to justify this constant deceleration, as well as the movement of the balls during the rebounds on the belts and during the shocks between balls.</p>
+<p> </p>
+<h2 id="study-of-rebounds">Study of rebounds</h2>
+<p>When considering rigid bands, bounces follow Descartes&rsquo; law of reflection, analogous to light rays in optics.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/rebond.png" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+<p> </p>
+<h2 id="study-of-shocks">Study of shocks</h2>
+<p>Under the hypothesis of balls evolving without effect, the shocks between balls are governed by the laws of elastic shocks, i.e. conservation of the quantity of motion and kinetic energy :</p>
+<p>$$\overrightarrow{p_1} = \overrightarrow{p_1&rsquo;} + \overrightarrow{p_2&rsquo;}$$
+$$\frac{1}{2}mv_1^2 = \frac{1}{2}mv_1&rsquo;^2 + \frac{1}{2}mv_2&rsquo;^2$$</p>
+<p>This involves deflecting the balls along paths forming an angle $\alpha = 90°$.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/choc.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+<p> </p>
+<h2 id="study-of-friction">Study of friction</h2>
+<p>Finally, as far as friction is concerned, a distinction is theoretically made between two rolling phases. However, we will only be interested in the second phase of rolling without slip, the first phase of rolling with slip taking place only for a negligible period of time. The position of the ball during the rolling phase with slippage is given by the formula:</p>
+<p>$$\overrightarrow{OG}(t) = \overrightarrow{OG}(0) + \overrightarrow{v_{/R}}(G, 0)t - \frac{\overrightarrow{v_{/R}}(I, 0)}{||\overrightarrow{v_{/R}}(I, 0)||} \frac{fgt^2}{2}$$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/roulement.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+<p> </p>
+<p>It is shown with the fundamental principle of dynamics and the theorem of the kinetic moment that, since the ball is rolling without slipping, one cannot neglect the force of resistance to the advance due to the sinking of the ball into the belt:</p>
+<p>$$\overrightarrow{F} = -f_cmg\frac{\overrightarrow{v_{/R}}(G)}{||\overrightarrow{v_{/R}}(G)||}$$</p>
+<p>Régis Petit, engineer-researcher, tells us in his <em>Théorie du jeu sur le billard</em> that this force is opposed to speed, and proportional to a coefficient $f_c$ :</p>
+<p>$$f_c = \frac{\sin(\gamma)}{0.4 + \cos(\gamma)}$$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/glissement.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+<p> </p>
+<p>A good approximation of this coefficient is obtained by measuring the time $t$ taken by the ball to travel the $L$ length of the billiard table, arriving at this $L$ length at zero speed:</p>
+<p>$$f_c \approx \frac{2L}{gt^2}$$</p>
+<p>For our experimental billiard table, it takes $5.5$ $s$ to the ball to go through the $1.82$ $m$ arriving at zero speed, which corresponds to an angle $\gamma = 1°$ and a coefficient $f_c = 1.25%$. These results are consistent since billiards are designed so that friction is as negligible as possible.</p>
+<p> </p>
+<h1 id="trajectory-research-program-design">Trajectory research program design</h1>
+<p>Now that we know the laws governing the movement of marbles, we will be able to make computer programs that will show us the perfect trajectories to pocket a marble.</p>
+<p><em>In order to propose predictable and easily achievable trajectories on a real billiard game, we consider that only the cue ball moves, only bouncing, and $2$ maximum. When it hits the colored ball that we want to pocket, the colored ball goes directly into the hole without rebounding.</em></p>
+<p> </p>
+<h2 id="searching-for-the-set-of-trajectories-to-reach-a-ball">Searching for the set of trajectories to reach a ball</h2>
+<p>As a first step, we need to carry out programs that trace the billiard table, the balls and the trajectories, so that we can check the proper functioning of our future programs.</p>
+<p> </p>
+<h3 id="performing-a-graphical-simulation">Performing a graphical simulation</h3>
+<p>The main plotting program I have made is a program that takes as argument a number $n$, randomly plots $n$ balls on the billiard table, and returns the list of coordinates of the balls. A function traces the trajectory passing through a given position, and another function traces the trajectory after a bounce on a strip according to Descartes&rsquo; law. These two functions return the coordinates of the impact of the balls on the boards.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/tracealeatoire.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p> </p>
+<h3 id="searching-for-positions-to-reach-to-pocket-a-ball">Searching for positions to reach to pocket a ball</h3>
+<p>Once these functions were completed, I first looked at where to hit a ball so that it would go into a hole. The elastic shock hypothesis implies that if the colored ball is stationary, there is a single shock position that allows the ball to be pocketed in a given hole. This position is defined by the relations presented here, knowing that at the moment of impact, the two balls and the hole must be aligned:</p>
+<p>$$a^2 + b^2 = 4R^2 \text{ and } m = \frac{y_C - y_B}{x_C - x_B} = \frac{b}{a}$$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/positionchoc.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+<p> </p>
+<p>Since we know the coordinates of the colored ball and the holes, we can determine $m$, then deduce $a$ and $b$ which define the coordinates of the shock position :</p>
+<p>$$b = m \cdot a \text{ and } a = \pm \frac{2R}{\sqrt{1 + m^2}}$$</p>
+<p>We can then realize a function which, taking as argument the coordinates of a ball, returns the coordinates of the $6$ hit positions corresponding to the $6$ holes of the billiard table, and draws these positions on the graphical interface.</p>
+<p> </p>
+<h3 id="determination-of-the-set-of-possible-paths">Determination of the set of possible paths</h3>
+<p>We then have to see if these positions are accessible or not, i.e. if they can be reached in $2$ maximum rebounds.</p>
+<p> </p>
+<h4 id="direct-or-parallel-strip-shooting">Direct or parallel strip shooting</h4>
+<p>In direct shooting, the trajectory is simply a segment delimited by the cue ball and the cue position. With one or two rebounds on parallel stripes, i.e. like this or like that, any position on the billiard table is accessible.</p>
+<p> </p>
+<h4 id="shooting-in-perpendicular-strips">Shooting in perpendicular strips</h4>
+<p>In two bounces on perpendicular strips, on the other hand, like this for example, the whole billiard table is not accessible. Indeed, in this configuration, it is impossible with the cue ball to reach the black ball by a bounce on this cushion and then on the black ball. It is thus necessary to define a function which makes it possible to determine the zone of the billiard table accessible in $2$ rebounds on $2$ given perpendicular strips, while avoiding the rebounds in the holes.</p>
+<p>This zone is delimited by a limit trajectory, which corresponds to the trajectory where the ball bounces as close as possible to the hole. The function then returns the coordinates of the segment that delimits this zone.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/changementbase.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+<p> </p>
+<p>We will then use this segment to determine whether the cue ball positions are accessible. By transforming this segment into a vector and normalizing it, we will create a new orthonormal base:</p>
+<p>$$\left(O&rsquo;, \ \overrightarrow{x&rsquo;}, \ \overrightarrow{y&rsquo;}\right) = \left(B, \ \frac{\overrightarrow{BC}}{||\overrightarrow{BC}||}, \ \frac{\overrightarrow{BD}}{||\overrightarrow{BD}||}\right)$$</p>
+<p>The following base change matrix is then defined:</p>
+<p>$$ P = \frac{1}{||\overrightarrow{BC}||} \begin{pmatrix}
+x_{\overrightarrow{BC}} &amp; -y_{\overrightarrow{BC}} \\\
+y_{\overrightarrow{BC}} &amp; x_{\overrightarrow{BC}}
+\end{pmatrix}$$</p>
+<p>Then a function is created that returns the coordinates of the shock positions in the new base. If a position is accessible, the $y&rsquo;$ coordinate of this position will then be positive in this example.</p>
+<p>We can then determine the trajectory to be taken in two rebounds thanks to Thales&rsquo; theorem by unfolding the triangles formed by the trajectory to be taken.</p>
+<p>$$\frac{a}{c} = \frac{b_1}{b_2 + d} \iff b_1 = \frac{a(b + d)}{a + c}$$
+$$\alpha = arctan\left(\frac{b + d}{a + c}\right)$$</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/trianglesthales.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/trianglesdeplies.png" alt="" loading="lazy" data-zoomable width="75%" /></div>
+  </div></figure>
+<p> </p>
+<p>Since we know the coordinates of the cue ball and the cue position, thus the parameters $a$, $b$, $c$ and $d$, we can determine the angle to be given to the cue ball. The formula is presented here for $2$ rebounds, but it is analogous for $3$ rebounds or more.</p>
+<p> </p>
+<h2 id="elimination-of-unattainable-trajectories">Elimination of unattainable trajectories</h2>
+<p>Now that we have determined all the trajectories to pocket a ball in $2$ maximum rebound, we must eliminate the trajectories that are unattainable, i.e. those where balls or holes are present on the trajectory.</p>
+<p> </p>
+<h3 id="removing-paths-where-other-balls-are-present">Removing paths where other balls are present</h3>
+<p>In order to detect the balls present on the trajectory, basic changes are made again with the $x$-axis of the trajectory taken. A log is present on the path if the absolute value of its ordinate in the new base is less than twice the radius, i.e. $5$ $cm$ :</p>
+<p>$$x&rsquo; \geq 0 \text{ and } |y&rsquo;| &lt; 2R$$</p>
+<p> </p>
+<h3 id="removal-of-paths-bouncing-in-holes">Removal of paths bouncing in holes</h3>
+<p>To eliminate rebound paths in the hole areas, simply define conditions on the abscissa and ordinate sides of the rebound positions. The final program then plots the achievable paths on the GUI.</p>
+<p> </p>
+<h2 id="taking-into-account-the-deceleration-of-the-balls">Taking into account the deceleration of the balls</h2>
+<p>However, we have not yet taken into account the deceleration of the balls during movement, which is an important parameter. Indeed, a cue ball sent too softly will not reach its goal, and a ball going too fast will not check the reflection law during rebounds, and therefore will not reach its goal either. It is therefore necessary to calculate the minimum initial speed necessary to pocket a ball.</p>
+<p> </p>
+<h3 id="calculation-of-the-speed-restored-on-impact">Calculation of the speed restored on impact</h3>
+<p>By considering a linear decrease of the cue ball velocity as determined experimentally with $a = 0.17$ $m.s^{-2}$, we know its velocity as a function of time and its position by integration :
+$$v(t) = v_0 - at$$
+$$x(t) = x_0 + v_0t - a\frac{t^2}{2}$$</p>
+<p>At the moment $t_1$, the ball will have travelled a distance of $x_1$ to bounce against a strip :
+$$x_1 = v_0t_1 - a\frac{t_1^2}{2} \qquad \Longrightarrow \qquad t_1 = \frac{v_0 - \sqrt{v_0^2 - 2ax_1}}{a}$$</p>
+<p>We then know the speed just before the bounce, then just after, considering that the ball starts again with a certain percentage $\eta = 0.8$ of its speed. In the same way, because of the angle between the balls during the impact, only a percentage $\beta$ of the speed of the cue ball is transmitted to the colored ball.</p>
+<p>$$v_{1, ap} = \eta v_{1, av} = \eta(v_0 - at_1) = \eta \sqrt{v_0^2 - 2ax_1}$$</p>
+<p> </p>
+<h3 id="determining-the-speed-of-the-ball-after-n-collisions">Determining the speed of the ball after $n$ collisions</h3>
+<p>We then obtain by recurrence the final speed of the ball after $n$ rebounds or shocks according to the initial speed :</p>
+<p>$$v_n = \left(v_0^2 \prod_{i = 1}^n \eta_i^2 - 2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2\right)^{\frac{1}{2}}$$</p>
+<p>We then define the minimum initial speed to be given to the cue ball, which is obtained when the colored ball is pocketed at zero speed :</p>
+<p>$$ v_n = 0 \iff v_0 = \left(\frac{2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2}{\prod_{i = 1}^n \eta_i^2}\right)^{\frac{1}{2}} $$</p>
+<p> </p>
+<h3 id="correction-of-programs-by-eliminating-paths">Correction of programs by eliminating paths</h3>
+<p>Finally, in order for the cue ball to respect Descartes&rsquo; law of reflection, we define a maximum initial velocity of $2$ $m.s^{-1}$. We then add the formula of the initial velocity in the final program so that it calculates the minimum initial velocity required. If this speed is greater than the maximum initial speed, the move corresponding to the trajectory is considered to be unfeasible. Otherwise, the trajectory is plotted in orange.</p>
+<p> </p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Thus, to answer the initial problem, namely &ldquo;how to pocket a billiard ball for sure&rdquo;, we can first of all notice that the cue ball must be sent at medium speed, because then Descartes&rsquo; law of reflection makes it possible to easily determine the possible trajectories to pocket a ball.</p>
+<p>It should be remembered that the whole study is carried out under the hypothesis of balls moving without effect. Therefore the initial shot plays an essential role, because if one gives effect to the ball, the trajectories are parabolic and therefore the laws of reflection and elastic shocks are no longer valid at all.</p>
+<p> </p>
+<!---
+
+&nbsp;
+
+# Présentation du projet
+
+De nombreux joueurs de billard, moi y compris, rêveraient d’empocher toutes les billes les unes à la suite des autres. Toutefois, en raison des nombreux paramètres qui régissent le mouvement des billes, la tâche est difficile à réaliser, mais pas impossible. Nous allons donc rechercher la trajectoire parfaite au billard pour savoir « comment empocher à coup sûr une bille de billard ».
+
+*Puisque nous cherchons à rendre les trajectoires le plus prévisible possible, nous considérerons dans notre étude des billes évoluant sans effet, donc de façon rectiligne.*
+
+Nous nous focaliserons dans un premier temps sur une étude expérimentale des frottements, puis sur l’étude théorique des $3$ principales lois physiques régissant le mouvement, et enfin je développerai la conception des programmes informatiques qui nous permettront de déterminer la, voire les trajectoires parfaites pour empocher une bille.
+
+&nbsp;
+
+# Etude expérimentale des frottements
+
+Tout d’abord, nous allons nous intéresser aux frottements de la bille avec le tapis, qui sont bien évidemment la cause de la perte de vitesse de la bille. Pour étudier l’évolution de cette vitesse, j’ai procédé à un pointage vidéo avec le logiciel *LatisPro*, après avoir placé un repère et un étalon de $1,82$ $m$ correspondant à la longueur du billard.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/latispro.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+&nbsp;
+
+Le zoom du logiciel permet de faire des relevés très précis, néanmoins la vidéo ayant une cadence de $30$ images par seconde, la bille ne se déplace que de quelques pixels entre deux images. Le tracé de l’évolution de la vitesse sur Excel est alors assez chaotique. J’ai donc ensuite relevé la position de la bille toutes les $5$ images, pour constater une évolution linéaire de la vitesse, avec une décélération de $0,17$ $m.s^{-2}$, et une incertitude sur cette décélération de $0,044$ $m.s^{-2}$ obtenue par la méthode des moindres carrés :
+
+$$a = -0,170 \pm 0,044 \ m.s^{-2}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/regression.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+&nbsp;
+
+# Etude théorique des 3 principales lois du mouvement
+
+Nous passons désormais à l’étude théorique pour justifier cette décélération constante, ainsi que le mouvement des billes lors des rebonds sur les bandes et lors des chocs entre billes.
+
+&nbsp;
+
+## Etude des rebonds
+
+En considérant des bandes rigides, les rebonds suivent la loi de réflexion de Descartes, de façon analogue aux rayons lumineux en optique.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/rebond.png" alt="" loading="lazy" data-zoomable width="50%" /></div>
+  </div></figure>
+
+&nbsp;
+
+## Etude des chocs
+
+Sous l’hypothèse de billes évoluant sans effet, les chocs entre billes sont régis par les lois des chocs élastiques, à savoir conservation de la quantité de mouvement et de l’énergie cinétique :
+
+$$\overrightarrow{p_1} = \overrightarrow{p_1'} + \overrightarrow{p_2'}$$
+$$\frac{1}{2}mv_1^2 = \frac{1}{2}mv_1'^2 + \frac{1}{2}mv_2'^2$$
+
+Cela implique une déviation des billes selon des trajectoires formant un angle $\alpha = 90°$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/choc.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+
+&nbsp;
+
+## Etude des frottements
+
+Enfin, pour les frottements, on distingue théoriquement deux phases de roulement. Cependant, nous nous intéresserons qu’à la seconde phase de roulement sans glissement, la première phase de roulement avec glissement ne se déroulant que pendant une durée négligeable. La position de la bille pendant la phase de roulement avec glissement est donnée par la formule :
+
+$$\overrightarrow{OG}(t) = \overrightarrow{OG}(0) + \overrightarrow{v_{/R}}(G, 0)t - \frac{\overrightarrow{v_{/R}}(I, 0)}{||\overrightarrow{v_{/R}}(I, 0)||} \frac{fgt^2}{2}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/roulement.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+
+&nbsp;
+
+On montre avec le principe fondamental de la dynamique et le théorème du moment cinétique que, la bille étant en roulement sans glissement, on ne peut pas négliger la force de résistance à l’avancement due à l’enfoncement de la bille dans le tapis :
+
+$$\overrightarrow{F} = -f_cmg\frac{\overrightarrow{v_{/R}}(G)}{||\overrightarrow{v_{/R}}(G)||}$$
+
+Régis Petit, ingénieur-chercheur, nous indique dans sa *Théorie du jeu sur le billard* que cette force est opposée à la vitesse, et proportionnelle à un coefficient $f_c$ :
+
+$$f_c = \frac{\sin(\gamma)}{0.4 + \cos(\gamma)}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/glissement.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+
+&nbsp;
+
+Une bonne approximation de ce coefficient s’obtient en mesurant le temps $t$ mis par la bille pour parcourir la longueur $L$ du billard, en arrivant à cette longueur $L$ à vitesse nulle :
+
+$$f_c \approx \frac{2L}{gt^2}$$
+
+Pour notre billard expérimental, il faut $5,5$ $s$ à la bille pour parcourir les $1,82$ $m$ en arrivant à vitesse nulle, ce qui correspond à un angle $\gamma = 1°$ et un coefficient $f_c = 1,25\%$. Ces résultats sont cohérents puisque les billards sont conçus de façon à ce que les frottements soient le plus négligeable possible.
+
+&nbsp;
+
+# Conception des programmes de recherche des trajectoires
+
+Maintenant que nous connaissons les lois régissant le mouvement des billes, nous allons pouvoir réaliser les programmes informatiques qui vont nous indiquer les trajectoires parfaites pour empocher une bille.
+
+*Dans le but de proposer des trajectoires prévisibles et réalisables facilement sur un vrai jeu de billard, on considère que seule la bille blanche se déplace, en effectuant uniquement des rebonds, et $2$ au maximum. Lorsqu’elle frappe la bille de couleur que nous souhaitons empocher, la bille de couleur se dirige directement dans le trou sans effectuer de rebonds.*
+
+&nbsp;
+
+## Recherche de l'ensemble des trajectoires permettant d'atteindre une bille
+
+Dans un premier temps, il nous faut réaliser des programmes qui tracent le billard, les billes et les trajectoires, pour pouvoir vérifier le bon fonctionnement de nos futurs programmes.
+
+&nbsp;
+
+### Réalisation d'une simulation graphique
+
+Le principal programme de tracé que j’ai réalisé est un programme qui prend comme argument un nombre $n$, trace de façon aléatoire $n$ billes sur le billard, et renvoie la liste des coordonnées des billes. Une fonction trace la trajectoire passant par une position donnée, et une autre fonction trace la trajectoire après un rebond sur une bande selon la loi de Descartes. Ces deux fonctions renvoient les coordonnées d’impact des billes sur les bandes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/tracealeatoire.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+&nbsp;
+
+### Recherche des positions à atteindre pour empocher une bille
+
+Une fois ces fonctions réalisées, j’ai d’abord cherché à savoir où frapper une bille pour qu’elle se dirige dans un trou. L’hypothèse des chocs élastiques implique que si la bille de couleur est immobile, il existe une unique position de choc qui permette d’empocher la bille dans un trou donné. Cette position est définie par les relations présentées ici, sachant qu’à l’instant du choc, les deux billes et le trou doivent être alignés :
+
+$$a^2 + b^2 = 4R^2 \text{ et } m = \frac{y_C - y_B}{x_C - x_B} = \frac{b}{a}$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/positionchoc.png" alt="" loading="lazy" data-zoomable width="40%" /></div>
+  </div></figure>
+
+&nbsp;
+
+Puisqu’on connaît les coordonnées de la bille de couleur et des trous, on peut déterminer $m$, puis en déduire $a$ et $b$ qui définissent les coordonnées de la position de choc :
+
+$$b = m \cdot a \text{ et } a = \pm \frac{2R}{\sqrt{1 + m^2}}$$
+
+On peut alors réaliser une fonction qui, prenant en argument les coordonnées d’une bille, renvoie les coordonnées des $6$ positions de choc correspondant aux $6$ trous du billard, et trace ces positions sur l’interface graphique.
+
+&nbsp;
+
+### Détermination de l'ensemble des trajectoires possibles
+
+Il faut ensuite voir si ces positions sont accessibles ou non, c’est-à-dire si on peut les atteindre en $2$ rebonds maximum.
+
+&nbsp;
+
+#### Tir direct ou en bandes parallèles
+
+En tir direct, la trajectoire est simplement un segment délimité par la bille blanche et la position de choc. En un rebond ou en deux rebonds sur bandes parallèles, c’est-à-dire comme ça ou comme ça, n’importe quelle position sur le billard est accessible.
+
+&nbsp;
+
+#### Tir en bandes perpendiculaires
+
+En deux rebonds sur bandes perpendiculaires par contre, comme ceci par exemple, tout le billard n’est pas accessible. En effet, dans cette configuration, il est impossible avec la bille blanche d’atteindre la bille noire par un rebond sur cette bande puis sur celle-ci. Il faut donc définir une fonction qui permet de déterminer la zone du billard accessible en $2$ rebonds sur $2$ bandes perpendiculaires données, tout en évitant les rebonds dans les trous.
+
+Cette zone est délimitée par une trajectoire limite, qui correspond à la trajectoire où la bille rebondit le plus près possible du trou. La fonction renvoie alors les coordonnées du segment qui délimite cette zone.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/changementbase.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+&nbsp;
+
+Nous allons ensuite nous servir de ce segment pour déterminer si les positions de choc d’une bille sont accessibles. En transformant ce segment en vecteur et en le normant, nous allons créer une nouvelle base orthonormée :
+
+$$\left(O', \ \overrightarrow{x'}, \ \overrightarrow{y'}\right) = \left(B, \ \frac{\overrightarrow{BC}}{||\overrightarrow{BC}||}, \ \frac{\overrightarrow{BD}}{||\overrightarrow{BD}||}\right)$$
+
+On définit alors la matrice de changement de base présente suivante :
+
+$$ P = \frac{1}{||\overrightarrow{BC}||} \begin{pmatrix}
+x_{\overrightarrow{BC}} & -y_{\overrightarrow{BC}} \\\\\\
+y_{\overrightarrow{BC}} & x_{\overrightarrow{BC}}
+\end{pmatrix}$$
+
+Puis on crée une fonction qui renvoie les coordonnées des positions de choc dans la nouvelle base. Si une position est accessible, la coordonnée $y’$ de cette position sera alors positive dans cet exemple.
+
+On peut alors déterminer la trajectoire à emprunter en deux rebonds grâce au théorème de Thalès par un dépliage des triangles formés par la trajectoire à emprunter.
+
+$$\frac{a}{c} = \frac{b_1}{b_2 + d} \iff b_1 = \frac{a(b + d)}{a + c}$$
+$$\alpha = arctan\left(\frac{b + d}{a + c}\right)$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/trianglesthales.png" alt="" loading="lazy" data-zoomable /></div>
+  </div></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img src="/media/billiards/trianglesdeplies.png" alt="" loading="lazy" data-zoomable width="75%" /></div>
+  </div></figure>
+
+&nbsp;
+
+Etant donné qu’on connaît les coordonnées de la bille blanche et de la position de choc, donc les paramètres $a$, $b$, $c$ et $d$, on peut déterminer l’angle à donner à la bille blanche. La formule est présentée ici dans le cas de $2$ rebonds, mais elle est analogue pour $3$ rebonds ou plus.
+
+&nbsp;
+
+## Elimination des trajectoires irréalisables
+
+Maintenant que nous avons déterminé toutes les trajectoires pour empocher une bille en $2$ rebonds maximum, il nous faut éliminer les trajectoires qui ne sont pas réalisables, à savoir celles où des billes ou bien des trous sont présents sur la trajectoire.
+
+&nbsp;
+
+### Suppression des trajectoires où d'autres billes sont présentes
+
+Pour détecter les billes présentes sur la trajectoire, on procède de  nouveau à des changements de base avec pour axe des abscisses la trajectoire empruntée. Une bille est présente sur la trajectoire si la valeur absolue de son ordonnée dans la nouvelle base est inférieure à deux fois le rayon, soit $5$ $cm$:
+
+$$x' \geq 0 \text{ et } |y'| < 2R$$
+
+&nbsp;
+
+### Suppression des trajectoires rebondissant dans les trous
+
+Pour éliminer les trajectoires rebondissant dans les zones des trous, il suffit de définir des conditions sur les abscisses et ordonnées des positions de rebonds. Le programme final trace alors les trajectoires réalisables sur l’interface graphique.
+
+&nbsp;
+
+## Prise en compte de la décélération des billes
+
+Toutefois, nous n’avons pas encore pris en compte la décélération des billes lors du mouvement, qui est un paramètre important. En effet, une bille blanche envoyée trop doucement n’atteindra pas son but, et une bille qui va trop vite ne vérifie plus en pratique la loi de réflexion lors des rebonds, et donc n’atteindra pas son but également. Il faut donc calculer la vitesse initiale minimale nécessaire pour empocher une bille.
+
+&nbsp;
+
+### Calcul de la vitesse restituée lors d'un choc
+
+En considérant une décroissance linéaire de la vitesse de la bille blanche telle que déterminée expérimentalement avec $a = 0,17$ $m.s^{-2}$, on connaît sa vitesse en fonction du temps et sa position par intégration :
+$$v(t) = v_0 - at$$
+$$x(t) = x_0 + v_0t - a\frac{t^2}{2}$$
+
+À l’instant $t_1$, la bille aura parcouru une distance $x_1$ pour rebondir contre une bande :
+$$x_1 = v_0t_1 - a\frac{t_1^2}{2} \qquad \Longrightarrow \qquad t_1 = \frac{v_0 - \sqrt{v_0^2 - 2ax_1}}{a}$$
+
+On connaît alors la vitesse juste avant le rebond, puis juste après en considérant que la bille repart avec un certain pourcentage $\eta = 0.8$ de sa vitesse. De même, en raison de l’angle entre les billes lors du choc, seul un pourcentage $\beta$ de la vitesse de la bille blanche est transmis à la bille de couleur.
+
+$$v_{1, ap} = \eta v_{1, av} = \eta(v_0 - at_1) = \eta \sqrt{v_0^2 - 2ax_1}$$
+
+&nbsp;
+
+### Détermination de la vitesse de la bille après $n$ collisions
+
+On obtient alors par récurrence la vitesse finale de la bille après $n$ rebonds ou chocs en fonction de la vitesse initiale :
+
+$$v_n = \left(v_0^2 \prod_{i = 1}^n \eta_i^2 - 2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2\right)^{\frac{1}{2}}$$
+
+On définit ensuite la vitesse initiale minimale à donner à la bille blanche, qui est obtenue lorsque la bille de couleur est empochée à une vitesse nulle :
+
+$$ v_n = 0 \iff v_0 = \left(\frac{2a \sum_{i = 1}^{n + 1} x_i \prod_{j = i}^n \eta_j^2}{\prod_{i = 1}^n \eta_i^2}\right)^{\frac{1}{2}} $$
+
+&nbsp;
+
+### Correction des programmes par élimination des trajectoires
+
+Enfin, pour que la bille blanche respecte la loi de réflexion de Descartes, on définit une vitesse initiale maximale de $2$ $m.s^{-1}$. On ajoute alors la formule de la vitesse initiale dans le programme final pour qu’il calcule la vitesse initiale minimale nécessaire. Si cette vitesse est supérieure à la vitesse initiale maximale, le coup correspondant à la trajectoire est considéré comme irréalisable. Sinon, la trajectoire est tracée en orange.
+
+&nbsp;
+
+# Conclusion
+
+Ainsi, pour répondre à la problématique initiale, à savoir « comment empocher à coup sûr une bille de billard », nous pouvons tout d’abord remarquer qu’il faut envoyer la bille blanche à vitesse moyenne, car alors la loi de réflexion de Descartes permet de déterminer facilement les trajectoires possibles pour empocher une bille.
+
+Il faut rappeler que toute l’étude est réalisée dans l’hypothèse de billes se déplaçant sans effet. Par conséquent le tir initial joue un rôle essentiel, car si l’on donne de l’effet à la bille, les trajectoires sont paraboliques et donc les lois de réflexion et des chocs élastiques ne sont plus du tout valables.
+
+&nbsp;
+
+--->
+
+    </div>
+
+    
+
+
+
+
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://michaelkarpe.github.io/"><img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu66194438bc6e14d260870deead871271_609448_270x270_fill_q75_lanczos_center.jpg" alt="Michaël Karpe"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://michaelkarpe.github.io/">Michaël Karpe</a></h5>
+      <h6 class="card-subtitle">Quantitative Developer</h6>
+      <p class="card-text">Quantitative Developer at Next Gate Tech. MEng in Industrial Engineering &amp; Operations Research, FinTech Concentration at University of California, Berkeley. Diplôme d&rsquo;Ingénieur (MSc) in Applied Mathematics &amp; Computer Science, Machine Learning &amp; Computer Vision Concentration at Ecole des Ponts ParisTech, France.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/michaelkarpe/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/MichaelKarpe" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.kaggle.com/mika30" target="_blank" rel="noopener">
+        <i class="fab fa-kaggle"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  
+  <p class="powered-by copyright-license-text">
+    © Michaël Karpe 2022. All rights reserved.
+  </p>
+  
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+
+
+<script src="/js/vendor-bundle.min.d26509351aa0ff874abbee824e982e9b.js"></script>
+
+
+
+
+  
+
+  
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script id="search-hit-fuse-template" type="text/x-template">
+    <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+    </div>
+  </script>
+  
+    <script src="https://cdn.jsdelivr.net/gh/krisk/Fuse@v3.2.1/dist/fuse.min.js" integrity="sha512-o38bmzBGX+hD3JHWUFCDA09btWaqrNmoJ3RXLlrysA7PP01Kgs4UlE4MhelE1v5dJR3+cxlR4qQlotsW7jKsnw==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/julmot/mark.js@8.11.1/dist/jquery.mark.min.js" integrity="sha512-mhbv5DqBMgrWL+32MmsDOt/OAvqr/cHimk6B8y/bx/xS88MVkYGPiVv2ixKVrkywF2qHplNRUvFsAHUdxZ3Krg==" crossorigin="anonymous"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+<script id="page-data" type="application/json">{"use_headroom":true}</script>
+
+
+
+  <script src="/js/wowchemy-headroom.c251366b4128fd5e6b046d4c97a62a51.js" type="module"></script>
+
+
+
+
+
+
+
+
+  
+  
+
+
+<script src="/en/js/wowchemy.min.54dd6e4d8f2e4b1d098381b57f18dd83.js"></script>
+
+
+
+
+
+
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <pre><code></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script src="/js/wowchemy-publication.68f8d7090562ca65fc6d3cb3f8f2d2cb.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
