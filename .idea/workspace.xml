@@ -4,36 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="30b3772f-b710-4ff7-9b35-b8229ebabf42" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/categories/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/categories/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computer-vision-projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/computer-vision-projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computer-vision-projects/lloyd/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/computer-vision-projects/lloyd/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computer-vision-projects/restoration/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/computer-vision-projects/restoration/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/computer-vision-projects/segmentation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/computer-vision-projects/segmentation/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-challenges/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/data-challenges/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kaggle-competitions/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/kaggle-competitions/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kaggle-competitions/march-madness/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/kaggle-competitions/march-madness/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kaggle-competitions/nyc-taxi/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/kaggle-competitions/nyc-taxi/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/machine-learning-projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/machine-learning-projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/machine-learning-projects/outlier/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/machine-learning-projects/outlier/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/machine-learning-projects/sdca/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/machine-learning-projects/sdca/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization-projects/allocation/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimization-projects/allocation/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization-projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimization-projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization-projects/textmatching/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/optimization-projects/textmatching/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/programming-projects/billiards/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/programming-projects/billiards/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/programming-projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/programming-projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/programming-projects/zuma/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/programming-projects/zuma/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publication-type/0/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publication-type/0/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publication/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publication/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publication/karpe2020multiagent/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publication/karpe2020multiagent/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publication/karpe2020overall/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publication/karpe2020overall/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/publication_types/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publication_types/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quantitative-finance-projects/covariance/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/quantitative-finance-projects/covariance/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quantitative-finance-projects/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/quantitative-finance-projects/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tags/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/tags/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="30b3772f-b710-4ff7-9b35-b8229ebabf42" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,21 +16,21 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2EJKlHnN8MFNOuLUMO0YwLVwX8Y" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/michael/git/michaelkarpe.github.io"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/michael/git/michaelkarpe.github.io&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
