@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Taxi Trip Duration Prediction</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <h1>NYC Taxi Trip Duration Prediction</h1>
+  <p class="author">Michaël Karpe &mdash; <span class="date">May 10, 2020</span></p>
+  <p class="tags">
+    <a href="miscellaneous.html">Miscellaneous</a>
+  </p>
+
+  <p><em>UC Berkeley IEOR 242 Spring 2020 Kaggle Competition Winner</em></p>
+
+  <figure>
+    <img src="images/nyc-taxi/featured.jpg" alt="NYC Taxi Trip Duration Prediction">
+  </figure>
+
+  <h2>How long does it take to get from the Bronx to Staten Island in an NYC yellow cab?</h2>
+
+  <p>In the "NYC Taxi Trip Duration Prediction" challenge of my UC Berkeley "Applications in Data Analysis" course, I built a machine learning model to predict the duration of an NYC taxi trip as soon as you enter the taxi! As the winning model of the challenge, this model predicts the duration of such a trip with a root mean square error of less than 4.5 minutes.</p>
+
+  <p>If you are interested in machine learning and want to know how to build a powerful model on a simple regression problem (or if you just like machine learning memes), click on the "Code" button on top of this webpage!</p>
+
+  <p><a href="https://www.kaggle.com/mika30/nyc-taxi-trip-duration-prediction">Code on Kaggle</a></p>
+
+  <footer>
+    <a href="../index.html">&larr; Back</a>
+  </footer>
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

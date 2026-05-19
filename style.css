@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+body {
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  max-width: 42em;
+  margin: 3em auto;
+  padding: 0 1em;
+  color: #111;
+  background: #fdfbf7;
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
+}
+h1 { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; font-size: 2em; font-weight: 700; text-align: center; margin-bottom: 0.2em; }
+h2 { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; font-size: 1.2em; font-weight: 600; border-bottom: 1px solid #000; padding-bottom: 0.1em; margin-top: 2em; }
+.author { text-align: center; margin-bottom: 2em; font-size: 1.1em; }
+.date { color: #555; font-size: 0.9em; }
+a { color: #000; }
+a:hover { text-decoration: none; }
+ul { padding-left: 1.5em; }
+li { margin: 0.5em 0; }
+.blog-list { list-style: none; padding: 0; }
+.blog-list li { display: flex; align-items: center; flex-wrap: wrap; gap: 0.3em; }
+.blog-list li .tags { margin: 0; }
+.blog-list li .tags a { padding: 0.05em 0.4em; font-size: 0.75em; }
+.abstract { margin: 1em 2em; font-style: italic; }
+.tags { margin: 0.5em 0 2em; font-family: "Inter", sans-serif; font-size: 0.8em; }
+.tags a { display: inline-block; border: 1px solid #000; padding: 0.15em 0.5em; margin: 0 0.4em 0.4em 0; text-decoration: none; color: #000; }
+.tags a:hover { background: #000; color: #fff; }
+footer { margin-top: 3em; border-top: 1px solid #000; padding-top: 0.5em; font-size: 0.85em; text-align: center; }
+figure { margin: 1.5em auto; text-align: center; }
+figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+figcaption { font-size: 0.85em; color: #555; margin-top: 0.5em; font-style: italic; }
+.figure-row { display: flex; gap: 1.5em; justify-content: center; align-items: center; flex-wrap: wrap; margin: 1.5em 0; }
+.figure-row figure { flex: 1 1 0; min-width: 200px; margin: 0; }
+figure img { cursor: zoom-in; }
+.lightbox { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+table { margin: 1.5em auto; border-collapse: collapse; font-size: 0.9em; }
+table th, table td { border: 1px solid #000; padding: 0.4em 0.8em; text-align: center; }
+table th { background: #f5f2ed; font-weight: 600; font-family: "Inter", sans-serif; }
+table td { background: #fdfbf7; }
+.site-header { display: flex; align-items: center; margin-bottom: 2em; padding: 0 3em; }
+.header-text { flex: 1; text-align: center; }
+.avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 2px solid #000; flex-shrink: 0; }
+@media (max-width: 48em) { .site-header { flex-direction: column-reverse; align-items: center; } .avatar { margin-bottom: 1em; } }

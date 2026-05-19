@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automated Text Matching</title>
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+  <h1>Automated Text Matching</h1>
+  <p class="author">Michaël Karpe, Bastien Déchamps &mdash; <span class="date">February 5, 2018</span></p>
+  <p class="tags">
+    <a href="optimization.html">Optimization</a>
+  </p>
+
+  <p><em>Text matching from different languages without prior knowledge</em></p>
+
+  <figure>
+    <img src="images/text-matching/featured.png" alt="Automated Text Matching featured image">
+  </figure>
+
+  <p><a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/optimization/text-matching">Code on GitHub</a></p>
+
+  <h2>Presentation of the project</h2>
+
+  <p>In the field of translationology, there are many approaches and algorithms for making translations from one language to another. Each method has its advantages and disadvantages, and a compromise between several methods is usually needed to achieve an efficient translation algorithm.</p>
+
+  <p>We are interested here in an algorithm for aligning texts in different languages based on dynamic time warping (DTW). Such an algorithm does not require either prior bilingual resources or knowledge of similarities between the languages studied.</p>
+
+  <p>It can thus work on any language pair, especially on languages for which few linguistic resources are available. On the other hand, its accuracy in translation is low, so we will focus mainly on aligning paragraphs rather than words.</p>
+
+  <p>The approach used in Kim Gerdes' algorithm, although simple at first glance, is no less original. It consists in working on the occurrences and position of words in the texts under consideration using the DTW.</p>
+
+  <h2>Paragraph alignment</h2>
+
+  <p>The application of DTW in a translation system can make bad associations, if one tries to be too precise, due to different syntaxes within languages. The algorithm proposed by Gerdes therefore uses the sum of the word alignments to align paragraphs, thus eliminating possible spurious signals due to erroneous word associations.</p>
+
+  <p>Length-based alignment is an alignment method, not based on the DTW, which allows a first alignment of paragraphs based solely on the length of the paragraphs.</p>
+
+  <h3>Jaro-Winkler distance</h3>
+
+  <p>To complete the DTW distance, we use the Jaro-Winkler syntax distance between $2$ strings $d_w$ , depending on the Jaro distance $d_j$:</p>
+
+  <p>$$d_w = d_j+lp(1-d_j) \qquad \text{ with } \qquad d_j = \frac{1}{3}\left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right)$$</p>
+
+  <ul>
+    <li>$|s_{i}|$ is the length of the string $s_{i}$</li>
+    <li>$m$ is the number of corresponding characters</li>
+    <li>$t$ is the number of transpositions</li>
+    <li>$l$ is the length of the common prefix (maximum $4$ characters)</li>
+    <li>$p$ is a coefficient that allows to favor strings with a common prefix (Winkler proposes for value $p = 0.1$)</li>
+  </ul>
+
+  <h3>Dynamic Time Warping (DTW)</h3>
+
+  <p>In general, DTW algorithms seek to find the optimal monotonic (non-intersecting) alignment of two sequences of variable length. Monotonic means that the order of the sequence positions before and after DTW is respected, but that the distance between these positions may change.</p>
+
+  <p>DTW algorithms are dynamic programming algorithms. For our paragraph alignment, it is applied on recency vectors $(p_1, p_2-p_1, \dots, p_n-p_{n-1}, 1-p_n)$ where $p_i$ is the position of the $i$ occurrence (in text fraction) of the considered $p$ word.</p>
+
+  <p>$$W_{i+1,j+1} = \left| r_1-r_2 \right| + \min\left(W_{i,j+1}, W_{i+1,j}, W_{i,j}\right)$$</p>
+
+  <figure>
+    <img src="images/text-matching/dtw.PNG" alt="Dynamic Time Warping illustration">
+    <figcaption>Figure: Dynamic Time Warping (DTW) principle.</figcaption>
+  </figure>
+
+  <h4>Integration in an alignment system</h4>
+
+  <p>We describe here, in a synthetic way, the global algorithm performing the automatic matching of texts in different languages without prior knowledge, including the DTW algorithm explained above. This algorithm, described in detail by Kim Gerdes, can be synthesized in $4$ main steps:</p>
+
+  <ul>
+    <li>Reading and cleaning of texts: suppression of parasitic signals (accents, extra spaces, punctuation…)</li>
+    <li>Construction of hash tables associating words with their different characteristics (number of occurrences, appearance indices…)</li>
+    <li>Calculation for each of the texts of the internal cognates of the language (Jaro-Winkler distance), significant words or groups of words (frequent and well distributed in the text).</li>
+    <li>Application of the DTW algorithm for the alignment of words, groups of words and paragraphs</li>
+  </ul>
+
+  <h2>Execution of the alignment system</h2>
+
+  <p>The alignment system described above was developed in C++ and applied to the Universal Declaration of Human Rights (UDHR) in the following languages: English, French, Spanish, German, Russian. We present here the results obtained for the French-English language pair.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/text-matching/dudh.jpg" alt="UDHR in French">
+      <figcaption>Figure: UDHR in French.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/text-matching/udhr.jpg" alt="UDHR in English">
+      <figcaption>Figure: UDHR in English.</figcaption>
+    </figure>
+  </div>
+
+  <table>
+    <thead><tr><th>French</th><th>English</th><th>DTW</th></tr></thead>
+    <tbody>
+    <tr><td>respect</td><td>respect</td><td>0.0039</td></tr>
+    <tr><td>ces</td><td>these</td><td>0.0046</td></tr>
+    <tr><td>déclaration</td><td>declaration</td><td>0.0070</td></tr>
+    <tr><td>sans</td><td>without</td><td>0.0107</td></tr>
+    <tr><td>considérant</td><td>whereas</td><td>0.0115</td></tr>
+    <tr><td>nationalité</td><td>nationality</td><td>0.0116</td></tr>
+    <tr><td>libertés</td><td>freedoms</td><td>0.0124</td></tr>
+    <tr><td>famille</td><td>family</td><td>0.0150</td></tr>
+    <tr><td>société</td><td>society</td><td>0.0152</td></tr>
+    <tr><td>unies</td><td>united</td><td>0.0213</td></tr>
+    <tr><td>nations</td><td>nations</td><td>0.0228</td></tr>
+    <tr><td>conscience</td><td>conscience</td><td>0.0245</td></tr>
+    <tr><td>dignité</td><td>dignity</td><td>0.0306</td></tr>
+    <tr><td>religion</td><td>religion</td><td>0.0326</td></tr>
+    <tr><td>éducation</td><td>education</td><td>0.0375</td></tr>
+    <tr><td>contre</td><td>against</td><td>0.0383</td></tr>
+    <tr><td>article</td><td>article</td><td>0.0545</td></tr>
+    <tr><td>droits</td><td>rights</td><td>0.0714</td></tr>
+    <tr><td>présente</td><td>declaration</td><td>0.0849</td></tr>
+    <tr><td>religion</td><td>property</td><td>0.0979</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Analysis of the results</h3>
+
+  <p>After applying the DTW algorithm to different languages, we found that word matching was effective when the DTW value returned for a word pair was less than $0.1$ (this value having been normalized to be between $0$ and $1$).</p>
+
+  <p>For the French and English language pair, we find erroneous associations for DTW values greater than $0.08$, notably due to the different syntax of the languages. It is therefore necessary to include the Jaro-Winkler distance in the alignment system to correct this problem.</p>
+
+  <p>Once the Jaro-Winkler distance is included in the alignment system, we can combine these word associations to proceed with the UDHR paragraph association. The UDHR consists of $89$ paragraphs, for a total of $2,106$ words and $11,663$ characters.</p>
+
+  <p>Reciprocal paragraph associations (dashes on vertical lines) are represented by solid arrows, while dashed arrows represent one-way associations.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/text-matching/alignbylength.png" alt="Alignment by length">
+      <figcaption>Figure: Alignment by length.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/text-matching/alignDTW.png" alt="Alignment with DTW">
+      <figcaption>Figure: Alignment with DTW.</figcaption>
+    </figure>
+  </div>
+
+  <h3>Alignment system limits</h3>
+
+  <p>The main limitation of the developed alignment system lies in the accuracy of the alignment, limited to a paragraph scale. The DTW algorithm alone is not sufficient to achieve an efficient alignment, and the addition of a syntax distance such as Jaro-Winkler is necessary to improve the results. The results obtained remain very satisfying.</p>
+
+  <figure>
+    <img src="images/text-matching/piege.png" alt="Alignment system limitation illustration">
+    <figcaption>Figure: Alignment system limitation illustration.</figcaption>
+  </figure>
+
+  <h3>References</h3>
+  <ol>
+    <li>Kim Gerdes. <em>L'alignement pour les pauvres : Adapter la bonne métrique pour unalgorithme dynamique de dilatation temporelle pour l'alignement sans ressources de corpus bilingues.</em> 9e Journées internationales d'Analyse statistique des Données Textuelles, Mars 2008.</li>
+    <li>Meinard Müller. <em>Information retrieval for music and motion.</em> Chapter 4 : Dynamic Time Warping, Septembre 2007.</li>
+  </ol>
+
+  <footer>
+    <a href="../index.html">&larr; Back</a>
+  </footer>
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

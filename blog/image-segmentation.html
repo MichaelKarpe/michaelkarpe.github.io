@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Segmentation: Mean Shift & Normalized Cut</title>
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+  <h1>Image Segmentation: Mean Shift &amp; Normalized Cut</h1>
+  <p class="author">Michaël Karpe, Marc-Antoine Augé &mdash; <span class="date">May 30, 2018</span></p>
+  <p class="tags">
+    <a href="computer-vision.html">Computer Vision</a>
+  </p>
+
+  <p><em>Presentation of two image segmentation techniques</em></p>
+
+  <figure>
+    <img src="images/segmentation/featured.png" alt="Image Segmentation featured image">
+  </figure>
+
+  <p><a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/computer-vision/image-segmentation">Code on GitHub</a></p>
+
+  <h2>Mean Shift</h2>
+
+  <p>The Mean Shift algorithm is a <em>non-parametric</em> technique whose aim is to find local maxima in a <em>high-dimensional data distribution</em> without computing the latter. Therefore, the main issue is how to efficiently estimate a density function given a set of samples.</p>
+
+  <p>The simplest way is to smooth the data. A common technique to smooth data is to compute a <em>kernel density estimation</em> $f(\mathbf{x})$:</p>
+
+  <p>$$f(x) = \sum_{i \in \mathcal{I}} K(\mathbf{x}-\mathbf{x_i}) = \sum_{i \in \mathcal{I}} k\left(\dfrac{||\mathbf{x}-\mathbf{x_i}||^2}{h^2}\right)$$</p>
+
+  <p>where $(x_i)_{i \in \mathcal{I}}$ are the input samples, $k$ the kernel function and $h$ the kernel width. Then, we can find $f(x)$ maxima with usual optimization techniques (e.g. gradient ascent).</p>
+
+  <p>However, $f(x)$ computation can have a too high complexity in high dimensional spaces. Thus, mean shift becomes useful. The algorithm uses a technique called <em>multiple restart gradient descent</em>, starting from $y_0$ and iterating under the following procedure (where $G$ is associated with the kernel function $g(r)=-k'(r)$):</p>
+
+  <p>$$\mathbf{y}_{k+1} = \mathbf{y}_k + \mathbf{m}(\mathbf{y}_k)$$</p>
+
+  <p>$$\text{with} \quad \mathbf{m}(\mathbf{x}) = \dfrac{\sum_{i \in \mathcal{I}} \mathbf{x_i}G(\mathbf{x}-\mathbf{x_i})}{\sum_{i \in \mathcal{I}} G(\mathbf{x}-\mathbf{x_i})} - \mathbf{x} \quad \text{called the mean shift vector}$$</p>
+
+  <figure>
+    <img src="images/segmentation/meanshift.png" alt="One-dimensional visualization of the kernel density estimate, its derivative, and a mean shift.">
+    <figcaption>Figure: One-dimensional visualization of the kernel density estimate, its derivative, and a mean shift.</figcaption>
+  </figure>
+
+  <p>It has been proven that this algorithm converges if the kernel $k(r)$ is monotonically decreasing. Two kernels commonly used for the mean shift algorithm are the <em>Gaussian kernel</em>, and the <em>Epanechnikov kernel</em>, whose formula is $k_{E}(r) = \max(0,1-r)$. Therefore, the simplest way to apply mean shift algorithm is to use the above gradient procedure at every input point $x_i$, in order to find all local maxima.</p>
+
+  <p>In <em>image segmentation</em>, mean shift algorithm is generally used taking into account spatial coordinates and color of pixels, as with the bilateral filter, through a kernel of the form:</p>
+
+  <p>$$K(\mathbf{x_i}) = k\left(\dfrac{||\mathbf{x_r}||^2}{h_r^2}\right)k\left(\dfrac{||\mathbf{x_s}||^2}{h_s^2}\right)$$</p>
+
+  <p>where $\mathbf{x_s} = (x,y)$ are the spatial coordinates (spatial domain), $\mathbf{x_r}$ is the color value (range domain), $h_s$ (resp. $h_r$) the spatial (resp. range) bandwith.</p>
+
+  <h2>Normalized Cut</h2>
+
+  <p>The Normalized Cut algorithm is an efficient way to segment an image. This algorithm is based on a graph representation of the image: pixels are vertices and weights (edges) depend on the image (brightness, intensity, distance or whatever can be useful to segment the image). The vertices could be just a subset of pixels like points of interest.</p>
+
+  <p>Once the graph is computed, the problem is to cut vertices into two disjoint subsets $A$ and $B$ such that weights from A to B, $cut(A, B) = \sum_{u \in A, v\in B} w(u, v)$ is minimal. Unfortunately, algorithms tend to make unbalanced sets ($cut(A, B)$ is smaller if $A$ contains only one element). The idea for this algorithm is to <em>normalize the cut</em>:</p>
+
+  <p>$$N_{cut}(A, B) = \frac{cut(A, B)}{assoc(A, V)} + \frac{cut(A, B)}{assoc(B, V)}$$</p>
+
+  <p>where $assoc(A, V) = \sum_{u \in A, t \in V} w(u, t)$.</p>
+
+  <p>It has been proven in <em>reference 1</em> that the <em>normalized cut</em> is equivalent to find the eigenvector with the second smallest eigenvalue for:</p>
+
+  <p>$$(D - W)x = \lambda Dx$$</p>
+
+  <p>where, if $N = |V|$, $W \in \mathbb{R}^{N\times N}$ is the weight matrix and $D \in \mathbb{R}^{N\times N}$ is the diagonal matrix where $D(i, i) = \sum_j w(i, j)$. Signs of the second eigenvector $x$ decide on the cut ($i \in A$ iff $x(i) > 0$).</p>
+
+  <h2>Our results:</h2>
+
+  <p>We decided to test this algorithm. Firstly, we worked on a set of points in $\mathbb{R}^2$ and we made a graph where vertices are points and weights are $w(x,y) = ||x - y||_2^{-1}$. We obtained the segmentation shown in the left figure below, which give good results (the algorithm did not know the colors / the labels of the points). Then, we decided to work on artificial images and we found two main issues:</p>
+
+  <ul>
+    <li>How can we make efficiently (in Python) the graph from the image?</li>
+    <li>How can we speed up the algorithm (because the complexity is $O(N^3)$ where $N = |V|$, $N = 10^6$ for a $1000\times 1000$ image)?</li>
+  </ul>
+
+  <p>To solve the first issue, we decided to make a graph only based on colors, i.e. $w(x, y) = np.abs(I(x) - I(y))$. To solve the second one, we used a <em>sparsed matrix</em>. We obtained great results for two artificial black and white images but results are awful for real images. Therefore the idea is to change our graph representation.</p>
+
+  <figure>
+    <img src="images/segmentation/cut1.png" alt="Results for the cut of two gaussians.">
+    <figcaption>Figure: Results for the cut of two gaussians.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="images/segmentation/cut2.png" alt="Perfect results for an artificial and complex B&amp;W picture.">
+    <figcaption>Figure: Perfect results for an artificial and complex B&amp;W picture.</figcaption>
+  </figure>
+
+  <figure>
+    <img src="images/segmentation/cut3.png" alt="Failure with a real photograph (coins).">
+    <figcaption>Figure: Failure with a real photograph (coins).</figcaption>
+  </figure>
+
+  <h3>References</h3>
+  <ul>
+    <li>Shi, J., &amp; Malik, J. (2000). Normalized cuts and image segmentation. IEEE Transactions on pattern analysis and machine intelligence, 22(8), 888-905.</li>
+    <li>Szeliski, R. (2010). Computer vision: algorithms and applications. Springer Science &amp; Business Media.</li>
+  </ul>
+
+  <footer>
+    <a href="../index.html">&larr; Back</a>
+  </footer>
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>
