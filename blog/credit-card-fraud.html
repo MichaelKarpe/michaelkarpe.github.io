@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Card Fraud Detection</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <nav>
+      <a href="../index.html" class="nav-name">Michaël Karpe</a>
+      <ul class="nav-links">
+        <li><a href="https://github.com/MichaelKarpe">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
+        <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
+        <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+      </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="grid-bg-inner"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Credit Card Fraud Detection</h1>
+      <p class="meta">Michaël Karpe, Hervé Andres, Mohamed Bouazza, Melvin Casanave &mdash; <span class="date">May 25, 2018</span></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-border">
+        <div class="article-content">
+          <div class="page-tags-row">
+            <div class="page-tags">
+            <a href="machine-learning.html">Machine Learning</a>
+          </div>
+              <div class="article-links">
+    <a href="https://www.kaggle.com/mika30/improving-fraud-detection-for-cost-minimization" class="btn-outline">Code on Kaggle</a>
+  </div>
+          </div>
+
+  <p class="article-subtitle">Fraud Detection as a Cost Minimization problem</p>
+
+  <figure>
+    <img src="images/credit-card-fraud/featured.png" alt="Credit Card Fraud Detection featured image">
+  </figure>
+
+  
+
+  <div class="toc">
+    <span class="toc-label">Contents</span>
+    <ol>
+      <li><a href="#s1">1 Brief description of the project</a></li>
+      <li><a href="#s2">2 Related project</a></li>
+    </ol>
+  </div>
+
+  <h2 id="s1">Brief description of the project</h2>
+
+  <p>During the Spring semester of my second year at <em>École des Ponts ParisTech</em> (from February 2018 to May 2018), I worked with three other students on a credit card fraud detection project for <em>Société Générale</em>.</p>
+
+  <p>The aim of this project was to realize a comparative study between different outlier detection algorithms to select the one that had the best performances on a credit card fraud dataset. After some research, we decided to focus our study on the following algorithms:</p>
+
+  <ul>
+    <li>Robust Estimator of Covariance</li>
+    <li>Local Outlier Factor</li>
+    <li>One-class SVM</li>
+    <li>Isolation Forest</li>
+    <li>Autoencoder</li>
+  </ul>
+
+  <p>The code is available on my GitHub but has been left uncleaned.</p>
+
+  <h2 id="s2">Related project</h2>
+
+  <p>In June 2019, Robin Teuwens shared a kernel on the famous Kaggle <em>Credit Card Fraud Dataset</em>, entitled <em>Fraud Detection as a Cost Optimization Problem</em> (Teuwens changed the name of kernel in August) and proposing <a href="https://www.kaggle.com/robinteuwens/precision-vs-recall-optimizing-fraud-costs">an approach very similar to ours</a>.</p>
+
+  <p>Indeed, the image at the beginning of this article shows profits and costs we had chosen for the cost function we wanted to minimize for the <em>Societe Generale</em> project, according to the predicted and the real label of a given transaction.</p>
+
+  <p>In November 2019, <a href="https://www.kaggle.com/mika30/improving-fraud-detection-for-cost-minimization">I made some changes to Teuwens' kernel</a> to improve his results, switching the logistic regression to gradient boosted trees algorithms and SMOTE oversampling to ADASYN oversampling.</p>
+
+  <p>If I have some time in the next months (but it's unlikely as I switched to new projects), I would like to evaluate the performance of autoencoders on this latest kernel, as we used them for the <em>Societe Generale</em> project and as Teuwens also proposed <a href="https://www.kaggle.com/robinteuwens/anomaly-detection-with-auto-encoders">a kernel using autoencoders</a>.</p>
+
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="divider"></div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Michaël Karpe</div>
+          <div class="footer-tagline">Senior AI/ML Scientist</div>
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/MichaelKarpe">GitHub</a>
+          <a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a>
+          <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a>
+          <a href="https://www.kaggle.com/mika30">Kaggle</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
+</body>
+</html>

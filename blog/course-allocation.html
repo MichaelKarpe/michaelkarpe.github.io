@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimal Course Allocation</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+  <script>
+    MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <nav>
+      <a href="../index.html" class="nav-name">Michaël Karpe</a>
+      <ul class="nav-links">
+        <li><a href="https://github.com/MichaelKarpe">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
+        <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
+        <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+      </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="grid-bg-inner"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Optimal Course Allocation</h1>
+      <p class="meta">Michaël Karpe, Hervé Andres, Marc-Antoine Augé, Reda Bahi Slaoui, Imad Lakim &mdash; <span class="date">March 20, 2017</span></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-border">
+        <div class="article-content">
+          <div class="page-tags-row">
+            <div class="page-tags">
+            <a href="optimization.html">Optimization</a>
+          </div>
+              <div class="article-links">
+    <a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/optimization/course-allocation" class="btn-outline">Code on GitHub</a>
+  </div>
+          </div>
+
+  <p class="article-subtitle">Automatic and optimal course allocation with wishlists from students</p>
+
+  <figure>
+    <img src="images/course-allocation/featured.jpg" alt="Optimal Course Allocation featured image">
+  </figure>
+
+  
+
+  <div class="toc">
+    <span class="toc-label">Contents</span>
+    <ol>
+      <li><a href="#s1">1 Presentation of the project</a></li>
+      <li><a href="#s2">2 Mathematical modelling</a>
+        <ol>
+          <li><a href="#s2-1">2.1 Optimization program for a single project / course choice</a>
+            <ol>
+              <li><a href="#s2-1-1">2.1.1 Settings</a></li>
+              <li><a href="#s2-1-2">2.1.2 Variables</a></li>
+            </ol>
+          </li>
+          <li><a href="#s2-2">2.2 Optimization program for multiple project or course choices</a></li>
+        </ol>
+      </li>
+      <li><a href="#s3">3 Results</a>
+        <ol>
+          <li><a href="#s3-1">3.1 Year 2017</a></li>
+          <li><a href="#s3-2">3.2 Year 2018</a></li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+
+  <h2 id="s1">Presentation of the project</h2>
+
+  <p>As part of the management of the assignment of first year students to second semester courses and projects at Ecole des Ponts, we were asked to design a computer program that manages the assignment of students to courses. In order to meet the requirements of the first year department, this program must comply with a number of constraints.</p>
+
+  <p>Our objective is to optimize the process of assigning students to courses and projects, by proposing a distribution of students that respects as much as possible the ranking of their wishes. Indeed, we have three main sets of courses and projects:</p>
+
+  <ul>
+    <li>the department projects: there are $20$ projects in $2017$ and they take place on Monday afternoons.</li>
+    <li>the opening courses: they are spread over $4$ days, each day having a well-specified set of courses that the students have to classify.</li>
+    <li>introductory research projects: these are associated with the opening classes. Each opening course has a project on the same theme. As a result, every student must necessarily be assigned to a project that is associated with one of the courses he or she is taking.</li>
+  </ul>
+
+  <p>In addition, each course and each project has a maximum number of students and a minimum number of students required to open the course. These numbers may vary from one course to another. Finally, some courses or projects may be discontinued if demand is not high enough.</p>
+
+  <h2 id="s2">Mathematical modelling</h2>
+
+  <h3 id="s2-1">Optimization program for a single project / course choice</h3>
+
+  <p>In order to account for the fact that a student has or has not received his first wish, we have introduced a regret function, the value of which is all the higher as the first wishes are not fulfilled. Our modeling aims at minimizing the total regret function. For a given project, the regret function of a student corresponds to the weight function evaluated at the wish number of the project. The weight function is a function that associates a number to a wish number that is higher the higher the wish number is, and is worth $0$ if it is the student's $1$ wish. An example of a quadratic weight function ($f(x) = (x - 1)^2$) is given below :</p>
+
+  <table>
+    <thead><tr><th>Rank</th><th>Weight</th></tr></thead>
+    <tbody>
+    <tr><td>1</td><td>0</td></tr>
+    <tr><td>2</td><td>1</td></tr>
+    <tr><td>3</td><td>4</td></tr>
+    <tr><td>4</td><td>9</td></tr>
+    <tr><td>5</td><td>16</td></tr>
+    <tr><td>…</td><td>…</td></tr>
+    </tbody>
+  </table>
+
+  <p>In order to know to which project a student is assigned, we use a matrix $A = (a_{e,p})_{e,p}$ whose coefficient $a_{e,p}$ is $1$ if student $e$ is assigned to project $p$ and $0$ otherwise. Given this, the regret function of a student for a given project is $\sum_{p\in P} a_{e,p} w(c_{e,p})$. This minimization problem comes with several constraints:</p>
+
+  <ul>
+    <li>The enrolment of the project numbered $p$, noted $n_{p}$ and defined as the sum over the students of the assignments $a_{e,p}$, must be between the minimum $m_{p}$ and the maximum $M_{p}$ enrolment associated with this project. These bounds are multiplied by a binary variable $\delta_{p}$ which equals $0$ if the project is closed and $1$ if it is open. Thus, if there are not enough students who have applied for a given project, that is, if it is not in the first wishes of a sufficient number of students, then the project in question will have a zero enrolment.</li>
+    <li>Each student must be assigned to one project only. For this purpose, the sum of the student's $a_{e,p}$ assignments on projects is equal to $1$.</li>
+  </ul>
+
+  <p>Mathematically, the problem thus modeled is written as follows:</p>
+
+  <p>$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}.w(c_{e, p}) + Kr_{max}$$</p>
+  <p>$$\text{s.t.} \ \forall p \in P, \ n_p = \sum_{e\in E} a_{e, p}$$</p>
+  <p>$$\forall p \in P, \ \delta_p.m_p \leq n_p$$</p>
+  <p>$$\forall p \in P, \ n_p \leq \delta_p.M_p$$</p>
+  <p>$$\forall e \in E, \ \sum_{p \in P} a_{e, p} = 1$$</p>
+  <p>$$\forall p \in P, \ \delta_p \in \{0, 1\}$$</p>
+  <p>$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in \{0, 1\}$$</p>
+
+  <h4 id="s2-1-1">Settings</h4>
+  <ul>
+    <li>$J$: All days, two courses or projects on the same day cannot be cumulated.</li>
+    <li>$E$: All students.</li>
+    <li>$P$: Set of all projects / courses to be chosen partitioned according to days $P = \bigcup_{j \in J} P_j$.</li>
+    <li>$C$: Matrix of students' choices tq. $c_{e, p}$ is the rank of the project $p$ for the student $e$.</li>
+    <li>$m_p$ and $M_p$: Minimum and maximum numbers for the $p$ project.</li>
+    <li>$w$: Weight function.</li>
+    <li>$pr$: Function that, with an opening course, associates a project of initiation to the search.</li>
+    <li>$K$: Constant increasing total regret.</li>
+  </ul>
+
+  <h4 id="s2-1-2">Variables</h4>
+  <ul>
+    <li>$\delta_p = 1$ if project $p$ is open, $0$ otherwise.</li>
+    <li>$A$ : Student assignment matrix tq $a_{e, p} = 1$ if student $e$ is assigned to project $p$, $0$ otherwise.</li>
+    <li>$n_p$ : Enrollment in project $p$.</li>
+    <li>$r_{max}$ : Maximum pupil regret. May be a parameter.</li>
+  </ul>
+
+  <h3 id="s2-2">Optimization program for multiple project or course choices</h3>
+
+  <p>When there are several projects or courses to choose from, the allocation results must take into account each other. For example, if a student is assigned to a Wish $3$, their other assignments should correspond, as much as possible, to Wish $1$ courses. This is accomplished by adding a variable $r_{max}$ which corresponds to the maximum regret per student. Each student's regret ($\sum_{p \in P} a_{e, p}w(c_{e, p})$) is therefore increased by $r_{max}$.</p>
+
+  <p>In order to minimize this maximum regret, this variable is added to the total regret in the function to be minimized with a multiplicative coefficient $K$. This coefficient is a major of the total regret, therefore a very large number, so that the maximum regret per student only increases if there is no other possibility.</p>
+
+  <p>Finally, it must be ensured that if a student is assigned to a research project, then he or she is necessarily assigned to the associated opening course. Consequently, the assignment variable $a_{e,p}$ to a given opening course $p$ increases the assignment variable $a_{e, pr(p)}$ of the associated research project. Hence the reformulation of the previous problem as :</p>
+
+  <p>$$\text{min} \sum_{e \in E} \sum_{p \in P} a_{e, p}w(c_{e, p}) + Kr_{max}$$</p>
+  <p>$$\textrm{s.c.} \ \forall p \in P, \ n_p = \sum_{e_\in E} a_{e, p}$$</p>
+  <p>$$\forall p \in P, \ \delta_p.m_p \leq n_p$$</p>
+  <p>$$\forall p \in P, \ n_p \leq \delta_p.M_p$$</p>
+  <p>$$\forall e \in E, \ \sum_{p \in P} a_{e, p}.w(c_{e, p}) \leq r_{max}$$</p>
+  <p>$$\forall j \in J, \ \sum_{p \in P_j} a_{e, p} = 1$$</p>
+  <p>$$\forall e \in E, \ \forall p \in P_{\text{c.o.}}, \ a_{e, pr(p)} \leq a_{e, p}$$</p>
+  <p>$$\forall p \in P, \ \delta_p \in \{0, 1\}$$</p>
+  <p>$$\forall p \in P, \ \forall e \in E, \ a_{e, p} \in \{0, 1\}$$</p>
+
+  <h2 id="s3">Results</h2>
+
+  <h3 id="s3-1">Year 2017</h3>
+
+  <p>We compared our program to the $2017$ allocation results. We could see in the modeling that the fundamental parameter of the optimization is the $w$ weight function. By playing with the weights, we can change the result of the optimization entirely. In the case of our problem, we want to give massively first or second choices, while exceptionally allowing third choices. To do this, we worked with the weight function below, as well as with another weight function where the weight of the $3$ rank goes from $15$ to $50$.</p>
+
+  <table>
+    <thead><tr><th>Rank</th><th>Weight</th></tr></thead>
+    <tbody>
+    <tr><td>1</td><td>0</td></tr>
+    <tr><td>2</td><td>5</td></tr>
+    <tr><td>3</td><td>15</td></tr>
+    <tr><td>4</td><td>1000</td></tr>
+    <tr><td>5</td><td>10000</td></tr>
+    <tr><td>…</td><td>…</td></tr>
+    </tbody>
+  </table>
+
+  <p>Let's compare the results obtained for these two weight functions with the results of the current optimization. The results are summarized in the table below, since with our optimization program we obtain the same results as those obtained manually by the administration: they were already at an optimum.</p>
+
+  <table>
+    <thead><tr><th>Choice</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Research</th><th>Department</th></tr></thead>
+    <tbody>
+    <tr><td>1</td><td>137</td><td>126</td><td>114</td><td>111</td><td>92</td><td>107</td></tr>
+    <tr><td>2</td><td>5</td><td>16</td><td>28</td><td>31</td><td>45</td><td>35</td></tr>
+    <tr><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td><td>0</td></tr>
+    </tbody>
+  </table>
+
+  <p>Above all, our software saves time since it runs in about $30$ seconds. The method previously used required to manually take over the results of the algorithm and lasted about $15$ hours. The time saved is therefore considerable.</p>
+
+  <h3 id="s3-2">Year 2018</h3>
+
+  <p>Due to the very good results of our software in $2017$, it has been used every year since then by the first year department. Here are the results obtained for the year $2018$, where $152$ students had to grant wishes, compared to $142$ the year before:</p>
+
+  <table>
+    <thead><tr><th>Choice</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Research</th><th>Department</th></tr></thead>
+    <tbody>
+    <tr><td>1</td><td>121</td><td>143</td><td>120</td><td>110</td><td>102</td><td>NC</td></tr>
+    <tr><td>2</td><td>30</td><td>7</td><td>31</td><td>40</td><td>43</td><td>NC</td></tr>
+    <tr><td>3</td><td>1</td><td>2</td><td>1</td><td>2</td><td>7</td><td>NC</td></tr>
+    </tbody>
+  </table>
+
+  <p>The results are very satisfying, although there is an increase in the number of wishes $3$. This is mainly due to the fact that despite the increase in the number of students, the number of students in the proposed courses has not been revised upwards.</p>
+
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="divider"></div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Michaël Karpe</div>
+          <div class="footer-tagline">Senior AI/ML Scientist</div>
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/MichaelKarpe">GitHub</a>
+          <a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a>
+          <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a>
+          <a href="https://www.kaggle.com/mika30">Kaggle</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
+</body>
+</html>

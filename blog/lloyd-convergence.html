@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lloyd Iteration Convergence</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+  <script>
+    MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <nav>
+      <a href="../index.html" class="nav-name">Michaël Karpe</a>
+      <ul class="nav-links">
+        <li><a href="https://github.com/MichaelKarpe">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
+        <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
+        <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+      </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-header">
+    <div class="grid-bg-inner"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Lloyd Iteration Convergence</h1>
+      <p class="meta">Michaël Karpe, Maxime Duval &mdash; <span class="date">May 7, 2018</span></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-border">
+        <div class="article-content">
+          <div class="page-tags-row">
+            <div class="page-tags">
+            <a href="computer-vision.html">Computer Vision</a>
+          </div>
+              <div class="article-links">
+    <a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/computer-vision/lloyd-convergence" class="btn-outline">Code on GitHub</a>
+  </div>
+          </div>
+
+  <p class="article-subtitle">Study of the convergence depending on the parameters of the algorithm</p>
+
+  <figure>
+    <img src="images/lloyd/featured.png" alt="Lloyd Iteration Convergence featured image">
+  </figure>
+
+  
+
+  <div class="toc">
+    <span class="toc-label">Contents</span>
+    <ol>
+      <li><a href="#s1">1 Relocation vectors</a>
+        <ol>
+          <li><a href="#s1-1">1.1 Calculation</a></li>
+          <li><a href="#s1-2">1.2 Convergence</a></li>
+        </ol>
+      </li>
+      <li><a href="#s2">2 Energy distribution by cell</a>
+        <ol>
+          <li><a href="#s2-1">2.1 Calculation</a></li>
+          <li><a href="#s2-2">2.2 Convergence</a></li>
+          <li><a href="#s2-3">2.3 Domain influence</a></li>
+        </ol>
+      </li>
+      <li><a href="#s3">3 Overshooting and temporal inertia</a>
+        <ol>
+          <li><a href="#s3-1">3.1 Overshooting</a></li>
+          <li><a href="#s3-2">3.2 Temporal inertia</a></li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+
+  <h2 id="s1">Relocation vectors</h2>
+
+  <h3 id="s1-1">Calculation</h3>
+
+  <p>The visualization of the relocation vectors is obtained by plotting the segments between the generators before and after Lloyd's iteration. The generators of the cells in the previous iteration have been drawn in red.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q2_relocation.png" alt="Visualization of relocation vectors.">
+      <figcaption>Figure: Visualization of relocation vectors.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q3_regression.png" alt="Visualization of the cells after convergence.">
+      <figcaption>Figure: Visualization of the cells after convergence.</figcaption>
+    </figure>
+  </div>
+
+  <h3 id="s1-2">Convergence</h3>
+
+  <p>For the plotting of the convergence curves, we saved the different values in .txt files and processed the data in Python language, with the matplotlib.pyplot library. We can see that this evolution is globally decreasing, with an increase in energy when the cells "unblock" after having converged to a local minimum of energy.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q3_uniform_length.png" alt="Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a uniform initialization.">
+      <figcaption>Figure: Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a <strong>uniform</strong> initialization.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q3_coin_length.png" alt="Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for an initialization in one corner.">
+      <figcaption>Figure: Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for an initialization <strong>in one corner</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q3_line_length.png" alt="Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for an initialization on a line.">
+      <figcaption>Figure: Evolution in logarithmic scale of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for an initialization <strong>on a line</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <p>By zooming the first convergence curve between $30$ and $60$ iterations and plotting it in real scale (and not in logarithmic scale as on the different images), it becomes clear that the convergence of the mean length is quadratic.</p>
+
+  <figure>
+    <img src="images/lloyd/q4_sampling.png" alt="Visualization of the sampling of the square domain with N = 10,000 points.">
+    <figcaption>Figure: Visualization of the sampling of the square domain with $N = 10,000$ points.</figcaption>
+  </figure>
+
+  <h2 id="s2">Energy distribution by cell</h2>
+
+  <h3 id="s2-1">Calculation</h3>
+
+  <p>The global energy of a domain partition in $N_c$ cells $\mathcal{C}_i$ is given by the following formula:</p>
+
+  <p>$$E_{dom} = \sum_{i=1}^{N_c} E_{cell} = \sum_{i=1}^{N_c} \int_{x \in \mathcal{C}_i} ||x-x_i||^2 dx$$</p>
+
+  <p>To carry out the calculation of integrals, we proceed by Monte-Carlo method, by sampling a number $N$ of points $x_j$ on the whole domain and by approximating the integral by a discrete sum:</p>
+
+  <p>$$E_{cell} = \int_{x \in \mathcal{C}_i} ||x-x_i||^2 dx = \sum_{x_j \in \mathcal{C}_i} ||x_j-x_i||^2$$</p>
+
+  <p>A representation of this sampling is shown for $N = 10,000$. In order to cover the entire domain sufficiently, we have chosen $N = 100,000$.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q3_uniform_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a uniform initialization.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a <strong>uniform</strong> initialization.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q3_coin_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for an initialization in a corner.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for an initialization <strong>in a corner</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q3_line_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for an initialization on a line.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for an initialization <strong>on a line</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <h3 id="s2-2">Convergence</h3>
+
+  <p>Still in the square domain with an initialization of $10$ points, the evolution of the energy of the cells is represented below. For the $3$ initializations tested, we can see that the cells converge to a close energy after about thirty iterations. This convergence is fast for uniform and one-line initializations, with a slight energy correction at about $23$ iterations for the uniform initialization, due to the cells getting stuck (which we find with the growth of the average norm of the relocation vectors around the same number of iterations).</p>
+
+  <p>For initialization in a corner, convergence is slower because more iterations are needed to allow the $10$ generators to occupy the entire domain space. However, there is no major energy jump due to a blockage of cells between them.</p>
+
+  <h3 id="s2-3">Domain influence</h3>
+
+  <p>The shape of the domain greatly influences the convergence results. For example, for the circular domain, which is a "regular" domain in the sense that the edges do not have "corners" or abrupt breaks in direction (the edges are well continuous and driftable), convergence occurs without any problem after about ten iterations and is not characterized by any particular jumps.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_circle_image.png" alt="Visualization of cells after convergence in a circular domain.">
+      <figcaption>Figure: Visualization of cells after convergence in a circular domain.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_circle_length.png" alt="Evolution of the mean norm of relocation vectors in a circular domain as a function of the number of Lloyd's iterations for uniform initialization.">
+      <figcaption>Figure: Evolution of the mean norm of relocation vectors in a circular domain as a function of the number of Lloyd's iterations for uniform initialization.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_circle_energy.png" alt="Evolution of the mean cell energy in a circular domain as a function of the number of Lloyd's iterations for uniform initialization.">
+      <figcaption>Figure: Evolution of the mean cell energy in a circular domain as a function of the number of Lloyd's iterations for uniform initialization.</figcaption>
+    </figure>
+  </div>
+
+  <p>For the other areas provided, more original behaviour can be observed, due to the same observations as those made previously. For the L-shape, the inner corner of the L will cause some increases in average length, as the cells "crossing" the corner move quickly at once to adapt to the shape, and convergence is quite slow relative to the square and circular shapes.</p>
+
+  <p>For the key-shaped domain, convergence is also slower due to the complexity of the domain, and medium-length jumps are more important due to this complexity, because cells move a lot when a "corner" is crossed and filled by the cells.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_lform_image.png" alt="Visualization of cells after convergence in a L domain.">
+      <figcaption>Figure: Visualization of cells after convergence in a <strong>L</strong> domain.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_cross_image.png" alt="Visualization of cells after convergence in a domain containing a cross.">
+      <figcaption>Figure: Visualization of cells after convergence in a domain <strong>containing a cross</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_key_image.png" alt="Visualization of cells after convergence in a domain in the form of a key.">
+      <figcaption>Figure: Visualization of cells after convergence in a domain <strong>in the form of a key</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_lform_length.png" alt="Evolution of the mean norm of relocation vectors as a function of the number of Lloyd's iterations in a L domain.">
+      <figcaption>Figure: Evolution of the mean norm of relocation vectors as a function of the number of Lloyd's iterations in a <strong>L</strong> domain.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_cross_length.png" alt="Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations in a domain containing a cross.">
+      <figcaption>Figure: Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations in a domain <strong>containing a cross</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_key_length.png" alt="Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations in a domain in the form of a key.">
+      <figcaption>Figure: Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations in a domain <strong>in the form of a key</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_lform_energy.png" alt="Evolution of the average cell energy as a function of the number of Lloyd's iterations in a L domain.">
+      <figcaption>Figure: Evolution of the average cell energy as a function of the number of Lloyd's iterations in a <strong>L</strong> domain.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_cross_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations in a domain containing a cross.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations in a domain <strong>containing a cross</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_key_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations in a domain in the form of a key.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations in a domain <strong>in the form of a key</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <p>For hourglass-shaped domains (hard-coded in C++ code according to a parameter corresponding to the size of the bottleneck), this difficulty for the Lloyd's iteration to cross corners or narrow passages is clearly highlighted. Indeed, we can see that, in general, the narrower the bottleneck, the longer the cells take to cross the bottleneck, and thus the greater the average length rise when the bottleneck is crossed.</p>
+
+  <p><strong>Initialization:</strong> The observation on all domains leads us to think that for fairly simple and regular domains, a uniform initialization is quite efficient. For more complex domain forms, it is advisable to initialize the algorithm with more generators at the irregular edges of the domain, or at places with narrow passages.</p>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_sandglass001_image.png" alt="Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width 1.">
+      <figcaption>Figure: Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width <strong>1</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass003_image.png" alt="Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width 3.">
+      <figcaption>Figure: Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width <strong>3</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass005_image.png" alt="Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width 5.">
+      <figcaption>Figure: Visualization of the cells after convergence in an hourglass-shaped domain with bottleneck width <strong>5</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_sandglass001_length.png" alt="Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 1.">
+      <figcaption>Figure: Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>1</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass003_length.png" alt="Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 3.">
+      <figcaption>Figure: Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>3</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass005_length.png" alt="Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 5.">
+      <figcaption>Figure: Evolution of the average norm of relocation vectors as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>5</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q5_sandglass001_energy.png" alt="Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 1.">
+      <figcaption>Figure: Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>1</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass003_energy.png" alt="Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 3.">
+      <figcaption>Figure: Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>3</strong>.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q5_sandglass005_energy.png" alt="Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width 5.">
+      <figcaption>Figure: Evolution of the average cell energy as a function of the number of Lloyd's iterations for an hourglass domain with bottleneck width <strong>5</strong>.</figcaption>
+    </figure>
+  </div>
+
+  <h2 id="s3">Overshooting and temporal inertia</h2>
+
+  <h3 id="s3-1">Overshooting</h3>
+
+  <p>Overshooting involves moving the generators not to the centres of mass of the cells, but slightly beyond. Informally, we consider the displacement vector $v_N$ at the $N$ iteration of a classical Lloyd's iteration, and instead of moving the generator according to $v_N$, we move it according to $v_{N+1} = (1+\alpha)v_N$, where $\alpha \in \mathbb{R}^{+}$.</p>
+
+  <p>There are three classes of behaviour of the Lloyd's iteration according to the value of the overshooting parameter (determined approximately by numerical testing, the limit values of these behaviours change notably according to the shape of the domain and the initialization of the generators) for the square domain and for a uniform initialization:</p>
+
+  <ul>
+    <li>$\alpha \in [0,1]$ : the overshooting parameter is quite small: it speeds up the convergence of Lloyd's iteration…</li>
+    <li>$\alpha \approx [1, 1 + \epsilon]$ : the overshooting parameter is a bit too big : the iteration leads to a situation where $(1+\alpha)v_{N+1} = -(1+\alpha)v_N$, which causes the generators to alternate between two configurations</li>
+    <li>$\alpha >> 1+\epsilon$: the overshooting parameter is much too large: Lloyd's iteration diverges and behaves chaotically.</li>
+  </ul>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q7_overshooting050_image.png" alt="Visualization of the cells after convergence with an overshooting parameter α = 0.5.">
+      <figcaption>Figure: Visualization of the cells after convergence with an overshooting parameter $\alpha = 0.5$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting110_image.png" alt="Visualization of the cells after convergence with an overshooting parameter α = 1.1.">
+      <figcaption>Figure: Visualization of the cells after convergence with an overshooting parameter $\alpha = 1.1$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting150_image.png" alt="Visualization of the cells after convergence with an overshooting parameter α = 1.5.">
+      <figcaption>Figure: Visualization of the cells after convergence with an overshooting parameter $\alpha = 1.5$.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q7_overshooting050_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 0.5.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 0.5$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting110_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 1.1.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 1.1$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting150_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 1.5.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 1.5$.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q7_overshooting050_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 0.5.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 0.5$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting110_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 1.1.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 1.1$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q7_overshooting150_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter α = 1.5.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with an overshooting parameter $\alpha = 1.5$.</figcaption>
+    </figure>
+  </div>
+
+  <p>Thus, if the parameter is too large, the Lloyd's iteration may not converge. To prevent this problem, we can impose a rather small $\alpha$ parameter (at least strictly less than $1$, less than $0.5$ if we want to be sure to converge even in particular cases).</p>
+
+  <p>Another risk is that if the $\alpha$ parameter is too large, Lloyd's iteration will take the generators out of the domain. To overcome this problem, we could use the <em>inside</em> function of <em>cdt.h</em> file, to apply overshooting to the relocation of a generator only if the new generator is inside the domain.</p>
+
+  <h3 id="s3-2">Temporal inertia</h3>
+
+  <p>Temporal inertia consists in keeping in memory the centers of mass of the previous iterations, and moving the generators with a linear combination of the previous $n$ displacement vectors. Informally, we move a generator at iteration $N$ according to the vector $v_{N+1} = \sum_{i=N-n}^N w_i v_i$, where the $w_i$ are weights given by the user to the relocation vectors of the previous iterations.</p>
+
+  <p>There are three classes of Lloyd's iteration behaviour according to the value of the different coefficients (classes determined approximately by numerical testing, the limit values of these behaviours change in particular according to the shape of the domain and the initialization of the generators) for the square domain and for a uniform initialization, with a number $n = 5$ of displacement vectors taken into account:</p>
+
+  <ul>
+    <li>$\sum_{i=N-n}^N w_i \leq 1$: the previous relocation vectors are relatively little taken into account: convergence is accelerated because the generators move faster, since the first iterations concern larger displacements</li>
+    <li>$\sum_{i=N-n}^N w_i \approx 1 + \epsilon$: the previous relocation vectors are a bit too much taken into account, and the generators move a bit too much: their positions alternate between $2$ configurations (oscillating behavior)</li>
+    <li>$\sum_{i=N-n}^N w_i >> 1+\epsilon$: the first relocation vectors are much too much taken into account, and the addition of vectors with too large coefficients produces larger and larger vectors: the Lloyd's iteration diverges and the generators leave the domain</li>
+  </ul>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q8_inertia_015_image.png" alt="Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights wi = 0.15.">
+      <figcaption>Figure: Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_030_image.png" alt="Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights wi = 0.30.">
+      <figcaption>Figure: Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_050_image.png" alt="Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights wi = 0.50.">
+      <figcaption>Figure: Visualization of the cells after convergence with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q8_inertia_015_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.15.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_030_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.30.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_050_length.png" alt="Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.50.">
+      <figcaption>Figure: Evolution of the mean norm of the relocation vectors as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.</figcaption>
+    </figure>
+  </div>
+
+  <div class="figure-row">
+    <figure>
+      <img src="images/lloyd/q8_inertia_015_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.15.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.15$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_030_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.30.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.30$.</figcaption>
+    </figure>
+    <figure>
+      <img src="images/lloyd/q8_inertia_050_energy.png" alt="Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights wi = 0.50.">
+      <figcaption>Figure: Evolution of the average energy of the cells as a function of the number of Lloyd's iterations for a square domain with temporal inertia of the last 5 displacements, with weights $w_i = 0.50$.</figcaption>
+    </figure>
+  </div>
+
+  <p>Convergence is faster when the coefficients are not taken too large. Indeed, taking into account the "large" vectors of previous displacements allows the generators to move faster.</p>
+
+  <p>However, similarly to the overshooting parameter being too large, too large coefficients cause the algorithm to diverge (and even with small coefficients, convergence with slight oscillations can be seen in the middle image above). To overcome this, we impose small coefficients, or we check that the generators stay inside the domain with <em>inside</em> parameter.</p>
+
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="divider"></div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Michaël Karpe</div>
+          <div class="footer-tagline">Senior AI/ML Scientist</div>
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/MichaelKarpe">GitHub</a>
+          <a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a>
+          <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a>
+          <a href="https://www.kaggle.com/mika30">Kaggle</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox"><img src="" alt=""></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = lightbox.querySelector('img');
+      document.querySelectorAll('figure img').forEach(function(img) {
+        img.addEventListener('click', function() {
+          lightboxImg.src = this.src;
+          lightboxImg.alt = this.alt;
+          lightbox.classList.add('active');
+        });
+      });
+      lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('active');
+      });
+    });
+  </script>
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
+</body>
+</html>
