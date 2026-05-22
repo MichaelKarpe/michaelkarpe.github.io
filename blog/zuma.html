@@ -7,29 +7,68 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-<h1>Simplified Zuma Video Game</h1>
-  <p class="author">Michaël Karpe, Bastien Déchamps &mdash; <span class="date">June 2, 2017</span></p>
-  <p class="tags">
-    <a href="programming.html">Programming</a>
-    <span class="back-link"><a href="../index.html">&larr; Home</a></span>
-  </p>
 
-  <p><em>Build a simplified Zuma video game in C++ and 30 hours</em></p>
+  <div class="container">
+    <nav>
+      <a href="../index.html" class="nav-name">Michaël Karpe</a>
+      <ul class="nav-links">
+        <li><a href="https://github.com/MichaelKarpe">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
+        <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
+        <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <section class="page-header">
+    <div class="grid-bg-inner"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Simplified Zuma Video Game</h1>
+      <p class="meta">Michaël Karpe, Bastien Déchamps &mdash; <span class="date">June 2, 2017</span></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-border">
+        <div class="article-content">
+          <div class="page-tags-row">
+            <div class="page-tags">
+            <a href="programming.html">Programming</a>
+          </div>
+              <div class="article-links">
+    <a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/programming/simple-zuma-game" class="btn-outline">Code on GitHub</a>
+  </div>
+          </div>
+
+  <p class="article-subtitle">Build a simplified Zuma video game in C++ and 30 hours</p>
 
   <figure>
     <img src="images/zuma/zumareal.png" alt="Zuma video game">
     <figcaption>Figure: Original Zuma game (PopCap Games, 2003).</figcaption>
   </figure>
 
-  <p><a href="https://github.com/MichaelKarpe/ponts-paristech-projects/tree/master/programming/simple-zuma-game">Code on GitHub</a></p>
+  
 
-  <h2>Presentation of the project</h2>
+  <div class="toc">
+    <span class="toc-label">Contents</span>
+    <ol>
+      <li><a href="#s1">1 Presentation of the project</a></li>
+      <li><a href="#s2">2 Principle of the game</a></li>
+      <li><a href="#s3">3 Making the game in C++</a></li>
+      <li><a href="#s4">4 Expectation vs. reality</a></li>
+    </ol>
+  </div>
+
+  <h2 id="s1">Presentation of the project</h2>
 
   <p>This project was carried out during a programming course at École des Ponts ParisTech. The goal of this project was to create in pairs and in about thirty hours a simple game based on the C++ language.</p>
 
   <p>We wanted to reproduce a Zuma game, as illustrated above, focusing on the algorithmic functioning of the game - graphics not being the priority of a C++ programming course, as you will see at the end of the article…</p>
 
-  <h2>Principle of the game</h2>
+  <h2 id="s2">Principle of the game</h2>
 
   <p>"Zuma is a video game developed by PopCap Games, released in 2003. […] The goal is to form chains of balls of the same colour (which has the effect of making them disappear) before the balls arrive in the hole in the middle. The more levels progress, the more balls of different colours, the faster they go and the more courses there are. It is also possible to collect various bonuses (coins, various objects) that increase the score, and some balls have special powers (explosive, slowing down the game, etc.)". <em>(Reference: French Wikipedia)</em></p>
 
@@ -44,7 +83,7 @@
     <li>the sending of another snake under conditions</li>
   </ul>
 
-  <h2>Making the game in C++</h2>
+  <h2 id="s3">Making the game in C++</h2>
 
   <p>Our main objective was to reproduce the scrolling of the log snakes around the frog, as well as the shooting of the frog's logs to eliminate the log snakes. To do this, we created different classes briefly described below :</p>
   <ul>
@@ -57,14 +96,37 @@
     <li><em>tools</em>: global functions and parameters</li>
   </ul>
 
-  <h2>Expectation vs. reality</h2>
+  <h2 id="s4">Expectation vs. reality</h2>
 
   <p>Although the game was operational at the end of the time limit, we didn't have time to work on the graphics…</p>
 
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <a href="../index.html" class="back-link">&larr; Back</a>
-    &copy; 2026 Michaël Karpe. All rights reserved.
+    <div class="container">
+      <div class="divider"></div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Michaël Karpe</div>
+          <div class="footer-tagline">Senior AI/ML Scientist</div>
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/MichaelKarpe">GitHub</a>
+          <a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a>
+          <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a>
+          <a href="https://www.kaggle.com/mika30">Kaggle</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Michaël Karpe. All rights reserved.</span>
+      </div>
+    </div>
   </footer>
+
   <div class="lightbox" id="lightbox"><img src="" alt=""></div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {

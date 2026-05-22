@@ -7,23 +7,82 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-<h1>Multi-Agent Reinforcement Learning in a Realistic Limit Order Book Market Simulation</h1>
-  <p class="author">Michaël Karpe, Jin Fang, Zhongyao Ma, Chen Wang &mdash;     <span class="date">June 10, 2020</span></p>
-  <p class="tags">
-    <a href="algorithmic-trading.html">Algorithmic Trading</a>
-    <span class="back-link"><a href="../index.html">&larr; Home</a></span>
-  </p>
 
-  <p><a href="https://arxiv.org/pdf/2006.05574.pdf">PDF on arXiv</a></p>
+  <div class="container">
+    <nav>
+      <a href="../index.html" class="nav-name">Michaël Karpe</a>
+      <ul class="nav-links">
+        <li><a href="https://github.com/MichaelKarpe">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
+        <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
+        <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+      </ul>
+    </nav>
+  </div>
 
-  <h2>Abstract</h2>
+  <section class="page-header">
+    <div class="grid-bg-inner"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <h1>Multi-Agent Reinforcement Learning in a Realistic Limit Order Book Market Simulation</h1>
+      <p class="meta">Michaël Karpe, Jin Fang, Zhongyao Ma, Chen Wang &mdash;     <span class="date">June 10, 2020</span></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-border">
+        <div class="article-content">
+          <div class="page-tags-row">
+            <div class="page-tags">
+            <a href="algorithmic-trading.html">Algorithmic Trading</a>
+          </div>
+              <div class="article-links">
+    <a href="https://arxiv.org/pdf/2006.05574.pdf" class="btn-outline">PDF on arXiv</a>
+  </div>
+          </div>
+
+  
+
+  <div class="toc">
+    <span class="toc-label">Contents</span>
+    <ol>
+      <li><a href="#s1">1 Abstract</a></li>
+    </ol>
+  </div>
+
+  <h2 id="s1">Abstract</h2>
 
   <p>Optimal order execution is widely studied by industry practitioners and academic researchers because it determines the profitability of investment decisions and high-level trading strategies, particularly those involving large volumes of orders. However, complex and unknown market dynamics pose enormous challenges for the development and validation of optimal execution strategies. We propose a model-free approach by training Reinforcement Learning (RL) agents in a realistic market simulation environment with multiple agents. First, we have configured a multi-agent historical order book simulation environment for execution tasks based on an Agent-Based Interactive Discrete Event Simulation (ABIDES) [arXiv:1904.12066]. Second, we formulated the problem of optimal execution in an RL setting in which an intelligent agent can make order execution and placement decisions based on market microstructure trading signals in HFT. Third, we developed and trained an RL execution agent using the Double Deep Q-Learning (DDQL) algorithm in the ABIDES environment. In some scenarios, our RL agent converges towards a Time-Weighted Average Price (TWAP) strategy. Finally, we evaluated the simulation with our RL agent by comparing the simulation on the actual market Limit Order Book (LOB) characteristics.</p>
 
+  
+        </div>
+      </div>
+    </div>
+  </section>
+
   <footer>
-    <a href="../index.html" class="back-link">&larr; Back</a>
-    &copy; 2026 Michaël Karpe. All rights reserved.
+    <div class="container">
+      <div class="divider"></div>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-name">Michaël Karpe</div>
+          <div class="footer-tagline">Senior AI/ML Scientist</div>
+        </div>
+        <div class="footer-social">
+          <a href="https://github.com/MichaelKarpe">GitHub</a>
+          <a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a>
+          <a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a>
+          <a href="https://www.kaggle.com/mika30">Kaggle</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Michaël Karpe. All rights reserved.</span>
+      </div>
+    </div>
   </footer>
+
   <div class="lightbox" id="lightbox"><img src="" alt=""></div>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
