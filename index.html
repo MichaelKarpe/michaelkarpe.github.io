@@ -51,22 +51,22 @@
         </div>
         <div class="divider-dashed" style="margin-top:20px;"></div>
       </div>
-      <div class="section-border" style="padding: 40px 20px 60px;">
+      <div class="section-border" style="padding: 0 20px 60px;">
         <div class="feature-grid">
           <div class="feature-card">
-            <div class="feature-icon">M</div>
+            <div class="feature-icon" style="width:80px;height:80px;margin:0 auto 14px;padding:0;overflow:hidden;"><img src="images/uc-berkeley-logo.png" alt="UC Berkeley" width="80" height="80" style="display:block;"></div>
             <h3>MEng, Industrial Engineering &amp; Operations Research</h3>
-            <p><a href="https://www.berkeley.edu">University of California, Berkeley</a></p>
+            <p>University of California, Berkeley</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">M</div>
+            <div class="feature-icon" style="width:auto;height:80px;margin:0 auto 14px;padding:0;overflow:hidden;background:transparent;"><img src="images/enpc-logo.png" alt="École des Ponts" height="80" style="display:block;"></div>
             <h3>MSc, Applied Mathematics &amp; Computer Science</h3>
-            <p><a href="https://ecoledesponts.fr/en">École nationale des ponts et chaussées</a></p>
+            <p>École nationale des ponts et chaussées</p>
           </div>
           <div class="feature-card" style="border-right:none;">
-            <div class="feature-icon">C</div>
-            <h3>Classe Préparatoire aux Grandes Écoles</h3>
-            <p>Mathematics &amp; Physics, Aux Lazaristes</p>
+            <div class="feature-icon" style="width:auto;height:80px;margin:0 auto 14px;padding:0;overflow:hidden;background:transparent;"><img src="images/lazo-logo.png" alt="Aux Lazaristes" height="60" style="display:block;"></div>
+            <h3>Classe Préparatoire aux Grandes Écoles, Mathematics &amp; Physics</h3>
+            <p>Aux Lazaristes</p>
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@
         </div>
         <div class="divider-dashed" style="margin-top:20px;"></div>
       </div>
-      <div class="section-border" style="padding: 40px 20px 60px;">
+      <div class="section-border" style="padding: 0 20px 60px;">
         <div class="feature-grid">
           <div class="feature-card">
             <h3><a href="blog/multi-agent-rl-lob.html">Multi-Agent Reinforcement Learning in a Realistic Limit Order Book Market Simulation</a></h3>
@@ -143,11 +143,11 @@
       <div class="section-header border-x" style="padding-left:20px;padding-right:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <span class="overline">[04] Projects</span>
-          <span class="overline" style="font-weight:400;">&nbsp;</span>
+          <span class="overline" style="font-weight:400;">/ case studies</span>
         </div>
         <div class="divider-dashed" style="margin-top:20px;"></div>
       </div>
-      <div class="section-border" style="padding: 40px 20px 60px;">
+      <div class="section-border" style="padding: 0 20px 60px;">
         <div class="feature-grid">
           <div class="feature-card">
             <h3><a href="blog/nyc-taxi.html">NYC Taxi Trip Duration Prediction</a></h3>
@@ -171,7 +171,7 @@
             </div>
           </div>
           <div class="feature-card">
-            <h3><a href="blog/image-segmentation.html">Image Segmentation: Mean Shift &amp; Normalized Cut</a></h3>
+            <h3><a href="blog/image-segmentation.html">Image Segmentation</a></h3>
             <p class="meta">May 30, 2018</p>
             <div class="tags">
               <a href="blog/computer-vision.html">Computer Vision</a>
@@ -255,10 +255,11 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2026 Michaël Karpe. All rights reserved.</span>
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
       </div>
     </div>
   </footer>
 
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
 </body>
 </html>

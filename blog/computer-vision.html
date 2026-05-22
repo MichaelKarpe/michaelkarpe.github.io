@@ -69,9 +69,10 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2026 Michaël Karpe. All rights reserved.</span>
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
       </div>
     </div>
   </footer>
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
 </body>
 </html>

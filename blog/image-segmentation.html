@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Segmentation: Mean Shift & Normalized Cut</title>
+  <title>Image Segmentation</title>
   <link rel="stylesheet" href="../style.css">
   <script>
     MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
@@ -27,7 +27,7 @@
   <section class="page-header">
     <div class="grid-bg-inner"></div>
     <div class="container" style="position:relative;z-index:1;">
-      <h1>Image Segmentation: Mean Shift &amp; Normalized Cut</h1>
+      <h1>Image Segmentation</h1>
       <p class="meta">Michaël Karpe, Marc-Antoine Augé &mdash; <span class="date">May 30, 2018</span></p>
     </div>
   </section>
@@ -167,7 +167,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2026 Michaël Karpe. All rights reserved.</span>
+        <span>&copy; <span id="copyright-year"></span> Michaël Karpe. All rights reserved.</span>
       </div>
     </div>
   </footer>
@@ -189,5 +189,6 @@
       });
     });
   </script>
+<script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
 </body>
 </html>
