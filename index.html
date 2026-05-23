@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
   <title>Michaël Karpe</title>
   <meta name="description" content="Senior AI/ML Scientist — Delivering AI/ML for financial services since 2018.">
   <link rel="stylesheet" href="style.css">
@@ -20,6 +21,7 @@
           <li><a href="https://www.linkedin.com/in/michaelkarpe/">LinkedIn</a></li>
           <li><a href="https://scholar.google.com/citations?user=2yQ3TvgAAAAJ">Scholar</a></li>
           <li><a href="https://www.kaggle.com/mika30">Kaggle</a></li>
+          <li><button class="theme-toggle" aria-label="Toggle dark mode"><svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button></li>
         </ul>
       </nav>
     </div>
@@ -264,5 +266,6 @@
   </footer>
 
 <script>document.getElementById('copyright-year').textContent=new Date().toLocaleDateString('en-US',{timeZone:'Europe/Paris',year:'numeric'})</script>
+<script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='light')document.documentElement.classList.add('light');var b=document.querySelector('.theme-toggle');if(b)b.addEventListener('click',function(){var h=document.documentElement,m=window.matchMedia('(prefers-color-scheme: dark)');if(h.classList.contains('dark')){h.classList.replace('dark','light');localStorage.setItem('theme','light')}else if(h.classList.contains('light')){h.classList.remove('light');localStorage.removeItem('theme')}else if(m.matches){h.classList.add('light');localStorage.setItem('theme','light')}else{h.classList.add('dark');localStorage.setItem('theme','dark')}})}());</script>
 </body>
 </html>

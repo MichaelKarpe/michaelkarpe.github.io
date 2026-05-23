@@ -20,6 +20,47 @@
   --primary-hover: #2C3038;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1117;
+    --bg-secondary: #161b22;
+    --text: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-tertiary: #6e7681;
+    --border: #21262d;
+    --border-strong: #30363d;
+    --stroke-subtle: #21262d;
+    --primary: #010409;
+    --primary-hover: #0d1117;
+  }
+}
+
+html.dark {
+  --bg: #0d1117;
+  --bg-secondary: #161b22;
+  --text: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-tertiary: #6e7681;
+  --border: #21262d;
+  --border-strong: #30363d;
+  --stroke-subtle: #21262d;
+  --primary: #010409;
+  --primary-hover: #0d1117;
+}
+
+html.light {
+  --bg: #ffffff;
+  --bg-secondary: #FAFAFB;
+  --text: #1A1D21;
+  --text-secondary: #68707C;
+  --text-tertiary: #8F99A8;
+  --border: #EDEFF3;
+  --border-strong: #D0D5DD;
+  --stroke-subtle: #E4E7EC;
+  --primary: #1A1D21;
+  --primary-hover: #2C3038;
+}
+
 html {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 16px;
@@ -99,6 +140,40 @@ nav {
 .nav-links a:hover {
   color: var(--text);
 }
+
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+}
+
+.theme-toggle svg {
+  display: block;
+}
+
+.theme-toggle .sun-icon { display: block; }
+.theme-toggle .moon-icon { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  .theme-toggle .sun-icon { display: none; }
+  .theme-toggle .moon-icon { display: block; }
+}
+
+html.dark .theme-toggle .sun-icon { display: none; }
+html.dark .theme-toggle .moon-icon { display: block; }
+
+html.light .theme-toggle .sun-icon { display: block; }
+html.light .theme-toggle .moon-icon { display: none; }
 
 /* Hero */
 .hero {
@@ -802,7 +877,9 @@ footer .divider {
   .feature-card:nth-child(n) { border-right: none; }
   .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
-  nav { flex-direction: column; gap: 12px; }
+  nav { justify-content: center; position: relative; }
+  .nav-links { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+  .nav-links a { display: none; }
   .article-content { padding: 32px 0 48px; }
   .article-content .figure-row { flex-direction: column; }
 }
